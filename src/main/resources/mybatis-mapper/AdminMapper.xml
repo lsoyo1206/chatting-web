@@ -8,18 +8,11 @@
         select count(*) from employees
     </select>
 
-    <insert id="join" parameterType="User">
-        INSERT INTO users (
-                 USER_ID,
-                 USERNAME,
-                 PASSWORD,
-                 EMAIL)
-        VALUES (
-                user_seq.NEXTVAL,
-                #{userId},
-                #{userName},
-                #{password},
-                #{email}
-                )
+    <insert id="insertUser" parameterType="User">
+        <selectKey keyProperty="userId" resultType="int" order="BEFORE">
+            SELECT user_seq.NEXTVAL FROM dual
+        </selectKey>
+        INSERT INTO users (USER_ID, USERNAME, PASSWORD, EMAIL)
+        VALUES (#{userId}, #{userName}, #{password}, #{email})
     </insert>
 </mapper>

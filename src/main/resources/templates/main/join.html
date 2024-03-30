@@ -3,10 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>join</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer th:src="@{/main/main.js}"></script>
 </head>
 <body>
 
-
-
+<div class="container">
+    <h1>회원가입 페이지 입니다.</h1><br>
+        <input type="text" placeholder="이름을 입력해주세요" id="userName" name="userName" />
+        <button type="button" id="certificationEmail">이메일 인증</button>
+        <input type="text" placeholder="이메일을 입력하세요" id="email" name="email" /><br>
+        <input type="password" placeholder="비밀번호 입력해주세요" id="password" name="password"/><br><br>
+        <button type="button" id="joinBtn">회원 가입</button>
+</div>
 </body>
 </html>

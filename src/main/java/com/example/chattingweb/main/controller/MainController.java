@@ -1,13 +1,16 @@
 package com.example.chattingweb.main.controller;
 
 
+import com.example.chattingweb.main.dto.UserDto;
 import com.example.chattingweb.main.service.impl.MainService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
+@RequiredArgsConstructor
 public class MainController {
 
     @Autowired
@@ -23,6 +26,13 @@ public class MainController {
 
     @GetMapping("/join")
     public String joinPage(){   return "/main/join";    }
+
+    @PostMapping("/register")
+    @ResponseBody
+    public int userRegister(@RequestBody UserDto user){
+        int result = mainService.join(user);
+        return result;
+    }
 
     @GetMapping("/login")
     public String loginPage(){   return "/main/login";    }

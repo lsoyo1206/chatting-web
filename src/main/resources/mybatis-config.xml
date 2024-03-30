@@ -9,7 +9,7 @@
 <!--        <package name="com.example.model"/>-->
 
         <!-- 단일 클래스에 대한 별칭 설정 -->
-        <typeAlias alias="User" type="com.example.chattingweb.main.dto.user"/>
+        <typeAlias alias="User" type="com.example.chattingweb.main.dto.UserDto"/>
 
     </typeAliases>
 </configuration>
