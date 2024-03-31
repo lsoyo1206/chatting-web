@@ -22,7 +22,22 @@ $("#joinBtn").on("click",function(){
 
 // 이메일 인증
 $("#certificationEmail").on("click",function(){
+    let data = {};
+    data.email = $("#email").val();
 
+    $.ajax({
+        url:"/mailSend",
+        type:"post",
+        contentType:"application/json",
+        data: JSON.stringify(data),
+        success:function(response){
+            console.log("222222222222")
+            console.log(response);
+            console.log("222222222222")
+
+
+        }
+    })
 })
 
 

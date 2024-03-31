@@ -40,9 +40,21 @@ dependencies {
 	//oracle
 	runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
 
+	//메일 인증
+	// Spring Boot Starter for Mail (메일 전송 기능을 위한 스타터)
+	implementation 'javax.mail:javax.mail-api:1.6.2'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	//implementation 'org.springframework.boot:spring-boot-starter-security'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	//testImplementation 'org.springframework.security:spring-security-test'
 
+	//redis 추가 - 메일 인증번호 저장용
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 }
+
 
 tasks.named('test') {
 	useJUnitPlatform()

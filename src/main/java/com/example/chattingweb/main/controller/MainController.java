@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequiredArgsConstructor
 public class MainController {
 
     @Autowired
@@ -19,8 +18,8 @@ public class MainController {
     @GetMapping("/home")
     public String indexPage(Model model){
         int totalCnt = mainService.totalCnt();
-        model.addAttribute("data","init start!!");
         model.addAttribute("cnt",totalCnt);
+        model.addAttribute("data","init start!!");
         return "/main/main";
     }
 
