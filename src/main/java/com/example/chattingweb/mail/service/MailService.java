@@ -1,8 +1,10 @@
 package com.example.chattingweb.mail.service;
 
+import io.lettuce.core.RedisURI;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisConnectionUtils;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -14,7 +16,19 @@ public class MailService {
 
     @Autowired
     private JavaMailSender mailSender;
+    @Autowired
+    private RedisUtil redisUtil;
     private int authNumber;
+
+    public boolean CheckAuthNum(String email, String autoNum){
+        if(redisUtil.getData(autoNum) == null){
+            return false;
+        }else if(redisUtil.getData(autoNum).equals(email)){ // redis에 저장되어있는 value - 이메일과 같으면
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     //임의의 6자리 숫자 반환
     public void makeRandomNumber(){
@@ -60,6 +74,9 @@ public class MailService {
             //이메일 서버에 연결할 수 없거나, 잘못된 이메일 주소를 사용하거나, 인증 오류가 발생하는 등 오류
             e.printStackTrace();
         }
+
+        // 사용자에게 인증번호 보낸 후 일정시간동안 저장해놓음
+        redisUtil.setDataExpire(Integer.toString(authNumber), toMail, 60*5L);
     }
 }
 

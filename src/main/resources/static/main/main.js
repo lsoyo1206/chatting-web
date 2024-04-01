@@ -40,4 +40,21 @@ $("#certificationEmail").on("click",function(){
     })
 })
 
+// 이메일 인증번호 확인
+$("#checkAutoEmail").on("click",function(){
+    let data = {};
+    data.email = $("#email").val();
+    data.authNumber = $("#autoEmail").val();
 
+    $.ajax({
+        url:"/AuthCheck",
+        type:"post",
+        contentType:"application/json",
+        data: JSON.stringify(data),
+        success:function(response){
+            console.log("AuthCheck")
+            console.log(response);
+
+        }
+    })
+})
