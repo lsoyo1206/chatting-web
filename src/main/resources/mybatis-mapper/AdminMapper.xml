@@ -15,4 +15,10 @@
         INSERT INTO users (USER_ID, USERNAME, PASSWORD, EMAIL)
         VALUES (#{userId}, #{userName}, #{password}, #{email})
     </insert>
+
+    <select id="emailCheck" parameterType="EmailDto">
+        SELECT count(*)
+        FROM USERS
+        WHERE USERS.EMAIL = #{email}
+    </select>
 </mapper>

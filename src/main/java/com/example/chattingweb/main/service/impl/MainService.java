@@ -1,5 +1,6 @@
 package com.example.chattingweb.main.service.impl;
 
+import com.example.chattingweb.mail.dto.EmailRequestDto;
 import com.example.chattingweb.main.dto.UserDto;
 import com.example.chattingweb.main.repository.MainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,4 +17,8 @@ public class MainService {
     }
 
     public int join(UserDto user) { return mainRepository.insertUser(user);  }
+
+    public int emailCheck(EmailRequestDto emailDto){
+        return mainRepository.emailCheck(emailDto);
+    }
 }
