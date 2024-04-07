@@ -21,4 +21,18 @@
         FROM USERS
         WHERE USERS.EMAIL = #{email}
     </select>
+
+    <select id="loginCheck" parameterType="User">
+        SELECT count(*)
+        FROM USERS
+        WHERE USERS.EMAIL = #{email}
+        and  USERS.password = #{password}
+    </select>
+
+    <select id="login" parameterType="User" resultType="User">
+        SELECT *
+        FROM USERS
+        WHERE USERS.EMAIL = #{email}
+          and  USERS.password = #{password}
+    </select>
 </mapper>

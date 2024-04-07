@@ -5,25 +5,31 @@
     <title>home</title>
     <!--   부트스트랩  -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer th:src="@{/main/initPage.js}"></script>
 </head>
 <body>
-
 <div class="container" style="max-width: 600px">
     <div class="py-5 text-center">
         <h2>홈 화면</h2> </div>
-    <div class="row">
-        <div class="col">
-            <button class="w-100 btn btn-secondary btn-lg" type="button"
-                    th:onclick="|location.href='@{/join}'|">
-                회원 가입
-            </button>
+    <div class="notLogin">
+        <div class="row">
+            <div class="col">
+                <button class="w-100 btn btn-secondary btn-lg" type="button"
+                        th:onclick="|location.href='@{/join}'|">
+                    회원 가입
+                </button>
+            </div>
+            <div class="col">
+                <button class="w-100 btn btn-dark btn-lg" type="button"
+                        th:onclick="|location.href='@{/login}'|" >
+                    로그인
+                </button>
+            </div>
         </div>
-        <div class="col">
-            <button class="w-100 btn btn-dark btn-lg" type="button"
-                    th:onclick="|location.href='@{/login}'|" >
-                로그인
-            </button>
-        </div>
+    </div>
+    <div class="login" style="display: none">
+        <div th:onclick="logout()">로그아웃</div>
     </div>
     <hr class="my-4">
 </div>

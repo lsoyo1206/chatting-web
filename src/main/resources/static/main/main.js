@@ -8,6 +8,11 @@ $("#joinBtn").on("click",function(){
         return;
     }
 
+    else if($("#password").val() === ""){
+        reason = "비밀번호를 작성해주세요";
+        $("#password").focus();
+    }
+
     if(regexResult !== false){
         let user = {
             userName : $("#userName").val(),
@@ -98,9 +103,6 @@ function regex(){
     }else if($("#email").val() === ""){
         reason = "이메일을 작성해주세요";
         $("#email").focus();
-    }else if($("#password").val() === ""){
-        reason = "비밀번호를 작성해주세요";
-        $("#password").focus();
     }
 
     if(reason !== ""){
