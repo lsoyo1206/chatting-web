@@ -1,7 +1,6 @@
 //로그인 여부 확인
 $(document).ready(function() {
     // isLogin 함수를 한 번 호출한 후, 로그인 여부를 확인하지 않도록 함
-    isLogin();
 });
 
 function isLogin(){

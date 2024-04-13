@@ -26,13 +26,19 @@
         SELECT count(*)
         FROM USERS
         WHERE USERS.EMAIL = #{email}
-        and  USERS.password = #{password}
+          and  USERS.password = #{password}
     </select>
 
     <select id="login" parameterType="User" resultType="User">
-        SELECT *
+        SELECT user_id as userId
         FROM USERS
         WHERE USERS.EMAIL = #{email}
           and  USERS.password = #{password}
+    </select>
+
+    <select id="findById" parameterType="Integer" resultType="User">
+        SELECT *
+        FROM USERS
+        WHERE USERS.USER_ID = #{userId}
     </select>
 </mapper>

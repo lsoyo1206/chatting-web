@@ -28,4 +28,10 @@ public class MainService {
     public int emailCheck(EmailRequestDto emailDto){
         return mainRepository.emailCheck(emailDto);
     }
+
+    public UserDto findById(Integer userId) {
+        return mainRepository.findById(userId);
+    }
+
+
 }

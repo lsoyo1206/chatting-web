@@ -10,11 +10,15 @@
     <h2>Login</h2>
     <form th:action="@{/login}" method="post">
         <label for="email">Username:</label>
-            <input type="text" id="email" name="email"><br>
+        <input type="text" id="email" name="email"><br>
         <label for="password">Password:</label>
-            <input type="password" id="password" name="password"><br>
+        <input type="password" id="password" name="password"><br>
         <input type="submit" value="Login">
     </form>
+    <br><br>
+    <div th:if="${error}" class="alert alert-danger">
+        <p>이메일 혹은 비밀번호가 틀렸습니다.</p>
+    </div>
 </div>
 </body>
 </html>

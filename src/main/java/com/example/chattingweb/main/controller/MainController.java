@@ -8,7 +8,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
 import org.eclipse.tags.shaded.org.apache.xpath.operations.Mod;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,8 +27,16 @@ public class MainController {
     private MainService mainService;
 
     @GetMapping("/home")
-    public String indexPage(Model model){
-        model.addAttribute("data","init start!!");
+    public String indexPage(HttpSession session, Model model){
+
+        Integer userId = (Integer) session.getAttribute("userId");
+
+        if(userId != null){
+            UserDto userDto = mainService.findById(userId);
+            model.addAttribute("userDto",userDto);
+            System.out.println(userDto);
+        }
+
         return "/main/main";
     }
 
@@ -60,7 +70,7 @@ public class MainController {
             return "redirect:/home";
         }else {
             // 로그인 실패 시 다시 로그인 페이지로 리다이렉트하고 사용자가 입력한 값을 전달합니다.
-            redirectAttributes.addFlashAttribute("error", "Invalid username or password.");
+            redirectAttributes.addFlashAttribute("error", userDto);
             return "redirect:/login";
         }
     }

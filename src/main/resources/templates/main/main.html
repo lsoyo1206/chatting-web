@@ -26,10 +26,14 @@
                         <i class="fas fa-bars"></i> <!-- 햄버거 아이콘 -->
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <button class="dropdown-item notLogin" onclick="location.href='/join'">회원 가입</button>
-                        <button class="dropdown-item notLogin" onclick="location.href='/login'">로그인</button>
-                        <div class="login" id="userName" ></div>
-                        <button class="dropdown-item login" style="display: none" onclick="logout()">로그아웃</button>
+                        <p th:unless="${userDto}">
+                            <button class="dropdown-item notLogin" onclick="location.href='/join'">회원 가입</button>
+                            <button class="dropdown-item notLogin" onclick="location.href='/login'">로그인</button>
+                        </p>
+                        <div th:if="${userDto}">
+                            <div class="login" id="userName" th:text="${userDto.getUserName()}">님 환영합니다</div>
+                            <button class="dropdown-item login" onclick="logout()">로그아웃</button>
+                        </div>
                     </div>
                 </li>
             </ul>
