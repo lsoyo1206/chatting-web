@@ -31,3 +31,6 @@ function logout(){
         }
     });
 }
+function goToHomePage() {
+    window.location.href = "/";
+}

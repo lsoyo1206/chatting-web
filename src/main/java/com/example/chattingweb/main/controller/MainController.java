@@ -3,14 +3,8 @@ package com.example.chattingweb.main.controller;
 
 import com.example.chattingweb.main.dto.UserDto;
 import com.example.chattingweb.main.service.impl.MainService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.LogManager;
-import org.eclipse.tags.shaded.org.apache.xpath.operations.Mod;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +20,7 @@ public class MainController {
     @Autowired
     private MainService mainService;
 
-    @GetMapping("/home")
+    @GetMapping("/")
     public String indexPage(HttpSession session, Model model){
 
         Integer userId = (Integer) session.getAttribute("userId");
