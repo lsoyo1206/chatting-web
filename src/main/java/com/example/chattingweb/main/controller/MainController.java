@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-public class MainController {
+public class MainController{
 
     @Autowired
     private MainService mainService;
@@ -30,7 +30,7 @@ public class MainController {
             model.addAttribute("userDto",userDto);
             System.out.println(userDto);
         }
-
+        System.out.println("===========");
         return "/main/main";
     }
 
