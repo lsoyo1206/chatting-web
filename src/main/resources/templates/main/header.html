@@ -9,40 +9,86 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script defer th:src="@{/main/initPage.js}"></script>
+    <!-- 다른 스타일시트들 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
+<!--<nav class="navbar navbar-expand-lg navbar-light bg-light">-->
+<!--    <div class="container">-->
+<!--        <a class="navbar-brand" href="#" onclick="goToHomePage()">대동밥지도</a>-->
+<!--        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"-->
+<!--                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--            <span class="navbar-toggler-icon"></span>-->
+<!--        </button>-->
+<!--        <div class="collapse navbar-collapse" id="navbarNav">-->
+<!--            <ul class="navbar-nav ml-auto">-->
+<!--                <li class="nav-item dropdown">-->
+<!--                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"-->
+<!--                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+<!--                        <i class="fas fa-bars"></i> &lt;!&ndash; 햄버거 아이콘 &ndash;&gt;-->
+<!--                    </a>-->
+
+
+
+<!--                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">-->
+<!--                        <p th:unless="${userDto}">-->
+<!--                            <button class="dropdown-item notLogin" onclick="location.href='/join'">회원 가입</button>-->
+<!--                            <button class="dropdown-item notLogin" onclick="location.href='/login'">로그인</button>-->
+<!--                        </p>-->
+<!--                        <div th:if="${userDto}">-->
+<!--                            <div class="login" id="userName" th:text="${userDto.getUserName()}">님 환영합니다</div>-->
+<!--                            <button class="dropdown-item login" onclick="logout()">로그아웃</button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</nav>-->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-        <a class="navbar-brand" href="#" onclick="goToHomePage()">모르는 전화번호 찾기</a>
+        <a class="navbar-brand" href="#" onclick="goToHomePage()">대동밥지도</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
+                <!-- 검색 창 -->
+                <form class="form-inline my-2 my-lg-0" onsubmit="searchFunction(); return false;">
+                    <div class="input-group">
+                        <input id="searchInput" class="form-control" type="search" placeholder="search...." aria-label="Search">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <!-- /검색 창 -->
+
+                <!-- 동그란 이미지 -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                    <a class="nav-link" href="#" id="navbarDropdownImageLink" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-bars"></i> <!-- 햄버거 아이콘 -->
+                        <img src="https://cdn3.iconfinder.com/data/icons/line/36/photo-512.png" width="30" height="30" class="rounded-circle" alt="이미지 검색">
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownImageLink">
                         <p th:unless="${userDto}">
                             <button class="dropdown-item notLogin" onclick="location.href='/join'">회원 가입</button>
                             <button class="dropdown-item notLogin" onclick="location.href='/login'">로그인</button>
                         </p>
                         <div th:if="${userDto}">
-                            <div class="login" id="userName" th:text="${userDto.getUserName()}">님 환영합니다</div>
+                            <div class="login" id="userName" th:text="${userDto.getUserName()} + ' 님 환영합니다'"></div>
+                            <button class="dropdown-item login" onclick="logout()">정보관리</button>
                             <button class="dropdown-item login" onclick="logout()">로그아웃</button>
                         </div>
                     </div>
                 </li>
-            </ul>
         </div>
     </div>
 </nav>
 
-
 <!-- /container -->
-
 </body>
 </html>

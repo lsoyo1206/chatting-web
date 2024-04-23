@@ -29,7 +29,7 @@ $("#joinBtn").on("click",function(){
             data: JSON.stringify(user),
             success:function(response){
                 alert('회원가입 완료하였습니다.')
-                location.href = "/home";
+                location.href = "/";
             }
         })
     }

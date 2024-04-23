@@ -61,7 +61,7 @@ public class MainController {
             session.setAttribute("userId", user.getUserId());
             session.setAttribute("userName", user.getUserName());
 //            model.addAttribute("userName", user.getUserName());
-            return "redirect:/home";
+            return "redirect:/";
         }else {
             // 로그인 실패 시 다시 로그인 페이지로 리다이렉트하고 사용자가 입력한 값을 전달합니다.
             redirectAttributes.addFlashAttribute("error", userDto);
