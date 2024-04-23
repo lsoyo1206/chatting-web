@@ -36,37 +36,50 @@ public class MainController{
     @GetMapping("/join")
     public String joinPage(){   return "/main/join";    }
 
-    @PostMapping("/register")
-    @ResponseBody
-    public int userRegister(@RequestBody UserDto user){
+    @GetMapping("/my-page")
+    public String mypage(Model model, HttpSession session){
+        Integer userId = (Integer) session.getAttribute("userId");
+
+        UserDto userDto = mainService.findById(userId);
+        model.addAttribute("userDto", userDto);
+
+        return "/main/my-page";
+    }
+
+//    @ResponseBody
+    @PostMapping("/joinProc")
+    public String joinProc(@RequestBody UserDto user){
         int result = mainService.join(user);
-        return result;
+        if(result == 1){
+            return "redirect:/login";
+        }
+
+        return "redirect:/join";
     }
 
     @GetMapping("/login")
     public String loginPage(){   return "/main/login";    }
 
-    @PostMapping("/login")
-    public String loginStart(UserDto userDto,
-                             RedirectAttributes redirectAttributes,
-                             HttpServletRequest request){
-        System.out.println("userDto = "+userDto);
-
-        int result = mainService.loginCheck(userDto);
-
-        if(result == 1){
-            UserDto user = mainService.login(userDto);
-            HttpSession session = request.getSession();
-            session.setAttribute("userId", user.getUserId());
-            session.setAttribute("userName", user.getUserName());
-//            model.addAttribute("userName", user.getUserName());
-            return "redirect:/";
-        }else {
-            // 로그인 실패 시 다시 로그인 페이지로 리다이렉트하고 사용자가 입력한 값을 전달합니다.
-            redirectAttributes.addFlashAttribute("error", userDto);
-            return "redirect:/login";
-        }
-    }
+//    @PostMapping("/loginProc")
+//    public String loginStart(UserDto userDto,
+//                             RedirectAttributes redirectAttributes,
+//                             HttpServletRequest request){
+//        System.out.println("userDto = "+userDto);
+//
+//        int result = mainService.loginCheck(userDto);
+//
+//        if(result == 1){
+//            UserDto user = mainService.login(userDto);
+//            HttpSession session = request.getSession();
+//            session.setAttribute("userId", user.getUserId());
+//            session.setAttribute("userName", user.getUserName());
+//            return "redirect:/";
+//        }else {
+//            // 로그인 실패 시 다시 로그인 페이지로 리다이렉트하고 사용자가 입력한 값을 전달합니다.
+//            redirectAttributes.addFlashAttribute("error", userDto);
+//            return "redirect:/login";
+//        }
+//    }
 
 
     @GetMapping("/isLogin")

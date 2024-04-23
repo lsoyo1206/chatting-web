@@ -9,7 +9,7 @@
 <div th:include="/main/header"></div> <br>
 <div class="container">
     <h2>로그인</h2>
-    <form th:action="@{/login}" method="post" class="needs-validation" novalidate>
+    <form action="/loginProc" method="post" class="needs-validation" novalidate>
         <div class="form-group">
             <label for="email">이메일 주소</label>
             <input type="email" id="email" name="email" class="form-control" placeholder="이메일을 입력하세요" required>

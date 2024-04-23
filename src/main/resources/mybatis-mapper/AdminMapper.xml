@@ -31,7 +31,7 @@
 
     <select id="findById" parameterType="Integer" resultType="User">
         SELECT *
-        FROM USERS
+        FROM chattingWeb.USERS
         WHERE USERS.USER_ID = #{userId}
     </select>
 </mapper>
