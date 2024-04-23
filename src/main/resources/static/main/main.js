@@ -1,38 +1,36 @@
 // 회원가입
 $("#joinBtn").on("click",function(){
-    let regexResult = regex();
-    let check = $("#checkAutoEmail").attr("disabled")
+    // let regexResult = regex();
+    // let check = $("#checkAutoEmail").attr("disabled")
 
-    if(!check){
-        alert('이메일 인증을 완료해주세요!');
-        return;
-    }
+    // if(!check){
+    //     alert('이메일 인증을 완료해주세요!');
+    //     return;
+    // }
 
-    else if($("#password").val() === ""){
+    if($("#password").val() === ""){
         reason = "비밀번호를 작성해주세요";
         $("#password").focus();
     }
 
-    if(regexResult !== false){
-        let user = {
-            userName : $("#userName").val(),
-            email : $("#email").val(),
-            password : $("#password").val()
-        }
-
-        console.log("data = " + user)
-
-        $.ajax({
-            url:"/register",
-            type:"post",
-            contentType:"application/json",
-            data: JSON.stringify(user),
-            success:function(response){
-                alert('회원가입 완료하였습니다.')
-                location.href = "/";
-            }
-        })
+    let user = {
+        userName : $("#userName").val(),
+        email : $("#email").val(),
+        password : $("#password").val()
     }
+
+    console.log("data = " + user)
+
+    $.ajax({
+        url:"/register",
+        type:"post",
+        contentType:"application/json",
+        data: JSON.stringify(user),
+        success:function(response){
+            alert('회원가입 완료하였습니다.')
+            location.href = "/";
+        }
+    })
 })
 
 // 이메일 인증
@@ -55,8 +53,6 @@ $("#certificationEmail").on("click",function(){
                     return;
                 }
                 alert("인증번호를 이메일로 전송하였습니다.")
-                console.log(response);
-
             }
         })
     }

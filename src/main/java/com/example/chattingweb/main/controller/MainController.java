@@ -30,7 +30,6 @@ public class MainController{
             model.addAttribute("userDto",userDto);
             System.out.println(userDto);
         }
-        System.out.println("===========");
         return "/main/main";
     }
 

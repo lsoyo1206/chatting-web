@@ -40,6 +40,9 @@ dependencies {
 	//oracle
 	runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
 
+	//mariadb
+	implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.4' // 이 숫자는 버전에 따라 변경될 수 있습니다.
+
 	//메일 인증
 	// Spring Boot Starter for Mail (메일 전송 기능을 위한 스타터)
 	implementation 'javax.mail:javax.mail-api:1.6.2'
