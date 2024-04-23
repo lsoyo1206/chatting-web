@@ -5,11 +5,17 @@
 <mapper namespace="com.example.chattingweb.main.repository.MainRepository">
 
     <insert id="insertUser" parameterType="User">
-        INSERT INTO chattingWeb.USERS (USERNAME, PASSWORD, EMAIL)
-        VALUES (#{userName}, #{password}, #{email})
+        INSERT INTO chattingWeb.USERS (USERNAME, PASSWORD, EMAIL,ROLE,loginId)
+        VALUES (#{userName}, #{password}, #{email},'ROLE_USER',#{loginId})
     </insert>
 
     <select id="emailCheck" parameterType="EmailDto">
+        SELECT count(*)
+        FROM chattingWeb.USERS
+        WHERE USERS.EMAIL = #{email}
+    </select>
+
+    <select id="emailCntCheck" parameterType="EmailDto">
         SELECT count(*)
         FROM chattingWeb.USERS
         WHERE USERS.EMAIL = #{email}
@@ -23,7 +29,7 @@
     </select>
 
     <select id="login" parameterType="User" resultType="User">
-        SELECT user_id as userId
+        SELECT *
         FROM chattingWeb.USERS
         WHERE USERS.EMAIL = #{email}
           and  USERS.password = #{password}
@@ -33,5 +39,16 @@
         SELECT *
         FROM chattingWeb.USERS
         WHERE USERS.USER_ID = #{userId}
+    </select>
+
+    <select id="findByUserName" parameterType="String" resultType="User">
+        SELECT *
+        FROM chattingWeb.USERS
+        WHERE USERS.loginId = #{username}
+    </select>
+    <select id="findByEmail" parameterType="String" resultType="User">
+        SELECT *
+        FROM chattingWeb.USERS
+        WHERE USERS.username = #{username}
     </select>
 </mapper>

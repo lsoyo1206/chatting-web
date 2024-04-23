@@ -19,5 +19,10 @@ public interface MainRepository {
 
     public int emailCheck(EmailRequestDto emailDto);
 
+    public int emailCntCheck(UserDto userDto);
+
     public UserDto findById(int userId);
+
+    public UserDto findByUserName(String username);
+    public UserDto findByEmail(String username);
 }

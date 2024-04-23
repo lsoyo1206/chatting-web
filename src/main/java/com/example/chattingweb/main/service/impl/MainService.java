@@ -27,9 +27,18 @@ public class MainService {
         return mainRepository.getCnt();
     }
 
-    public int join(UserDto user) {
+    public int join(UserDto userDto) {
         //db에 이미 동알한 email을 가진 회원이 존재하는지
-        return mainRepository.insertUser(user);
+        int result = mainRepository.emailCntCheck(userDto);
+
+        if(result == 0){
+            userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+            result = mainRepository.insertUser(userDto);
+        }else{
+            result = 0;
+        }
+
+        return result;
     }
 
     public int emailCheck(EmailRequestDto emailDto){
@@ -38,6 +47,13 @@ public class MainService {
 
     public UserDto findById(Integer userId) {
         return mainRepository.findById(userId);
+    }
+
+    public UserDto findByEmail(String username) {
+        return mainRepository.findByEmail(username);
+    }
+    public UserDto findByUserName(String username) {
+        return mainRepository.findByUserName(username);
     }
 
 

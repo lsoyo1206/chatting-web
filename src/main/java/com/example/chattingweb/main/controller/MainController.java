@@ -1,17 +1,24 @@
 package com.example.chattingweb.main.controller;
 
 
+import com.example.chattingweb.main.dto.CustomUserDetails;
 import com.example.chattingweb.main.dto.UserDto;
 import com.example.chattingweb.main.service.impl.MainService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 @Controller
@@ -20,14 +27,30 @@ public class MainController{
     @Autowired
     private MainService mainService;
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+
+
     @GetMapping("/")
     public String indexPage(HttpSession session, Model model){
 
-        Integer userId = (Integer) session.getAttribute("userId");
+        //username 임
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if(userId != null){
-            UserDto userDto = mainService.findById(userId);
+        //사용자의 role 값
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> authoerities = authentication.getAuthorities();
+        Iterator<? extends GrantedAuthority> iter = authoerities.iterator();
+        GrantedAuthority auth = iter.next();
+        String role = auth.getAuthority();
+
+        System.out.println(role);
+
+        if(username != null){
+            UserDto userDto = mainService.findByEmail(username);
             model.addAttribute("userDto",userDto);
+            session.setAttribute("userDto",userDto);
             System.out.println(userDto);
         }
         return "/main/main";
@@ -48,11 +71,24 @@ public class MainController{
 
 //    @ResponseBody
     @PostMapping("/joinProc")
-    public String joinProc(@RequestBody UserDto user){
+    public String joinProc(@RequestParam("userName") String userName,
+                           @RequestParam("loginId") String loginId,
+                           @RequestParam("email") String email,
+                           @RequestParam("password") String password,
+                           RedirectAttributes redirectAttributes){
+
+        UserDto user = new UserDto();
+        user.setUserName(userName);
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setLoginId(loginId);
+
         int result = mainService.join(user);
+
         if(result == 1){
+            redirectAttributes.addFlashAttribute("message", "회원가입에 성공했습니다. 로그인 해주세요");
             return "redirect:/login";
-        }
+        }else   redirectAttributes.addFlashAttribute("message", "이미 존재하는 이메일 입니다. 다시 시도해 주세요");
 
         return "redirect:/join";
     }
@@ -61,22 +97,25 @@ public class MainController{
     public String loginPage(){   return "/main/login";    }
 
 //    @PostMapping("/loginProc")
-//    public String loginStart(UserDto userDto,
+//    public String loginStart(@RequestParam("email") String email,
+//                             @RequestParam("password") String password,
 //                             RedirectAttributes redirectAttributes,
 //                             HttpServletRequest request){
-//        System.out.println("userDto = "+userDto);
 //
-//        int result = mainService.loginCheck(userDto);
-//
-//        if(result == 1){
-//            UserDto user = mainService.login(userDto);
-//            HttpSession session = request.getSession();
-//            session.setAttribute("userId", user.getUserId());
-//            session.setAttribute("userName", user.getUserName());
-//            return "redirect:/";
-//        }else {
-//            // 로그인 실패 시 다시 로그인 페이지로 리다이렉트하고 사용자가 입력한 값을 전달합니다.
-//            redirectAttributes.addFlashAttribute("error", userDto);
+//        if (!email.isEmpty() && !password.isEmpty()) {
+//            UserDto userDto = new UserDto();
+//            userDto.setEmail(email);
+//            userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+//            int result = mainService.loginCheck(userDto);
+//            if(result == 1){
+//                UserDto user = mainService.login(userDto);
+//                return "redirect:/";
+//            }else{
+//                redirectAttributes.addFlashAttribute("error", "이메일 혹은 비밀번호가 틀렸습니다");
+//                return "redirect:/login";
+//            }
+//        }else{
+//            redirectAttributes.addFlashAttribute("error", "이메일 혹은 비밀번호가 모두 적어주세요");
 //            return "redirect:/login";
 //        }
 //    }

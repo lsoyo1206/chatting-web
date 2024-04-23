@@ -14,7 +14,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/","/login","/loginProc","/join","/joinProc").permitAll() //permitAll : 모든 사용자에게 로그인 하지않아도 접근 가능
+                        .requestMatchers("/","/join","/login","/loginProc","/joinProc").permitAll() //permitAll : 모든 사용자에게 로그인 하지않아도 접근 가능
                         .requestMatchers("/admin/**").hasRole("ADMIN")  //ADMIN role이 있으면 접근 가능
                         .requestMatchers("/my/**").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated()) ;
@@ -23,7 +23,7 @@ public class SecurityConfig {
                 //authenticated() : 로그인한 사용자만 접근가능
 
         http
-                .formLogin((auth) -> auth.loginPage("/login").loginProcessingUrl("/loginProc").permitAll());
+                .formLogin((auth) -> auth.loginPage("/login").loginProcessingUrl("/login").permitAll());
         //로그인 페이지 경로 설정 -> 로그인 x) admin 경로로 들어갔을 때 오류가 뜨는 것이 아니라 login 페이지로 redirect 해줌
         //loginProcessingUrl() : 로그인 처리를 대신해줌
 
