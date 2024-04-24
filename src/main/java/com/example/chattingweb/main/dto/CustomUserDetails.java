@@ -1,11 +1,13 @@
 package com.example.chattingweb.main.dto;
 
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+@Getter
 public class CustomUserDetails implements UserDetails {
 
     private UserDto userDto;
@@ -35,7 +37,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userDto.getUserName();
+        return userDto.getEmail();
     }
 
     @Override

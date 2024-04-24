@@ -56,7 +56,7 @@ public class MainController{
         return "/main/main";
     }
 
-    @GetMapping("/join")
+    @GetMapping("/auth/joinForm")
     public String joinPage(){   return "/main/join";    }
 
     @GetMapping("/my-page")
@@ -70,7 +70,7 @@ public class MainController{
     }
 
 //    @ResponseBody
-    @PostMapping("/joinProc")
+    @PostMapping("/auth/joinProc")
     public String joinProc(@RequestParam("userName") String userName,
                            @RequestParam("loginId") String loginId,
                            @RequestParam("email") String email,
@@ -93,7 +93,7 @@ public class MainController{
         return "redirect:/join";
     }
 
-    @GetMapping("/login")
+    @GetMapping("/auth/loginForm")
     public String loginPage(){   return "/main/login";    }
 
 //    @PostMapping("/loginProc")
@@ -121,7 +121,7 @@ public class MainController{
 //    }
 
 
-    @GetMapping("/isLogin")
+    @GetMapping("/auth/isLogin")
     @ResponseBody
     public Map<String,Object> isLogin(HttpServletRequest request, Model model) {
         Map<String, Object> response = new HashMap<>();
@@ -142,7 +142,7 @@ public class MainController{
         return response;
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/auth/logout")
     @ResponseBody
     public String logout(HttpServletRequest request){
         HttpSession session = request.getSession(false);

@@ -49,6 +49,6 @@
     <select id="findByEmail" parameterType="String" resultType="User">
         SELECT *
         FROM chattingWeb.USERS
-        WHERE USERS.username = #{username}
+        WHERE USERS.email = #{email}
     </select>
 </mapper>

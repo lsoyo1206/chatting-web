@@ -44,8 +44,8 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownImageLink">
                         <p th:unless="${userDto}">
-                            <button class="dropdown-item notLogin" onclick="location.href='/join'">회원 가입</button>
-                            <button class="dropdown-item notLogin" onclick="location.href='/login'">로그인</button>
+                            <button class="dropdown-item notLogin" onclick="location.href='/auth/joinForm'">회원 가입</button>
+                            <button class="dropdown-item notLogin" onclick="location.href='/auth/loginForm'">로그인</button>
                         </p>
                         <div th:if="${userDto}">
                             <div class="login" id="userName" th:text="${userDto.getUserName()} + ' 님 환영합니다'"></div>
