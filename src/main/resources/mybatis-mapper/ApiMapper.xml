@@ -2,35 +2,68 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="package com.example.chattingweb.api.repository.PostRepository">
+<mapper namespace="com.example.chattingweb.api.repository.ServerApiRepository">
     <!-- INSERT 쿼리문 -->
-    <insert id="insertPostDto" parameterType="PostsDto" useGeneratedKeys="true" keyProperty="postId">
-        INSERT INTO Posts (
+    <insert id="insertPostDto" parameterType="Map" useGeneratedKeys="true" keyProperty="postId">
+        INSERT INTO chattingWeb.post (
                 title,
                 content,
                 user_id
-                <if test="visitedFriends != null">
+                <if test="visitedFriends != null and visitedFriends != '' ">
                     , visited_friends
                 </if>
-                <if test="spaceId != null">
                     , location_registered
-                </if>
         )
         VALUES (
                 #{title},
                 #{content},
                 #{userId}
-                <if test="visitedFriends != null">
+                <if test="visitedFriends != null and visitedFriends != '' ">
                     , #{visitedFriends}
                 </if>
-                <if test="locationRegistered != false">
-                    , true
-                </if>
+                    , #{locationRegistered}
                 )
     </insert>
 
-    <insert id="insertSpaceDto" parameterType="SpaceDto" useGeneratedKeys="true" keyProperty="spaceId">
-        INSERT INTO space (postId, spaceName, address, longitude, latitude)
-        VALUES (#{postId}, #{spaceName}, #{address}, #{longitude}, #{latitude})
+    <insert id="insertPlaceDto" parameterType="Map" useGeneratedKeys="true" keyProperty="placeId">
+        INSERT INTO chattingWeb.place (postId, placeName, address
+<!--        , longitude, latitude-->
+        )
+        VALUES (#{postId}, #{placeName}, #{address}
+<!--        , #{longitude}, #{latitude}-->
+        )
     </insert>
+
+    <update id="updatePostPlaceId" parameterType="Map">
+        UPDATE chattingWeb.post
+        SET place_id = #{placeId}
+        WHERE post_id = #{postId}
+    </update>
+
+    <select id="selectPostsByUserId" resultType="Map" parameterType="User">
+        SELECT  p.post_id as postId,
+                p.place_id as placeId,
+                p.user_id as userId,
+                p.title   as title,
+                p.content  as content,
+                p.location_registered as locationRegistered,
+                p.createDt as createDt,
+                p2.placeName as placeName,
+                p2.address as address
+        FROM chattingWeb.post p
+        LEFT JOIN chattingWeb.place p2 ON p.post_id = p2.postId
+        WHERE 1=1
+        AND p.user_yn = 'Y'
+<!--        AND p.user_id = #{userId}-->
+        order by p.post_id desc , p.createDt
+        LIMIT #{start}, #{pageSize}
+    </select>
+    <select id="selectPostsByUserIdTotalPage" resultType="int" parameterType="User">
+        SELECT CEIL(count(*)/5)
+        FROM chattingWeb.post p
+        LEFT JOIN chattingWeb.place p2 ON p.post_id = p2.postId
+        WHERE 1=1
+        AND p.user_yn = 'Y'
+<!--        AND p.user_id = #{userId}-->
+    </select>
 </mapper>

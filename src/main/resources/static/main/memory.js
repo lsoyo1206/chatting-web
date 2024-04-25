@@ -12,12 +12,14 @@ $('#locationRegistered').click(function(){
 });
 
 function postInsert() {  // 검색 기능
+
+    var isSpaceChecked = $("#locationRegistered").prop("checked");
     var placeName = "";
     var address= "";
     let spaceDto = {};
 
-    if($("#placeName").val() !== "" && locationRegistered === true){
-        var placeInfoArray = placeInfo.split('|');
+    if($("#placeName").val() !== "" && isSpaceChecked === true){
+        var placeInfoArray = $("#placeName").val().split('|');
         placeName = placeInfoArray[0].trim(); // 가게 이름
         address = placeInfoArray[1].trim(); // 주소
 
@@ -30,7 +32,7 @@ function postInsert() {  // 검색 기능
         "title" : $("#title").val(),
         "content" : $("#content").val(),
         "visitedFriends" : $("#visitedFriends").val(),
-        "locationRegistered" : $("#locationRegistered").val()
+        "locationRegistered" : isSpaceChecked
     }
 
     let data ={
@@ -40,23 +42,15 @@ function postInsert() {  // 검색 기능
 
     $.ajax({
         url:"/api/server/insertPost",
-        type:"post",
+        type:"get",
         contentType:"application/json",
         data: data,
         success:function(response){
-            var html = "";
-            console.log("response ===> "+response)
-
-            // for(let i=0 ; i<response.items.length ; i++){
-            //     html += "<div>" + item[i].title + "</div>";
-            //     html += "<div>" + item[i].address + "</div>";
-            // }
-
-            // 결과를 화면에 출력
-            // $("#resultContainer").html(html);
+            alert("추억이 또 한 건 쌓였습니다 !@!")
+            window.location.href = "/";
         },
         error:function(request,status,error){
-            alert('인증 실패하였습니다. 다시 입력해주세요.')
+            alert('추억 저장에 실패했습니다 ㅜ.ㅜ 다시 시도해주세요!')
         }
     })
 }

@@ -47,7 +47,11 @@
         WHERE USERS.EMAIL = #{username}
     </select>
     <select id="findByEmail" parameterType="String" resultType="User">
-        SELECT *
+        SELECT user_id as userId,
+                userName as userName,
+                password as password ,
+                email as email,
+                role as role
         FROM chattingWeb.USERS
         WHERE USERS.email = #{email}
     </select>

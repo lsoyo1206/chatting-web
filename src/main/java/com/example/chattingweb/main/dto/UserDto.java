@@ -12,5 +12,9 @@ public class UserDto {
     private String password;
     private String email;
     private String role;
+
+    private int page;
+    private int pageSize;
+    private int start;
 }
 

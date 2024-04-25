@@ -3,25 +3,33 @@ package com.example.chattingweb.api.controller;
 
 
 import com.example.chattingweb.api.dto.PostDto;
+import com.example.chattingweb.api.dto.SpaceDto;
+import com.example.chattingweb.api.repository.ServerApiRepository;
 import com.example.chattingweb.api.service.ServerApiService;
 import com.example.chattingweb.main.dto.UserDto;
+import com.example.chattingweb.main.service.impl.MainService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j  //로그
@@ -29,20 +37,39 @@ import java.util.Map;
 @RequestMapping("/api/server")
 public class ServerApiController {
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Autowired
     private ServerApiService serverApiService;
+    @Autowired
+    private MainService mainService;
+    @Autowired
+    private ServerApiRepository serverApiRepository;
 
     @GetMapping("/memorySave.do")
     public String memorySave(Model model){
         UserDto userDto = serverApiService.userInfo();  //사용자 정보
+        System.out.printf("/memorySave.do userInfo ===>"+userDto.toString());
         model.addAttribute("userDto",userDto);
         return "/user/memorySave";
     }
 
     @GetMapping("/map.do")
-    public String map(Model model){
-        UserDto userDto = serverApiService.userInfo();  //사용자 정보
-        model.addAttribute("userDto",userDto);
+    public String map(Model model, @RequestParam(defaultValue = "0", value="page") int page){
+        UserDto userDto = serverApiService.userInfo();
+        int totalPages = serverApiRepository.selectPostsByUserIdTotalPage(userDto);
+        userDto.setPage(page);
+        userDto.setPageSize(5);
+        List<Map<String,Object>> postList = serverApiService.settingPostList(userDto);
+        model.addAttribute("postList", postList);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("userDto",userDto); //사용자 정보
+        model.addAttribute("currentPage",page);    //현재페이지
+        
+        System.out.println("현재페이지 : "+page);
+        System.out.println("총페이지 : "+totalPages);
+        
+
         return "/user/map";
     }
 
@@ -124,13 +151,16 @@ public class ServerApiController {
     }
 
     @ResponseBody
-    @PostMapping("/insertPost")
-    public Map<String,Object> insertPost(@RequestParam Map<String,Object> data){
-        Map<String,Object> result = new HashMap<>();
+    @GetMapping("/insertPost")
+    public ResponseEntity<Void> insertPost (@RequestParam Map<String,Object> param){
+        UserDto userDto = serverApiService.userInfo();  //로그인한 사용자 정보
+        Map<String,Object> result = serverApiService.settingParamsAndInsert(param, userDto);
 
-        Map<String,Object> params = serverApiService.settingParams(data);
+        if(Integer.parseInt(result.get("postDtoInsertResult").toString()) != 1){
+            return ResponseEntity.badRequest().build();
+        }
 
-        return result;
+        return ResponseEntity.ok().build();
     }
 
 }
