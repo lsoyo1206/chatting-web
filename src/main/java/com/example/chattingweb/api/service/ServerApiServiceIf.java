@@ -9,4 +9,5 @@ public interface ServerApiServiceIf {
     public String foodSearch(Map<String,Object> param);
     public String foodSearchImage(Map<String,Object> param);
     public UserDto userInfo();
+    public Map<String,Object> settingParams(Map<String,Object> param);
 }

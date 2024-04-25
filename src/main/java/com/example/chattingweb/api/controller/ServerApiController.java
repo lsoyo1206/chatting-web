@@ -2,6 +2,7 @@ package com.example.chattingweb.api.controller;
 
 
 
+import com.example.chattingweb.api.dto.PostDto;
 import com.example.chattingweb.api.service.ServerApiService;
 import com.example.chattingweb.main.dto.UserDto;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j  //로그
@@ -119,6 +121,16 @@ public class ServerApiController {
         ResponseEntity<String> response = restTemplate.exchange(req, String.class);
 
         return response.getBody();
+    }
+
+    @ResponseBody
+    @PostMapping("/insertPost")
+    public Map<String,Object> insertPost(@RequestParam Map<String,Object> data){
+        Map<String,Object> result = new HashMap<>();
+
+        Map<String,Object> params = serverApiService.settingParams(data);
+
+        return result;
     }
 
 }

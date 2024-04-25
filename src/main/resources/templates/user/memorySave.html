@@ -17,6 +17,7 @@
         #placesList .item .markerbg {float:left;position:absolute;width:36px; height:37px;margin:10px 0 0 10px;background:url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png) no-repeat;}
         #pagination {margin:10px auto;text-align: center;}
     </style>
+    <script defer th:src="@{/main/memory.js}"></script>
 </head>
 <body>
 <div th:include="/main/header"></div>
@@ -24,7 +25,7 @@
         <p id="dd">dd</p>
         <div class="row">
             <div class="col-md-8 offset-md-2">
-<!--                <form th:action="/submitPost" method="post">-->
+<!--                <form th:action="/api/server/submitPost" method="post">-->
                     <div class="form-group">
                         <label for="title">제목</label>
                         <input type="text" class="form-control" id="title" name="title" required>
@@ -41,9 +42,11 @@
                         <input type="checkbox" class="form-check-input" id="locationRegistered" name="locationRegistered">
                         <label class="form-check-label" for="locationRegistered">위치 등록 여부</label>
                     </div>
-                    <div class="form-group placeName" style="display: none;">
+                <button type="button" class="btn btn-primary" th:onclick="postInsert()">게시물 등록</button>
+
+                <div class="form-group placeName" style="display: none;">
                         <label for="placeName">방문한 장소</label>
-                        <input type="text" class="form-control" id="placeName" name="placeName">
+                        <input type="text" class="form-control" id="placeName" name="placeName" readonly>
                     </div>
                     <div id="mapSearch" style="display: none;">
                         <div class="map_wrap">
@@ -53,7 +56,7 @@
                                 <div class="option">
                                     <div>
                                         <form onsubmit="searchPlaces(); return false;">
-                                            키워드 : <input type="text" id="keyword" size="15">
+                                            장소 : <input type="text" id="keyword" size="15">
                                             <button type="submit">검색하기</button>
                                         </form>
                                     </div>
@@ -64,10 +67,7 @@
                             </div>
                         </div>
                         <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=92ef8d9822b2fa9e38f28f32d15d230a&libraries=services"></script>
-                        <script defer th:src="@{/main/memory.js}"></script>
                     </div>
-                    <button type="submit" class="btn btn-primary">게시물 등록</button>
-<!--                </form>-->
             </div>
         </div>
 </div>

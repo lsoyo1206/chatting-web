@@ -11,6 +11,7 @@
         <!-- 단일 클래스에 대한 별칭 설정 -->
         <typeAlias alias="User" type="com.example.chattingweb.main.dto.UserDto"/>
         <typeAlias alias="PostsDto" type="com.example.chattingweb.api.dto.PostDto"/>
+        <typeAlias alias="SpaceDto" type="com.example.chattingweb.api.dto.SpaceDto"/>
         <typeAlias alias="EmailDto" type="com.example.chattingweb.mail.dto.EmailRequestDto"/>
 
     </typeAliases>

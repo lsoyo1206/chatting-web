@@ -1,22 +1,21 @@
 package com.example.chattingweb.api.dto;
 
-import com.example.chattingweb.main.dto.UserDto;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
 
-@Getter
-@Setter
-public class PostDto extends UserDto {
+@Data
+public class PostDto{
 
     private int postId;
+    private int spaceId;
+    private int userId;
     private String title;
     private String content;
     private String visitedFriends;
-    private int locationId;
-    private String locationRegistered;
+    private boolean locationRegistered; //위치등록여부
     private Date modifyDt;
     private Date createDt;
     private String userYn;

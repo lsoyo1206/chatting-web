@@ -1,13 +1,65 @@
-$(document).ready(function () {
-});
+// $(document).ready(function () {
+// });
 
 $('#locationRegistered').click(function(){
     if($(this).is(':checked')){
         $("#mapSearch").show();
+        $(".placeName").show();
     }else{
         $("#mapSearch").hide();
+        $(".placeName").hide();
     }
 });
+
+function postInsert() {  // 검색 기능
+    var placeName = "";
+    var address= "";
+    let spaceDto = {};
+
+    if($("#placeName").val() !== "" && locationRegistered === true){
+        var placeInfoArray = placeInfo.split('|');
+        placeName = placeInfoArray[0].trim(); // 가게 이름
+        address = placeInfoArray[1].trim(); // 주소
+
+        spaceDto.placeName = placeName;
+        spaceDto.address = address;
+    }
+
+    // 검색어를 가져오는 코드
+    let postDto = {
+        "title" : $("#title").val(),
+        "content" : $("#content").val(),
+        "visitedFriends" : $("#visitedFriends").val(),
+        "locationRegistered" : $("#locationRegistered").val()
+    }
+
+    let data ={
+        "postDto" : postDto,
+        "spaceDto" : spaceDto
+    }
+
+    $.ajax({
+        url:"/api/server/insertPost",
+        type:"post",
+        contentType:"application/json",
+        data: data,
+        success:function(response){
+            var html = "";
+            console.log("response ===> "+response)
+
+            // for(let i=0 ; i<response.items.length ; i++){
+            //     html += "<div>" + item[i].title + "</div>";
+            //     html += "<div>" + item[i].address + "</div>";
+            // }
+
+            // 결과를 화면에 출력
+            // $("#resultContainer").html(html);
+        },
+        error:function(request,status,error){
+            alert('인증 실패하였습니다. 다시 입력해주세요.')
+        }
+    })
+}
 
 
 
@@ -154,13 +206,13 @@ function getListItem(index, places) {
         var address = places.address_name || '';
         var phone = places.phone || '';
 
+        $("#placeName").val(placeName+' | '+address);
+
         // 가져온 정보 콘솔에 출력
         console.log('가게 이름:', placeName);
         console.log('도로명 주소:', roadAddress);
         console.log('지번 주소:', address);
         console.log('전화번호:', phone);
-
-        //document.getElementById("spaceName").value = placeName;
     });
 
     return el;
