@@ -1,7 +1,3 @@
-//로그인 여부 확인
-$(document).ready(function() {
-    // isLogin 함수를 한 번 호출한 후, 로그인 여부를 확인하지 않도록 함
-});
 
 function searchFunction() {  // 검색 기능
     // 검색어를 가져오는 코드
@@ -40,7 +36,6 @@ function logout(){
         type: "POST",
         success: function(response) {
             alert("로그아웃 되었습니다.");
-            alert(response);
             window.location.href = "/"; // 홈페이지로 리다이렉트
         }
     });

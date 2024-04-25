@@ -2,10 +2,16 @@ package com.example.chattingweb.api.controller;
 
 
 
+import com.example.chattingweb.api.service.ServerApiService;
+import com.example.chattingweb.main.dto.UserDto;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -17,10 +23,28 @@ import java.util.Base64;
 import java.util.Map;
 
 @Slf4j  //로그
-@RestController
+@Controller
 @RequestMapping("/api/server")
 public class ServerApiController {
 
+    @Autowired
+    private ServerApiService serverApiService;
+
+    @GetMapping("/memorySave.do")
+    public String memorySave(Model model){
+        UserDto userDto = serverApiService.userInfo();  //사용자 정보
+        model.addAttribute("userDto",userDto);
+        return "/user/memorySave";
+    }
+
+    @GetMapping("/map.do")
+    public String map(Model model){
+        UserDto userDto = serverApiService.userInfo();  //사용자 정보
+        model.addAttribute("userDto",userDto);
+        return "/user/map";
+    }
+
+    @ResponseBody
     @GetMapping("/foodSearch")
     public String foodSearch(@RequestParam Map<String,Object> data){
         String query = String.valueOf(data.get("searchQuery"));
@@ -36,7 +60,7 @@ public class ServerApiController {
         URI uri = UriComponentsBuilder
                 .fromUriString("https://openapi.naver.com")
                 .path("/v1/search/local.json")
-                .queryParam("query", "서울특별시 중구")
+                .queryParam("query", "제일곱창 왕십리")
                 .queryParam("display", 10)
                 .queryParam("start", 1)
                 .queryParam("sort", "random")
@@ -59,6 +83,7 @@ public class ServerApiController {
         return response.getBody();
     }
 
+    @ResponseBody
     @GetMapping("/foodSearchImage")
     public String foodSearchImage(){
         String query = "곱창";

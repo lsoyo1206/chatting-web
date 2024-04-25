@@ -24,5 +24,5 @@ public interface MainRepository {
     public UserDto findById(int userId);
 
     public UserDto findByUserName(String username);
-    public UserDto findByEmail(String username);
+    public UserDto findByEmail(String email);
 }

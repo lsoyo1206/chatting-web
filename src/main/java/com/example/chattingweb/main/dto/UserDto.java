@@ -1,12 +1,13 @@
 package com.example.chattingweb.main.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class UserDto {
 
     private int userId;
-    private String loginId;
     private String userName;
     private String password;
     private String email;

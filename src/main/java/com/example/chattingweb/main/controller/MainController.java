@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,13 +31,10 @@ public class MainController{
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-
-
     @GetMapping("/")
     public String indexPage(HttpSession session, Model model){
 
-        //username 임
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        String email = SecurityContextHolder.getContext().getAuthentication().getName(); //email
 
         //사용자의 role 값
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -46,9 +44,11 @@ public class MainController{
         String role = auth.getAuthority();
 
         System.out.println(role);
+        System.out.println("email =>"+email);
 
-        if(username != null){
-            UserDto userDto = mainService.findByEmail(username);
+
+        if(email != null){
+            UserDto userDto = mainService.findByEmail(email);
             model.addAttribute("userDto",userDto);
             session.setAttribute("userDto",userDto);
             System.out.println(userDto);
@@ -59,31 +59,25 @@ public class MainController{
     @GetMapping("/join")
     public String joinPage(){   return "/main/join";    }
 
-    @GetMapping("/my-page")
+    @GetMapping("/user/my-page")
     public String mypage(Model model, HttpSession session){
-        Integer userId = (Integer) session.getAttribute("userId");
-
-        UserDto userDto = mainService.findById(userId);
-        model.addAttribute("userDto", userDto);
-
-        return "/main/my-page";
+        UserDto sessionInfo = (UserDto) session.getAttribute("userDto");
+        model.addAttribute("userDto", sessionInfo);
+        return "/user/my-page";
     }
 
-//    @ResponseBody
     @PostMapping("/joinProc")
     public String joinProc(@RequestParam("userName") String userName,
-                           @RequestParam("loginId") String loginId,
                            @RequestParam("email") String email,
                            @RequestParam("password") String password,
                            RedirectAttributes redirectAttributes){
 
-        UserDto user = new UserDto();
-        user.setUserName(userName);
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setLoginId(loginId);
+        UserDto userDto = new UserDto();
+        userDto.setUserName(userName);
+        userDto.setEmail(email);
+        userDto.setPassword(password);
 
-        int result = mainService.join(user);
+        int result = mainService.join(userDto);
 
         if(result == 1){
             redirectAttributes.addFlashAttribute("message", "회원가입에 성공했습니다. 로그인 해주세요");
@@ -94,32 +88,23 @@ public class MainController{
     }
 
     @GetMapping("/login")
-    public String loginPage(){   return "/main/login";    }
+    public String loginPage() {     return "/main/login";       }
 
-//    @PostMapping("/loginProc")
-//    public String loginStart(@RequestParam("email") String email,
-//                             @RequestParam("password") String password,
-//                             RedirectAttributes redirectAttributes,
-//                             HttpServletRequest request){
-//
-//        if (!email.isEmpty() && !password.isEmpty()) {
-//            UserDto userDto = new UserDto();
-//            userDto.setEmail(email);
-//            userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
-//            int result = mainService.loginCheck(userDto);
-//            if(result == 1){
-//                UserDto user = mainService.login(userDto);
-//                return "redirect:/";
-//            }else{
-//                redirectAttributes.addFlashAttribute("error", "이메일 혹은 비밀번호가 틀렸습니다");
-//                return "redirect:/login";
-//            }
-//        }else{
-//            redirectAttributes.addFlashAttribute("error", "이메일 혹은 비밀번호가 모두 적어주세요");
-//            return "redirect:/login";
-//        }
-//    }
+    @GetMapping("/map.do")
+    public String map() {     return "/main/map";       }
 
+    @GetMapping("/loginResult")
+    public String loginPage(@RequestParam(name = "error", required = false) String error,
+                            Model model) {
+
+        System.out.printf("login error ===>"+error);
+
+        if("true".equals(error)){
+            model.addAttribute("error","이메일 또는 비밀번호가 틀립니다.");
+        }
+
+        return "/main/login";
+    }
 
     @GetMapping("/isLogin")
     @ResponseBody
@@ -151,4 +136,28 @@ public class MainController{
         }
         return "success";
     }
+
+    //    @PostMapping("/loginProc")
+//    public String loginStart(@RequestParam("email") String email,
+//                             @RequestParam("password") String password,
+//                             RedirectAttributes redirectAttributes,
+//                             HttpServletRequest request){
+//
+//        if (!email.isEmpty() && !password.isEmpty()) {
+//            UserDto userDto = new UserDto();
+//            userDto.setEmail(email);
+//            userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+//            int result = mainService.loginCheck(userDto);
+//            if(result == 1){
+//                UserDto user = mainService.login(userDto);
+//                return "redirect:/";
+//            }else{
+//                redirectAttributes.addFlashAttribute("error", "이메일 혹은 비밀번호가 틀렸습니다");
+//                return "redirect:/login";
+//            }
+//        }else{
+//            redirectAttributes.addFlashAttribute("error", "이메일 혹은 비밀번호가 모두 적어주세요");
+//            return "redirect:/login";
+//        }
+//    }
 }

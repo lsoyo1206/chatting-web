@@ -49,8 +49,8 @@ public class MainService {
         return mainRepository.findById(userId);
     }
 
-    public UserDto findByEmail(String username) {
-        return mainRepository.findByEmail(username);
+    public UserDto findByEmail(String email) {
+        return mainRepository.findByEmail(email);
     }
     public UserDto findByUserName(String username) {
         return mainRepository.findByUserName(username);
