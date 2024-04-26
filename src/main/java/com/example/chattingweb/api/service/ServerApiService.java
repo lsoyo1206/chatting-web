@@ -108,7 +108,7 @@ public class ServerApiService implements ServerApiServiceIf{
             if(photoUploadDtoInsertResult == 1){
                 postDtoMap.put("photoId", photeUploadMap.get("photoId")); //post 테이블의 photoUpload 업데이트
                 photoUploadDtoInsertResult = serverApiRepository.updatePhoteUploadPhoteId(postDtoMap);
-                photoUploadDtoInsertResult = insertCollectionTeacher(photeUploadMap);
+                //photoUploadDtoInsertResult = insertCollectionTeacher(photeUploadMap);
             }
         }
 

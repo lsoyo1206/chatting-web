@@ -162,7 +162,7 @@ public class ServerApiController {
 
     @ResponseBody
     @GetMapping("/insertPost")
-    public ResponseEntity<Void> insertPost (@RequestParam Map<String,Object> param){
+    public ResponseEntity<Void> insertPost (@RequestParam Map<String,Object> param) throws IOException {
         UserDto userDto = serverApiService.userInfo();  //로그인한 사용자 정보
         Map<String,Object> result = serverApiService.settingParamsAndInsert(param, userDto);
 
