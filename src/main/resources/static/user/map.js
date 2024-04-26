@@ -79,7 +79,7 @@ function settingMapOverRay(data, map, marker){
     var imgDiv = document.createElement('div');
     imgDiv.classList.add('img');
     var img = document.createElement('img');
-    img.setAttribute('src', 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png');
+    img.setAttribute('src', 'https://www.highziumstudio.com/wp-content/uploads/2022/11/03_1345-copy-1-scaled-1-486x657.jpg');
     img.setAttribute('width', '73');
     img.setAttribute('height', '70');
     imgDiv.appendChild(img);
