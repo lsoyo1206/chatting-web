@@ -56,7 +56,7 @@
         LEFT JOIN chattingWeb.place p2 ON p.post_id = p2.postId
         WHERE 1=1
         AND p.user_yn = 'Y'
-<!--        AND p.user_id = #{userId}-->
+        AND p.user_id = #{userId}
         order by p.post_id desc , p.createDt
         LIMIT #{start}, #{pageSize}
     </select>
@@ -66,6 +66,37 @@
         LEFT JOIN chattingWeb.place p2 ON p.post_id = p2.postId
         WHERE 1=1
         AND p.user_yn = 'Y'
-<!--        AND p.user_id = #{userId}-->
+        AND p.user_id = #{userId}
     </select>
+
+    <!-- INSERT 쿼리문 -->
+    <insert id="insertPhoteUpload" parameterType="Map" useGeneratedKeys="true" keyProperty="photoId">
+        INSERT INTO chattingWeb.PhotoUpload (
+                post_id
+        <if test="fileName1 != null">, fileName1</if>
+        <if test="fileName2 != null">, fileName2</if>
+        <if test="fileName3 != null">, fileName3</if>
+        <if test="fileName4 != null">, fileName4</if>
+        <if test="fileName5 != null">, fileName5</if>
+        )
+        VALUES (
+                #{postId}
+        <if test="fileName1 != null">, #{fileName1}</if>
+        <if test="fileName2 != null">, #{fileName2}</if>
+        <if test="fileName3 != null">, #{fileName3}</if>
+        <if test="fileName4 != null">, #{fileName4}</if>
+        <if test="fileName5 != null">, #{fileName5}</if>
+        )
+    </insert>
+
+    <update id="updatePhoteUploadPhoteId" parameterType="Map">
+        UPDATE chattingWeb.post
+        SET photo_id = #{photoId}
+        WHERE post_id = #{postId}
+    </update>
+    <update id="updatePhoteUpfilePath" parameterType="Map">
+        UPDATE chattingWeb.PhotoUpload
+        SET path = #{path}
+        WHERE photo_id = #{photoId}
+    </update>
 </mapper>

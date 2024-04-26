@@ -10,5 +10,5 @@ COPY target/chattingWeb.jar /app/chattingWeb.jar
 # 애플리케이션의 포트 설정 (Spring Boot의 d기본 포트는 8080입니다)
 EXPOSE 8080
 
-# 컨테이너가 시작될 때 실행할 명령어
+# 컨테이너가 시작될 때 실행할 명령어dd
 CMD ["java", "-jar", "chattingWeb.jar"]

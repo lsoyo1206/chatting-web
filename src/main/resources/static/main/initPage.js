@@ -8,7 +8,7 @@ function searchFunction() {  // 검색 기능
     console.log("검색어: " + data.searchQuery);
 
     $.ajax({
-        url:"/api/server/foodSearch",
+        url:"/api/server/initSettingMap",
         type:"get",
         contentType:"application/json",
         data: data,

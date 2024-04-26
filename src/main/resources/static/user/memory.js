@@ -1,5 +1,40 @@
-// $(document).ready(function () {
-// });
+ $(document).ready(function () {
+
+
+ });
+var files = [];
+document.getElementById('photos').addEventListener('change', function(event) {
+    files = [];
+    var input = event.target;
+    var label = input.nextElementSibling;
+    var fileContainer = document.getElementById('thumbnail-container');
+    fileContainer.innerHTML = ''; // 컨테이너 초기화
+
+    if (input.files && input.files.length > 0) {
+        for (var i = 0; i < input.files.length; i++) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var thumbnail = document.createElement('img');
+                thumbnail.classList.add('thumbnail');
+                thumbnail.setAttribute('src', e.target.result);
+                fileContainer.appendChild(thumbnail);
+            }
+            reader.readAsDataURL(input.files[i]);
+        }
+    }
+    // 파일 선택 시 선택한 파일 이름을 표시
+    if (input.files.length > 1) {
+        label.innerHTML = input.files.length + '개의 파일 선택';
+    } else {
+        label.innerHTML = input.files[0].name;
+    }
+
+    //파일 배열에 미리 넣어놓기
+    for (let i = 0; i < input.files.length; i++) {
+        files.push(input.files[i].name);
+        console.log(input.files[i].name)
+    }
+});
 
 $('#locationRegistered').click(function(){
     if($(this).is(':checked')){
@@ -12,13 +47,16 @@ $('#locationRegistered').click(function(){
 });
 
 function postInsert() {  // 검색 기능
-
-
     var isSpaceChecked = $("#locationRegistered").prop("checked");
     var placeName = "";
     var address= "";
     let spaceDto = {};
-
+    let photoUpload = {};
+    if (files.length !== 0 || files.length !== undefined) {
+        for(let i=0 ; i<files.length ; i++){
+            photoUpload['fileName' + (i + 1)] = files[i];
+        }
+    }
 
     if($("#placeName").val() !== "" && isSpaceChecked === true){
         var placeInfoArray = $("#placeName").val().split('|');
@@ -42,6 +80,7 @@ function postInsert() {  // 검색 기능
     let data ={
         "postDto" : postDto,
         "spaceDto" : spaceDto,
+        "photoUpload" : photoUpload
     }
 
     $.ajax({

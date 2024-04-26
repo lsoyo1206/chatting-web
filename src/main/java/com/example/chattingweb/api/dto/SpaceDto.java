@@ -5,7 +5,6 @@ import lombok.Data;
 @Data
 public class SpaceDto {
 
-    private int spaceId;
     private int postId;
     private String spaceName;
     private String address;

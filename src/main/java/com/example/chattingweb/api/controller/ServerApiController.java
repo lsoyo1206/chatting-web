@@ -56,19 +56,29 @@ public class ServerApiController {
 
     @GetMapping("/map.do")
     public String map(Model model, @RequestParam(defaultValue = "0", value="page") int page){
+
         UserDto userDto = serverApiService.userInfo();
         int totalPages = serverApiRepository.selectPostsByUserIdTotalPage(userDto);
-        userDto.setPage(page);
+
+        //페이징 처리
+        userDto.setCurrentPage(page);
         userDto.setPageSize(5);
+        userDto.setTotalPages(totalPages);
+//        userDto = UserDto.builder()
+//                .currentPage(page)
+//                .pageSize(5)
+//                .totalPages(totalPages)
+//                .build();
         List<Map<String,Object>> postList = serverApiService.settingPostList(userDto);
+
         model.addAttribute("postList", postList);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("userDto",userDto); //사용자 정보
-        model.addAttribute("currentPage",page);    //현재페이지
-        
-        System.out.println("현재페이지 : "+page);
-        System.out.println("총페이지 : "+totalPages);
-        
+        model.addAttribute("userDto",userDto);      //사용자 정보
+//        model.addAttribute("totalPages", totalPages);
+//        model.addAttribute("currentPage",page);    //현재페이지
+
+//        System.out.println("현재페이지 : "+page);
+//        System.out.println("총페이지 : "+totalPages);
+
 
         return "/user/map";
     }
@@ -162,5 +172,6 @@ public class ServerApiController {
 
         return ResponseEntity.ok().build();
     }
+
 
 }

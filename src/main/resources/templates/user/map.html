@@ -7,7 +7,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!--    <script defer th:src="@{/main/main.js}"></script>-->
 
-
 </head>
 <style>
     #post-column {
@@ -25,6 +24,21 @@
         left: 0;
         width: 100%;
     }
+
+    .wrap {position: absolute;left: 0;bottom: 40px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
+    .wrap * {padding: 0;margin: 0;}
+    .wrap .info {width: 286px;height: 120px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;}
+    .wrap .info:nth-child(1) {border: 0;box-shadow: 0px 1px 2px #888;}
+    .info .title {padding: 5px 0 0 10px;height: 30px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;}
+    .info .close {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
+    .info .close:hover {cursor: pointer;}
+    .info .body {position: relative;overflow: hidden;}
+    .info .desc {position: relative;margin: 13px 0 0 90px;height: 75px;}
+    .desc .ellipsis {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+    .desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
+    .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
+    .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+    .info .link {color: #5085BB;}
 </style>
 <body>
 <div th:include="/main/header"></div>
@@ -39,8 +53,16 @@
                         <div class="card-header">
 <!--                            <h6 class="post-title" th:text="${post['title']} + ${post['title']} " style="height: 10px;"></h6>-->
                             <h6 class="post-title" style="height: 10px;">
-                                <span th:if="${post['placeId']}" th:text="${post['title'] + ' (' + post['placeName'] +' | '+post['address'] + ')'}"></span>
-                                <span th:unless="${post['placeId']}" th:text="${post['title']}"></span>
+                                <!-- 장소등록 O -->
+                                <span class="title" th:if="${post['placeId']}" th:text="${post['title'] + ' (' + post['placeName'] +' | '+post['address'] + ')'}"
+                                      th:data-placeId="${post['placeId']}"
+                                      th:data-placeName="${post['placeName']}"
+                                      th:data-address="${post['address']}"
+                                      th:data-longitude="${post['longitude']}"
+                                      th:data-latitude="${post['latitude']}"
+                                      onclick="mapSearch(this)"></span>
+                                <!-- 장소등록 X-->
+                                <span th:unless="${post['placeId']}" th:text="${post['title']}" th:value="${post['placeId']}"></span>
                             </h6>
                         </div>
                         <div class="card-body" id="post-list">
@@ -51,42 +73,41 @@
             </div>
             <!-- 페이징 -->
             <ul class="pagination justify-content-center mt-3">
-                <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
+                <li th:class="${userDto.currentPage == 0} ? 'page-item disabled' : 'page-item'">
                     <a class="page-link" th:href="@{/api/server/map.do(page=0)}">&lt;&lt;</a>
                 </li>
-                <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
-                    <a class="page-link" th:href="@{/api/server/map.do(page=${currentPage - 1})}">&lt;</a>
+                <li th:class="${userDto.currentPage == 0} ? 'page-item disabled' : 'page-item'">
+                    <a class="page-link" th:href="@{/api/server/map.do(page=${userDto.currentPage - 1})}">&lt;</a>
                 </li>
 <!--                <th:block th:each="pageItem : ${#numbers.sequence(currentPage - 1, currentPage)}">-->
 <!--                    <li th:class="${currentPage == pageItem} ? 'page-item active' : 'page-item'">-->
 <!--                        <a class="page-link" th:href="@{/api/server/map.do(page=${pageItem})}" th:text="${pageItem + 1}"></a>-->
 <!--                    </li>-->
 <!--                </th:block>-->
-                <th:block th:each="pageItem : ${#numbers.sequence(0, totalPages - 1)}">
-                    <li th:class="${currentPage == pageItem} ? 'page-item active' : 'page-item'">
+                <th:block th:each="pageItem : ${#numbers.sequence(0, userDto.totalPages - 1)}" th:if="${pageItem < 5}">  <!-- 표시되는 페이지 수 제한 -->
+                    <li th:class="${userDto.currentPage == pageItem} ? 'page-item active' : 'page-item'">
                         <a class="page-link" th:href="@{/api/server/map.do(page=${pageItem})}" th:text="${pageItem + 1}"></a>
                     </li>
                 </th:block>
-                <li th:class="${currentPage + 1 == totalPages} ? 'page-item disabled' : 'page-item'">
-                    <a class="page-link" th:href="@{/api/server/map.do(page=${currentPage + 1})}">&gt;</a>
+                <li th:class="${userDto.currentPage + 1 == userDto.totalPages} ? 'page-item disabled' : 'page-item'">
+                    <a class="page-link" th:href="@{/api/server/map.do(page=${userDto.currentPage + 1})}">&gt;</a>
                 </li>
-                <li th:class="${currentPage + 1 == totalPages} ? 'page-item disabled' : 'page-item'">
-                    <a class="page-link" th:href="@{/api/server/map.do(page=${totalPages - 1})}">&gt;&gt;</a>
+                <li th:class="${userDto.currentPage + 1 == userDto.totalPages} ? 'page-item disabled' : 'page-item'">
+                    <a class="page-link" th:href="@{/api/server/map.do(page=${userDto.totalPages - 1})}">&gt;&gt;</a>
                 </li>
             </ul>
         </div>
         <!-- 오른쪽 지도 영역 -->
         <div class="col-md-9" id="map-column">
-            <div id="map">
-
-            </div> <!-- 지도를 표시할 영역 -->
+<!--            <div id="mapContainer" style="position: relative; width: 100%; height: 350px;">-->
+                <div id="map" style="position: absolute; top: 0; left: 8px; width: 100%; height: 96%;"></div>
+<!--            </div>-->
         </div>
     </div>
 </div>
 
-
-
-<!-- 부트스트랩 및 지도 API 스크립트 추가 -->
+<!-- kakao 지도 api -->
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=92ef8d9822b2fa9e38f28f32d15d230a"></script>
+<script defer th:src="@{/user/map.js}"></script>
 </body>
 </html>
