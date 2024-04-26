@@ -14,16 +14,21 @@
         position: relative;
         height: 90vh;
     }
+
+    .card{
+        position: absolute;
+        height: 9%;
+    }
     .pagination {
         position: absolute;
-        bottom: 0;
+        bottom: 10px;
         left: 0;
         width: 100%;
     }
 </style>
 <body>
 <div th:include="/main/header"></div>
-<div style="margin-bottom:29px;"></div>
+<div style="margin-bottom:23px;"></div>
 <div class="container-fluid">
     <div class="row no-gutters">
         <!-- 왼쪽 게시글 영역 -->
@@ -37,9 +42,8 @@
                                 <span th:if="${post['placeId']}" th:text="${post['title'] + ' (' + post['placeName'] +' | '+post['address'] + ')'}"></span>
                                 <span th:unless="${post['placeId']}" th:text="${post['title']}"></span>
                             </h6>
-
                         </div>
-                        <div class="card-body" id="post-list" style="height: 100px;">
+                        <div class="card-body" id="post-list">
                             <p class="post-content" th:text="${post['content']}"></p>
                         </div>
                     </div>
@@ -73,7 +77,9 @@
         </div>
         <!-- 오른쪽 지도 영역 -->
         <div class="col-md-9" id="map-column">
-            <div id="map"></div> <!-- 지도를 표시할 영역 -->
+            <div id="map">
+
+            </div> <!-- 지도를 표시할 영역 -->
         </div>
     </div>
 </div>

@@ -27,10 +27,10 @@
 
     <insert id="insertPlaceDto" parameterType="Map" useGeneratedKeys="true" keyProperty="placeId">
         INSERT INTO chattingWeb.place (postId, placeName, address
-<!--        , longitude, latitude-->
+        , longitude, latitude
         )
         VALUES (#{postId}, #{placeName}, #{address}
-<!--        , #{longitude}, #{latitude}-->
+        , #{longitude}, #{latitude}
         )
     </insert>
 
@@ -49,7 +49,9 @@
                 p.location_registered as locationRegistered,
                 p.createDt as createDt,
                 p2.placeName as placeName,
-                p2.address as address
+                p2.address as address,
+                p2.longitude as longitude,
+                p2.latitude as latitude
         FROM chattingWeb.post p
         LEFT JOIN chattingWeb.place p2 ON p.post_id = p2.postId
         WHERE 1=1

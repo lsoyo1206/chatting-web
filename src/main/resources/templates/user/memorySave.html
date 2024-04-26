@@ -5,6 +5,8 @@
     <title>join</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- 도로명 주소로 경도와 위도 가져오기 위한 api -->
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <style>
         #placesList li {list-style: none;}
         #placesList .item {position:relative;border-bottom:1px solid #888;overflow: hidden;cursor: pointer;min-height: 65px;}
@@ -22,10 +24,11 @@
 <body>
 <div th:include="/main/header"></div>
     <div class="container">
-        <p id="dd">dd</p>
         <div class="row">
             <div class="col-md-8 offset-md-2">
 <!--                <form th:action="/api/server/submitPost" method="post">-->
+                    <input type="hidden" name="latitude" id="latitude">  <!-- 위도 -->
+                    <input type="hidden" name="longitude" id="longitude">  <!-- 경도 -->
                     <div class="form-group">
                         <label for="title">제목</label>
                         <input type="text" class="form-control" id="title" name="title" required>

@@ -66,6 +66,7 @@ public class ServerApiService implements ServerApiServiceIf{
                 placeDtoMap.put(sdKey, value);
             }
         }
+
         postDtoMap.put("userId", userDto.getUserId());
 
         System.out.println("postDto ===>"+postDtoMap);

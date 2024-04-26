@@ -13,10 +13,12 @@ $('#locationRegistered').click(function(){
 
 function postInsert() {  // 검색 기능
 
+
     var isSpaceChecked = $("#locationRegistered").prop("checked");
     var placeName = "";
     var address= "";
     let spaceDto = {};
+
 
     if($("#placeName").val() !== "" && isSpaceChecked === true){
         var placeInfoArray = $("#placeName").val().split('|');
@@ -25,6 +27,8 @@ function postInsert() {  // 검색 기능
 
         spaceDto.placeName = placeName;
         spaceDto.address = address;
+        spaceDto.latitude = $("#latitude").val();    //위도
+        spaceDto.longitude = $("#longitude").val();   //경도
     }
 
     // 검색어를 가져오는 코드
@@ -37,7 +41,7 @@ function postInsert() {  // 검색 기능
 
     let data ={
         "postDto" : postDto,
-        "spaceDto" : spaceDto
+        "spaceDto" : spaceDto,
     }
 
     $.ajax({
@@ -200,7 +204,18 @@ function getListItem(index, places) {
         var address = places.address_name || '';
         var phone = places.phone || '';
 
-        $("#placeName").val(placeName+' | '+address);
+        $("#placeName").val(placeName+' | '+places.road_address_name);
+
+        const geocoder = new kakao.maps.services.Geocoder();
+        geocoder.addressSearch(address, (result, status) => {
+            if (status === kakao.maps.services.Status.OK) {
+                console.log('위도 : ' + result[0].y);
+                console.log('경도 : ' + result[0].x);
+
+                $("#latitude").val(result[0].y);
+                $("#longitude").val(result[0].x);
+            }
+        });
 
         // 가져온 정보 콘솔에 출력
         console.log('가게 이름:', placeName);
@@ -286,4 +301,21 @@ function removeAllChildNods(el) {
     while (el.hasChildNodes()) {
         el.removeChild (el.lastChild);
     }
+}
+
+// Latitude : 위도 , longitude: 경도
+function findLatitudeLongitude(address){
+    return new Promise((resolve, reject) => {
+        // 위도 및 경도 좌푯값 구하기
+        const geocoder = new kakao.maps.services.Geocoder();
+        geocoder.addressSearch(address, (result, status) => {
+            if (status === kakao.maps.services.Status.OK) {
+                console.log('위도 : ' + result[0].y);
+                console.log('경도 : ' + result[0].x);
+
+                $("#latitude").val(result[0].y);
+                $("#longitude").val(result[0].x);
+            }
+        });
+    });
 }
