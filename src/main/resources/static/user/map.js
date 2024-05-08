@@ -28,6 +28,12 @@ function initSetting(){
     })
     console.log('dataList ==>' + dataList);
 
+    if (dataList.length === 0) {
+        document.querySelector('.no_place').style.display = 'block';
+    } else {
+        document.querySelector('.no_place').style.display = 'none'; // dataList가 비어있지 않을 때 no_place 클래스를 가진 div를 숨김
+    }
+
     var container = document.getElementById('map');
     var options = {
         center: new kakao.maps.LatLng(dataList[0].latitude, dataList[0].longitude),
@@ -122,12 +128,42 @@ function settingMapOverRay(data, map, marker){
     })
 }
 
-function mapSearch(){
-    var placeId = element.getAttribute("data-placeId");
-    var longitude = element.getAttribute("data-longitude");
-    var latitude = element.getAttribute("data-latitude");
+function mapSearch(placeId){
 
-    console.log(placeId)
-    console.log(longitude)
-    console.log(latitude)
+    let data = {
+        "placeId" : placeId
+    }
+    $.ajax({
+        url:"/api/server/selectPlaceInfo.do",
+        type:"get",
+        contentType:"application/json",
+        data: data,
+        success:function(response){
+            var html = "";
+            console.log("response ===> "+response)
+
+            // for(let i=0 ; i<response.items.length ; i++){
+            //     html += "<div>" + item[i].title + "</div>";
+            //     html += "<div>" + item[i].address + "</div>";
+            // }
+
+            // 결과를 화면에 출력
+            // $("#resultContainer").html(html);
+        }
+    })
+    // 클릭된 요소에서 데이터 가져오기
+    // let data = {
+    //     placeId   : placeId,
+    //     longitude : longitude,
+    //     latitude  : latitude,
+    //     latlng    : new kakao.maps.LatLng(latitude, longitude)
+    // };
+
+    // 이동할 위도 경도 위치를 생성합니다
+    // var moveLatLon = new kakao.maps.LatLng(latitude, longitude);
+
+    // 지도 중심을 부드럽게 이동시킵니다
+    // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
+    // map.panTo(moveLatLon);
+
 }

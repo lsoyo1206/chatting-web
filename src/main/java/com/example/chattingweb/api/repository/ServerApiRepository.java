@@ -21,5 +21,6 @@ public interface ServerApiRepository {
     public int updatePhoteUploadPhoteId(Map<String,Object> postDtoMap);
     //파일pah 업데이트
     public int updatePhoteUpfilePath(Map<String,Object> postDtoMap);
+    public Map<String,Object> selectPlaceInfo(int placeId);
 
 }

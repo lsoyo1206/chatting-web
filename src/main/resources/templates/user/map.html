@@ -24,6 +24,9 @@
         left: 0;
         width: 100%;
     }
+    .title{
+        color: white;
+    }
 
     .wrap {position: absolute;left: 0;bottom: 40px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
     .wrap * {padding: 0;margin: 0;}
@@ -49,61 +52,93 @@
         <div class="col-md-3" id="post-column">
             <div class="포스트">
                 <div th:each="post : ${postList}" class="post">
-                    <div class="card" style="margin-bottom:10px;">
-                        <div class="card-header">
-<!--                            <h6 class="post-title" th:text="${post['title']} + ${post['title']} " style="height: 10px;"></h6>-->
-                            <h6 class="post-title" style="height: 10px;">
-                                <!-- 장소등록 O -->
-                                <span class="title" th:if="${post['placeId']}" th:text="${post['title'] + ' (' + post['placeName'] +' | '+post['address'] + ')'}"
-                                      th:data-placeId="${post['placeId']}"
-                                      th:data-placeName="${post['placeName']}"
-                                      th:data-address="${post['address']}"
-                                      th:data-longitude="${post['longitude']}"
-                                      th:data-latitude="${post['latitude']}"
-                                      onclick="mapSearch(this)"></span>
-                                <!-- 장소등록 X-->
-                                <span th:unless="${post['placeId']}" th:text="${post['title']}" th:value="${post['placeId']}"></span>
-                            </h6>
+                    <div class="card border-primary mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="card-title mb-0">
+                            <a class="title" th:if="${post['placeId']}" th:text="${post['title']}"
+                               th:data-postId="${post['postId']}"
+                              th:data-placeId="${post['placeId']}"
+                              th:data-placeName="${post['placeName']}"
+                              th:data-address="${post['address']}"
+                              th:data-longitude="${post['longitude']}"
+                              th:data-latitude="${post['latitude']}"></a>
+                                <a class="title" th:unless="${post['placeId']}" th:text="${post['title']}" ></a>
+                            </h5>
                         </div>
-                        <div class="card-body" id="post-list">
-                            <p class="post-content" th:text="${post['content']}"></p>
+                        <div class="card-body">
+                            <div th:if="${post['placeId']}" class="address-wrapper">
+                                <p class="card-address text-muted">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span th:text="${post['address']}" th:onclick="|mapSearch(${post['placeId']})|" ></span>
+                                </p>
+                            </div>
+                            <div class="content-wrapper">
+                                <p class="card-text"><i class="fas fa-info-circle"></i> <span th:text="${post['content']}"></span></p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- 페이징 -->
-            <ul class="pagination justify-content-center mt-3">
-                <li th:class="${userDto.currentPage == 0} ? 'page-item disabled' : 'page-item'">
-                    <a class="page-link" th:href="@{/api/server/map.do(page=0)}">&lt;&lt;</a>
-                </li>
-                <li th:class="${userDto.currentPage == 0} ? 'page-item disabled' : 'page-item'">
-                    <a class="page-link" th:href="@{/api/server/map.do(page=${userDto.currentPage - 1})}">&lt;</a>
-                </li>
-<!--                <th:block th:each="pageItem : ${#numbers.sequence(currentPage - 1, currentPage)}">-->
-<!--                    <li th:class="${currentPage == pageItem} ? 'page-item active' : 'page-item'">-->
+<!--            &lt;!&ndash; 페이징 &ndash;&gt;-->
+<!--            <ul class="pagination justify-content-center mt-3">-->
+<!--                <li th:class="${userDto.currentPage == 0} ? 'page-item disabled' : 'page-item'">-->
+<!--                    <a class="page-link" th:href="@{/api/server/map.do(page=0)}">&lt;&lt;</a>-->
+<!--                </li>-->
+<!--                <li th:class="${userDto.currentPage == 0} ? 'page-item disabled' : 'page-item'">-->
+<!--                    <a class="page-link" th:href="@{/api/server/map.do(page=${userDto.currentPage - 1})}">&lt;</a>-->
+<!--                </li>-->
+<!--                <th:block th:each="pageItem : ${#numbers.sequence(userDto, userDto.totalPages - 1)}" th:if="${pageItem < 5}">  &lt;!&ndash; 표시되는 페이지 수 제한 &ndash;&gt;-->
+<!--                    <li th:class="${userDto.currentPage == pageItem} ? 'page-item active' : 'page-item'">-->
 <!--                        <a class="page-link" th:href="@{/api/server/map.do(page=${pageItem})}" th:text="${pageItem + 1}"></a>-->
 <!--                    </li>-->
 <!--                </th:block>-->
-                <th:block th:each="pageItem : ${#numbers.sequence(0, userDto.totalPages - 1)}" th:if="${pageItem < 5}">  <!-- 표시되는 페이지 수 제한 -->
+<!--                <li th:class="${userDto.currentPage + 1 == userDto.totalPages} ? 'page-item disabled' : 'page-item'">-->
+<!--                    <a class="page-link" th:href="@{/api/server/map.do(page=${userDto.currentPage + 1})}">&gt;</a>-->
+<!--                </li>-->
+<!--                <li th:class="${userDto.currentPage + 1 == userDto.totalPages} ? 'page-item disabled' : 'page-item'">-->
+<!--                    <a class="page-link" th:href="@{/api/server/map.do(page=${userDto.totalPages - 1})}">&gt;&gt;</a>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--        </div>-->
+            <!-- 페이징 -->
+            <ul class="pagination justify-content-center mt-3">
+                <li th:class="${userDto.currentPage == 0 or postList.isEmpty()} ? 'page-item disabled' : 'page-item'">
+                    <a class="page-link" th:href="@{/api/server/map.do(page=0)}">&lt;&lt;</a>
+                </li>
+                <li th:class="${userDto.currentPage == 0 or postList.isEmpty()} ? 'page-item disabled' : 'page-item'">
+                    <a class="page-link" th:href="@{/api/server/map.do(page=${userDto.currentPage - 1})}">&lt;</a>
+                </li>
+                <th:block th:each="pageItem : ${#numbers.sequence(userDto.currentPage - 2, userDto.currentPage + 2)}" th:if="${pageItem >= 0 and pageItem < userDto.totalPages}">  <!-- 현재 페이지 기준으로 앞뒤로 2페이지씩만 표시 -->
                     <li th:class="${userDto.currentPage == pageItem} ? 'page-item active' : 'page-item'">
                         <a class="page-link" th:href="@{/api/server/map.do(page=${pageItem})}" th:text="${pageItem + 1}"></a>
                     </li>
                 </th:block>
-                <li th:class="${userDto.currentPage + 1 == userDto.totalPages} ? 'page-item disabled' : 'page-item'">
+                <li th:class="${userDto.currentPage + 1 == userDto.totalPages or postList.isEmpty()} ? 'page-item disabled' : 'page-item'">
                     <a class="page-link" th:href="@{/api/server/map.do(page=${userDto.currentPage + 1})}">&gt;</a>
                 </li>
-                <li th:class="${userDto.currentPage + 1 == userDto.totalPages} ? 'page-item disabled' : 'page-item'">
+                <li th:class="${userDto.currentPage + 1 == userDto.totalPages or postList.isEmpty()} ? 'page-item disabled' : 'page-item'">
                     <a class="page-link" th:href="@{/api/server/map.do(page=${userDto.totalPages - 1})}">&gt;&gt;</a>
                 </li>
             </ul>
         </div>
+
         <!-- 오른쪽 지도 영역 -->
         <div class="col-md-9" id="map-column">
-<!--            <div id="mapContainer" style="position: relative; width: 100%; height: 350px;">-->
+            <div class="yes_place">
                 <div id="map" style="position: absolute; top: 0; left: 8px; width: 100%; height: 96%;"></div>
-<!--            </div>-->
+            </div>
+            <div class="no_place text-center py-5" style="display: none;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6 offset-md-3">
+<!--                            <img src="https://source.unsplash.com/200x200/?travel" class="img-fluid mb-4 rounded-circle" alt="No places" style="width: 200px;">-->
+                            <h4 class="text-muted mb-3">지도에 표시할 장소가 없습니다.</h4>
+                            <p class="text-muted">새로운 장소를 추가해보세요!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
 </div>
 
 <!-- kakao 지도 api -->

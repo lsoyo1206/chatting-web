@@ -99,4 +99,11 @@
         SET path = #{path}
         WHERE photo_id = #{photoId}
     </update>
+
+    <select id="selectPlaceInfo" resultType="int" parameterType="Map">
+        select *
+        from chattingWeb.place p
+        where 1=1
+          and   p.place_id =#{placeId}
+    </select>
 </mapper>

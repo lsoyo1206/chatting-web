@@ -54,6 +54,15 @@ public class ServerApiController {
         return "/user/memorySave";
     }
 
+    @ResponseBody
+    @GetMapping("/selectPlaceInfo.do")
+    public Map<String,Object> selectPlaceInfo(@RequestParam Map<String,Object> data){
+        int placeId = (int) data.get("placeId");
+        Map<String,Object> result = serverApiRepository.selectPlaceInfo(placeId);  //사용자 정보
+        System.out.printf("result ===>"+result);
+        return result;
+    }
+
     @GetMapping("/map.do")
     public String map(Model model, @RequestParam(defaultValue = "0", value="page") int page){
 
@@ -64,11 +73,6 @@ public class ServerApiController {
         userDto.setCurrentPage(page);
         userDto.setPageSize(5);
         userDto.setTotalPages(totalPages);
-//        userDto = UserDto.builder()
-//                .currentPage(page)
-//                .pageSize(5)
-//                .totalPages(totalPages)
-//                .build();
         List<Map<String,Object>> postList = serverApiService.settingPostList(userDto);
 
         model.addAttribute("postList", postList);

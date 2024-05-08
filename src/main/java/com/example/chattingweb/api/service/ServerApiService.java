@@ -128,13 +128,13 @@ public class ServerApiService implements ServerApiServiceIf{
             // windows
             String fullPath = "C:" + File.separator + "nas" + File.separator + month + File.separator + uuid + File.separator + photeUploadMap.get("fileName"+(i+1));
             // linux
-    //        String fullPath = "/usr/local/nas/file_manage" + File.separator +month+ File.separator +uuid+ File.separator +file.getOriginalFilename();
+            //        String fullPath = "/usr/local/nas/file_manage" + File.separator +month+ File.separator +uuid+ File.separator +file.getOriginalFilename();
 
             // windows
             String filePath1 = "C:" + File.separator + "nas" + File.separator + month + File.separator + uuid;
             photeUploadMap.put("path",filePath1);
             // linux
-    //        String filePath = "/usr/local/nas/file_manage" + File.separator +month+ File.separator +uuid;
+            //        String filePath = "/usr/local/nas/file_manage" + File.separator +month+ File.separator +uuid;
             try {
                 //파일 업로드
                 file.transferTo(new File(fullPath));
@@ -158,7 +158,7 @@ public class ServerApiService implements ServerApiServiceIf{
         //1.디렉토리 생성 ex. 2023-11
 
         // windows
-		String nasPath = "C:" + File.separator + "nas" + File.separator;
+        String nasPath = "C:" + File.separator + "nas" + File.separator;
 
         // linux
 //        String nasPath = "/usr/local/nas/file_manage" + File.separator;
@@ -172,7 +172,7 @@ public class ServerApiService implements ServerApiServiceIf{
         String uuid = UUID.randomUUID().toString();
 
         // windows
-		String filePath = "C:" + File.separator + "nas" + File.separator + nowTime1 + File.separator + uuid;
+        String filePath = "C:" + File.separator + "nas" + File.separator + nowTime1 + File.separator + uuid;
 
         // linux
 //        String filePath = "/usr/local/nas/file_manage" + File.separator + nowTime1 + File.separator + uuid;
