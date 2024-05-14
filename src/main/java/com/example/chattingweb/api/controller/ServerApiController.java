@@ -51,7 +51,7 @@ public class ServerApiController {
         UserDto userDto = serverApiService.userInfo();  //사용자 정보
         System.out.printf("/memorySave.do userInfo ===>"+userDto.toString());
         model.addAttribute("userDto",userDto);
-        return "/user/memorySave";
+        return "user/memorySave";
     }
 
     @ResponseBody
@@ -84,7 +84,7 @@ public class ServerApiController {
 //        System.out.println("총페이지 : "+totalPages);
 
 
-        return "/user/map";
+        return "user/map";
     }
 
     @ResponseBody

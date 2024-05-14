@@ -1,6 +1,7 @@
 package com.example.chattingweb.main.controller;
 
 
+import com.example.chattingweb.api.service.ServerApiService;
 import com.example.chattingweb.main.dto.CustomUserDetails;
 import com.example.chattingweb.main.dto.UserDto;
 import com.example.chattingweb.main.service.impl.MainService;
@@ -29,6 +30,9 @@ public class MainController{
     private MainService mainService;
 
     @Autowired
+    private ServerApiService serverApiService;
+
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @GetMapping("/")
@@ -53,17 +57,17 @@ public class MainController{
             session.setAttribute("userDto",userDto);
             System.out.println(userDto);
         }
-        return "/main/main";
+        return "main/main";
     }
 
     @GetMapping("/join")
-    public String joinPage(){   return "/main/join";    }
+    public String joinPage(){   return "main/join";    }
 
     @GetMapping("/user/my-page")
-    public String mypage(Model model, HttpSession session){
-        UserDto sessionInfo = (UserDto) session.getAttribute("userDto");
-        model.addAttribute("userDto", sessionInfo);
-        return "/user/my-page";
+    public String mypage(Model model){
+        UserDto userDto = serverApiService.userInfo();
+        model.addAttribute("userDto", userDto);
+        return "user/my-page";
     }
 
     @PostMapping("/joinProc")
@@ -88,10 +92,10 @@ public class MainController{
     }
 
     @GetMapping("/login")
-    public String loginPage() {     return "/main/login";       }
+    public String loginPage() {     return "main/login";       }
 
     @GetMapping("/map.do")
-    public String map() {     return "/main/map";       }
+    public String map() {     return "main/map";       }
 
     @GetMapping("/loginResult")
     public String loginPage(@RequestParam(name = "error", required = false) String error,
@@ -103,7 +107,7 @@ public class MainController{
             model.addAttribute("error","이메일 또는 비밀번호가 틀립니다.");
         }
 
-        return "/main/login";
+        return "main/login";
     }
 
     @GetMapping("/isLogin")
