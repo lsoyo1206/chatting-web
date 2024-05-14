@@ -217,5 +217,11 @@ function mapSearch(placeId){
 
 $(".title").click(function() {
     var postId = $(this).attr("data-postId");
+    var title = $(this).attr("data-title");
+    var content = $(this).attr("data-content");
     console.log("Clicked post ID: " + postId);
+
+    $("#myModalLabel").text(title);
+    $(".modal-body").text(content);
+    $("#myModal").modal("show");
 });

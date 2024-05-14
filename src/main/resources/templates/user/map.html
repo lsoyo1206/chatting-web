@@ -11,20 +11,45 @@
 </script>
 
 <style>
+    /* 모달 스타일 */
+    .modal-content {
+        border-radius: 16px;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 모달 헤더 스타일 */
+    .modal-header {
+        border: none;
+    }
+
+    .modal-title {
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    /* 모달 바디 스타일 */
+    .modal-body {
+        padding: 20px;
+    }
+
+    /* 모달 푸터 스타일 */
+    .modal-footer {
+        border: none;
+    }
+
+    /* 모달 닫기 버튼 스타일 */
+    .close {
+        font-size: 24px;
+        opacity: 0.7;
+    }
+
+    .close:hover {
+        opacity: 1;
+    }
+
     #post-column {
         position: relative;
         /*height: 90vh;*/
-    }
-
-    .card{
-        /*position: absolute;*/
-        /*height: 9%;*/
-    }
-    .pagination {
-        /*position: absolute;*/
-        /*bottom: 10px;*/
-        /*left: 0;*/
-        /*width: 100%;*/
     }
     .title{
         color: white;
@@ -51,6 +76,8 @@
     .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
     .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
     .info .link {color: #5085BB;}
+
+
 </style>
 <body>
 <div th:include="main/header"></div>
@@ -70,10 +97,15 @@
                               th:data-placeName="${post['placeName']}"
                               th:data-address="${post['address']}"
                               th:data-longitude="${post['longitude']}"
-                              th:data-latitude="${post['latitude']}" ></a>
+                              th:data-latitude="${post['latitude']}"
+                               th:data-title="${post['title']}"
+                               th:data-content="${post['content']}"></a>
 
                                 <a class="title" th:unless="${post['placeId']}"
-                                   th:data-postId="${post['postId']}" th:text="${post['title']}"></a>
+                                   th:data-postId="${post['postId']}"
+                                   th:data-title="${post['title']}"
+                                   th:data-content="${post['content']}"
+                                   th:text="${post['title']}"></a>
                             </h5>
                         </div>
                         <div class="card-body">
@@ -90,28 +122,28 @@
                     </div>
                 </div>
             </div>
-<!--            &lt;!&ndash; 페이징 &ndash;&gt;-->
-<!--            <ul class="pagination justify-content-center mt-3">-->
-<!--                <li th:class="${userDto.currentPage == 0} ? 'page-item disabled' : 'page-item'">-->
-<!--                    <a class="page-link" th:href="@{/api/server/map.do(page=0)}">&lt;&lt;</a>-->
-<!--                </li>-->
-<!--                <li th:class="${userDto.currentPage == 0} ? 'page-item disabled' : 'page-item'">-->
-<!--                    <a class="page-link" th:href="@{/api/server/map.do(page=${userDto.currentPage - 1})}">&lt;</a>-->
-<!--                </li>-->
-<!--                <th:block th:each="pageItem : ${#numbers.sequence(userDto, userDto.totalPages - 1)}" th:if="${pageItem < 5}">  &lt;!&ndash; 표시되는 페이지 수 제한 &ndash;&gt;-->
-<!--                    <li th:class="${userDto.currentPage == pageItem} ? 'page-item active' : 'page-item'">-->
-<!--                        <a class="page-link" th:href="@{/api/server/map.do(page=${pageItem})}" th:text="${pageItem + 1}"></a>-->
-<!--                    </li>-->
-<!--                </th:block>-->
-<!--                <li th:class="${userDto.currentPage + 1 == userDto.totalPages} ? 'page-item disabled' : 'page-item'">-->
-<!--                    <a class="page-link" th:href="@{/api/server/map.do(page=${userDto.currentPage + 1})}">&gt;</a>-->
-<!--                </li>-->
-<!--                <li th:class="${userDto.currentPage + 1 == userDto.totalPages} ? 'page-item disabled' : 'page-item'">-->
-<!--                    <a class="page-link" th:href="@{/api/server/map.do(page=${userDto.totalPages - 1})}">&gt;&gt;</a>-->
-<!--                </li>-->
-<!--            </ul>-->
-<!--        </div>-->
-            <!-- 페이징 -->
+
+            <!-- 모달 창 -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="myModalLabel"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">글 수정하기</button>
+                            <button type="button" class="btn btn-secondary">닫기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <ul class="pagination justify-content-center mt-3">
                 <li th:class="${userDto.currentPage == 0 or postList.isEmpty()} ? 'page-item disabled' : 'page-item'">
                     <a class="page-link" th:href="@{/api/server/map.do(page=0)}">&lt;&lt;</a>
