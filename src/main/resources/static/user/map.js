@@ -3,6 +3,48 @@ $(document).ready(function () {
 });
 let imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";  //커서 이미지 주소
 
+window.onload = function() {
+    var postElement = document.querySelector('.포스트');
+    var paginationElement = document.querySelector('.pagination');
+    var mapColumnElement = document.querySelector('#map-column');
+
+    window.addEventListener('scroll', function() {
+        adjustPaginationPosition();
+    });
+
+    adjustPaginationPosition();
+
+    function adjustPaginationPosition() {
+        var viewportHeight = window.innerHeight;
+        var postHeight = postElement.clientHeight;
+        var mapColumnHeight = mapColumnElement.clientHeight; // 지도 엘리먼트의 높이
+        var paginationHeight = paginationElement.clientHeight;
+        var scrollHeight = postHeight - viewportHeight;
+
+        if (scrollHeight > 0) {
+            var postBottom = postElement.offsetTop + postHeight;
+            var newPaginationTop = Math.min(viewportHeight - paginationHeight, postBottom);
+
+            paginationElement.style.position = 'absolute';
+            // newPaginationTop = newPaginationTop + 60
+            paginationElement.style.top = newPaginationTop + 'px';
+            paginationElement.style.bottom = 'auto';
+            // 지도 엘리먼트의 높이를 지정하여 고정되도록 함
+            mapColumnElement.style.height = (viewportHeight - paginationHeight) + 'px';
+
+
+        } else {
+            paginationElement.style.position = 'fixed';
+            paginationElement.style.top = 'auto';
+            paginationElement.style.bottom = '0';
+            paginationElement.style.left = 'auto';
+            // 스크롤이 없을 때는 지도 엘리먼트가 전체 화면을 차지하도록 높이를 조절
+            mapColumnElement.style.height = '100vh';
+
+        }
+    }
+};
+
 function initSetting(){
     let dataList = [];
     let title = document.querySelectorAll('.title');
@@ -35,10 +77,16 @@ function initSetting(){
     }
 
     var container = document.getElementById('map');
+    var paginationElement = document.querySelector('.pagination');
+    var viewportHeight = window.innerHeight;
+    var paginationHeight = paginationElement.clientHeight;
+    container.style.height = (viewportHeight - paginationHeight) + 'px';
+
     var options = {
         center: new kakao.maps.LatLng(dataList[0].latitude, dataList[0].longitude),
         level: 3
     };
+
     //지도 열기
     var map = new kakao.maps.Map(container, options);
 
@@ -165,5 +213,9 @@ function mapSearch(placeId){
     // 지도 중심을 부드럽게 이동시킵니다
     // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
     // map.panTo(moveLatLon);
-
 }
+
+$(".title").click(function() {
+    var postId = $(this).attr("data-postId");
+    console.log("Clicked post ID: " + postId);
+});

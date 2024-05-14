@@ -98,13 +98,14 @@ public class MainController{
     public String map() {     return "main/map";       }
 
     @GetMapping("/loginResult")
-    public String loginPage(@RequestParam(name = "error", required = false) String error,
+    public String loginResult(@RequestParam(name = "error", required = false) String error,
                             Model model) {
 
         System.out.printf("login error ===>"+error);
 
         if("true".equals(error)){
-            model.addAttribute("error","이메일 또는 비밀번호가 틀립니다.");
+            String errorMessage = "이메일 또는 비밀번호가 올바르지 않습니다.";
+            model.addAttribute("error", errorMessage);
         }
 
         return "main/login";
@@ -131,15 +132,15 @@ public class MainController{
         return response;
     }
 
-    @PostMapping("/logout")
-    @ResponseBody
-    public String logout(HttpServletRequest request){
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate(); // 세션 무효화
-        }
-        return "success";
-    }
+//    @PostMapping("/logout")
+//    @ResponseBody
+//    public String logout(HttpServletRequest request){
+//        HttpSession session = request.getSession(false);
+//        if (session != null) {
+//            session.invalidate(); // 세션 무효화
+//        }
+//        return "success";
+//    }
 
     //    @PostMapping("/loginProc")
 //    public String loginStart(@RequestParam("email") String email,
