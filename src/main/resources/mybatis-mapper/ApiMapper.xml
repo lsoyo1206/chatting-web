@@ -9,7 +9,7 @@
                 title,
                 content,
                 user_id
-                <if test="locationRegistered == true">
+                <if test="locationRegistered == 'true'">
                 , location_registered
                 </if>
         )
@@ -17,8 +17,8 @@
                 #{title}  ,
                 #{content},
                 #{userId}
-                <if test="locationRegistered == true">
-                , #{locationRegistered}
+                <if test="locationRegistered == 'true'">
+                , 'Y'
                 </if>
                 )
     </insert>
@@ -27,7 +27,7 @@
         INSERT INTO chattingWeb.TB_LOCATION (post_id, location_name, location_address
         , longitude, latitude
         )
-        VALUES (#{postId}, #{placeName}, #{address}
+        VALUES (#{postId}, #{locationName}, #{locationAddress}
         , #{longitude}, #{latitude}
         )
     </insert>

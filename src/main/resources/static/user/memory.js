@@ -32,8 +32,9 @@ document.getElementById('photos').addEventListener('change', function(event) {
 
     //파일 배열에 미리 넣어놓기
     for (let i = 0; i < input.files.length; i++) {
-        files.push(input.files[i].name);
+        files.push(input.files[i]);
         console.log(input.files[i].name)
+        console.log(input.files[i])
     }
 });
 
@@ -97,12 +98,7 @@ function fn_submit(){
         formData.append('locationRegistered', false);
     }
 
-//  이미지는 장소, post 저장 후 저장해줌
-//    if (files.length !== 0 || files.length !== undefined) {
-//        for(let i=0 ; i<files.length ; i++){
-//            photoUpload['fileName' + (i + 1)] = files[i];
-//        }
-//    }
+    console.log(formData.locationRegistered)
 
     $.ajax({
         url : "/api/server/insertPost.do",
@@ -113,9 +109,10 @@ function fn_submit(){
         cache: false,
         data : formData,
         success : function(responseData) {
-            var data = responseData;
-            if(data.code == 'R000'){
-                location.reload();
+            console.log(responseData.code)
+            if(responseData.code == 'R000'){
+                let postId = responseData.postId;
+                sendPhotoAndInsert(postId);
             }else{
                 alert("저장에 실패했습니다 네트워크를 확인해주세요");
             }
@@ -123,6 +120,28 @@ function fn_submit(){
         error : function(request, status, error) {
         }
     });
+}
+
+
+function sendPhotoAndInsert(postId){
+    var formData = new FormData();
+
+    formData.append('postId', postId)
+    //이미지는 장소, post 저장 후 저장해줌
+    if (files.length !== 0 || files.length !== undefined) {
+        for(let i=0 ; i<files.length ; i++){
+            //photos['fileName' + (i + 1)] = files[i];
+            //photos.push(files[i]);
+            formData.append('file'+(i+1), files[i])
+        }
+    }
+
+    console.log(formData)
+    console.log(formData.file1)
+
+
+
+
 }
 /* function postInsert() {
     var isSpaceChecked = $("#locationRegistered").prop("checked");

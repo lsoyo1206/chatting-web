@@ -172,14 +172,18 @@ public class ServerApiController {
         Map<String,Object> insertResult = serverApiService.insertPostDto(postDto, userDto);
 
         Integer postResult = (Integer) insertResult.get("postDtoInsertResult");
-        Integer locationResult = (Integer) insertResult.get("LocationInsertResult");
+        Integer locationResult = (Integer) insertResult.get("LocationInsertResult") != null ? (Integer) insertResult.get("LocationInsertResult") : 0;
 
-        if(postResult == 1 && locationResult == 1){
+        if(postResult == 1 || locationResult == 1){
             msg = "SUCCESS";
             code = "R000";
         }else{
             msg ="FAIL";
         }
+
+        result.put("msg", msg);
+        result.put("code", code);
+        result.put("postId", Integer.parseInt(String.valueOf(insertResult.get("postId"))));
 
        return result;
     }

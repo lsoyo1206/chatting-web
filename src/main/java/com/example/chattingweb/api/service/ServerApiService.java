@@ -84,13 +84,14 @@ public class ServerApiService implements ServerApiServiceIf{
         insertResult.put("postDtoInsertResult", postDtoInsertResult);
         insertResult.put("postId", postDto.getPostId());
 
-        if(postDtoInsertResult == 1 && !postDto.getLocationName().equals("")) {
+        if(postDtoInsertResult == 1 &&
+                postDto.getLocationName() != null && !postDto.getLocationName().equals("")) {
             LocationMap.put("postId", postDto.getPostId());
             int LocationInsertResult = serverApiRepository.insertLocation(LocationMap);
             insertResult.put("LocationInsertResult", LocationInsertResult);
 
             if (LocationInsertResult == 1) {
-                postDto.setLocationId((Integer) LocationMap.get("locationId")); //post 테이블의 locationId 업데이트
+                postDto.setLocationId(Integer.parseInt(String.valueOf(LocationMap.get("locationId"))));                 //post 테이블의 locationId 업데이트
                 LocationInsertResult = serverApiRepository.updatePostLocationId(postDto);
                 insertResult.put("LocationInsertResult", LocationInsertResult);
             }
