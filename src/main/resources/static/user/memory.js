@@ -2,6 +2,7 @@
 
 
  });
+
 var files = [];
 document.getElementById('photos').addEventListener('change', function(event) {
     files = [];
@@ -46,7 +47,85 @@ $('#locationRegistered').click(function(){
     }
 });
 
-function postInsert() {  // 검색 기능
+function fn_check(){
+    let alertMsg = "";
+
+    var title = $("#title").val();
+    var content = $("#content").val();
+    var placeName = $("#placeName").val();
+    var isSpaceChecked = $("#locationRegistered").prop("checked");
+//    var photoSize = $('#photos').get(0).files.length;
+
+    if (title.trim() === "") {
+        alertMsg = "제목을 입력하세요";
+    }
+    if(content.trim() === ""){
+        alertMsg = "내용을 입력하세요";
+    }
+    if(isSpaceChecked === true && placeName.trim() === ""){
+        alertMsg = "위치등록여부를 선택한 경우 장소를 선택해주세요";
+    }
+
+    if(alertMsg != ""){
+        alert(alertMsg);
+        return false;
+    }
+
+    fn_submit();
+}
+
+function fn_submit(){
+    let locationDto = {};
+    let photoDto = {};
+
+    var formData = new FormData();
+    formData.append('title', $("#title").val());
+    formData.append('content', $("#content").val());
+
+//  이미지는 장소, post 저장 후 저장해줌
+//    if (files.length !== 0 || files.length !== undefined) {
+//        for(let i=0 ; i<files.length ; i++){
+//            photoUpload['fileName' + (i + 1)] = files[i];
+//        }
+//    }
+
+    if($("#locationRegistered").prop("checked") === true){
+        var placeInfoArray = $("#placeName").val().split('|');
+        locationName = placeInfoArray[0].trim(); // 가게 이름
+        locationAddress = placeInfoArray[1].trim(); // 주소
+
+        formData.append('locationRegistered', true);
+        formData.append('locationName', locationName);
+        formData.append('locationAddress', locationAddress);
+        formData.append('latitude', $("#latitude").val());
+        formData.append('longitude', $("#longitude").val());
+    }else{
+        formData.append('locationRegistered', false);
+    }
+
+    $.ajax({
+        url : "/api/server/insertPost.do",
+        type : "post",
+        enctype : "multipart/form-data",
+        processData: false,
+        contentType: false,
+        cache: false,
+        data : formData,
+        success : function(responseData) {
+            var data = responseData;
+
+            if(data.code == 'R000'){
+                alert('제출을 성공적으로 완료하였습니다');
+                location.reload();
+            }else{
+                alert(responseData.msg);
+            }
+        },
+        error : function(request, status, error) {
+        }
+    });
+}
+/* function postInsert() {
     var isSpaceChecked = $("#locationRegistered").prop("checked");
     var placeName = "";
     var address= "";
@@ -69,18 +148,16 @@ function postInsert() {  // 검색 기능
         spaceDto.longitude = $("#longitude").val();   //경도
     }
 
-    // 검색어를 가져오는 코드
     let postDto = {
         "title" : $("#title").val(),
         "content" : $("#content").val(),
-        "visitedFriends" : $("#visitedFriends").val(),
         "locationRegistered" : isSpaceChecked
     }
 
     let data ={
-        "postDto" : postDto,
-        "spaceDto" : spaceDto,
-        "photoUpload" : photoUpload
+        "postDto" : postDto,            // 글의 기본정보
+        "spaceDto" : spaceDto,          // 장소 정보
+        "photoUpload" : photoUpload     // 사진 정보
     }
 
     $.ajax({
@@ -96,7 +173,7 @@ function postInsert() {  // 검색 기능
             alert('추억 저장에 실패했습니다 ㅜ.ㅜ 다시 시도해주세요!')
         }
     })
-}
+} */
 
 
 

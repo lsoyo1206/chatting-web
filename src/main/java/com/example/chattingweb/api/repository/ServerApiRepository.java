@@ -1,5 +1,6 @@
 package com.example.chattingweb.api.repository;
 
+import com.example.chattingweb.api.dto.PostDto;
 import com.example.chattingweb.main.dto.UserDto;
 import org.apache.catalina.User;
 import org.apache.ibatis.annotations.Mapper;
@@ -12,9 +13,9 @@ import java.util.Map;
 @Repository
 public interface ServerApiRepository {
 
-    public int insertPostDto(Map<String,Object> postDtoMap);
+    public int insertPostDto(PostDto postDto);
     public int insertPlaceDto(Map<String,Object> spaceDtoMap);
-    public int updatePostPlaceId(Map<String,Object> postDtoMap);
+    public int updatePostPlaceId(PostDto postDto);
     public List<Map<String, Object>> selectPostsByUserId(UserDto userDto);
     public int selectPostsByUserIdTotalPage(UserDto userDto);
     public int insertPhoteUpload(Map<String,Object> photeUploadMap);

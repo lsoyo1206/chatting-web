@@ -8,20 +8,14 @@
         INSERT INTO chattingWeb.post (
                 title,
                 content,
-                user_id
-                <if test="visitedFriends != null and visitedFriends != '' ">
-                    , visited_friends
-                </if>
-                    , location_registered
+                user_id,
+                location_registered
         )
         VALUES (
-                #{title},
+                #{title}  ,
                 #{content},
-                #{userId}
-                <if test="visitedFriends != null and visitedFriends != '' ">
-                    , #{visitedFriends}
-                </if>
-                    , #{locationRegistered}
+                #{userId} ,
+                #{locationRegistered}
                 )
     </insert>
 

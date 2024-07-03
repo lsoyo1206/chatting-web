@@ -71,10 +71,6 @@
                                     <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label for="visitedFriends">방문한 친구</label>
-                                    <input type="text" class="form-control" id="visitedFriends" name="visitedFriends">
-                                </div>
-                                <div class="form-group">
                                     <label for="photos">사진 업로드 (최대 5장)</label>
                                     <div class="custom-file mb-3">
                                         <input type="file" class="custom-file-input" id="photos" name="photos[]" accept="image/*" multiple>
@@ -83,8 +79,8 @@
                                     <small class="form-text text-muted">여러 장의 사진을 선택하여 업로드할 수 있습니다.</small>
                                 </div>
                                 <!-- 썸네일 컨테이너 -->
-                                <div id="thumbnail-container" class="d-flex flex-wrap">
-                                </div>
+                                <div id="thumbnail-container" class="d-flex flex-wrap"></div>
+
                                 <div class="form-group placeName" style="display: none;">
                                     <label for="placeName">방문한 장소</label>
                                     <input type="text" class="form-control" id="placeName" name="placeName" readonly>
@@ -95,7 +91,7 @@
                                 </div>
                                 <!-- 게시물 등록 버튼을 중앙으로 정렬 -->
                                 <div class="form-group text-center">
-                                    <button type="button" class="btn btn-primary" th:onclick="postInsert()">게시물 등록</button>
+                                    <button type="button" class="btn btn-primary" th:onclick="fn_check()">게시물 등록</button>
                                 </div>
 
                                 <div id="mapSearch" style="display: none;">

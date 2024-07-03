@@ -3,29 +3,26 @@ package com.example.chattingweb.api.controller;
 
 
 import com.example.chattingweb.api.dto.PostDto;
-import com.example.chattingweb.api.dto.SpaceDto;
 import com.example.chattingweb.api.repository.ServerApiRepository;
 import com.example.chattingweb.api.service.ServerApiService;
 import com.example.chattingweb.main.dto.UserDto;
 import com.example.chattingweb.main.service.impl.MainService;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
@@ -36,6 +33,8 @@ import java.util.Map;
 @Controller
 @RequestMapping("/api/server")
 public class ServerApiController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ServerApiController.class);
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -49,8 +48,9 @@ public class ServerApiController {
     @GetMapping("/memorySave.do")
     public String memorySave(Model model){
         UserDto userDto = serverApiService.userInfo();  //사용자 정보
-        System.out.printf("/memorySave.do userInfo ===>"+userDto.toString());
-        model.addAttribute("userDto",userDto);
+        logger.info("/memorySave.do userInfo = {}",  userDto.toString());
+
+        //model.addAttribute("userDto",userDto);
         return "user/memorySave";
     }
 
@@ -67,9 +67,9 @@ public class ServerApiController {
     public String map(Model model, @RequestParam(defaultValue = "0", value="page") int page){
 
         UserDto userDto = serverApiService.userInfo();
-        int totalPages = serverApiRepository.selectPostsByUserIdTotalPage(userDto);
 
         //페이징 처리
+        int totalPages = serverApiRepository.selectPostsByUserIdTotalPage(userDto);
         userDto.setCurrentPage(page);
         userDto.setPageSize(5);
         userDto.setTotalPages(totalPages);
@@ -77,12 +77,6 @@ public class ServerApiController {
 
         model.addAttribute("postList", postList);
         model.addAttribute("userDto",userDto);      //사용자 정보
-//        model.addAttribute("totalPages", totalPages);
-//        model.addAttribute("currentPage",page);    //현재페이지
-
-//        System.out.println("현재페이지 : "+page);
-//        System.out.println("총페이지 : "+totalPages);
-
 
         return "user/map";
     }
@@ -164,18 +158,32 @@ public class ServerApiController {
         return response.getBody();
     }
 
+    @RequestMapping(value = "/insertPost.do", method = {RequestMethod.POST})
     @ResponseBody
-    @GetMapping("/insertPost")
-    public ResponseEntity<Void> insertPost (@RequestParam Map<String,Object> param) throws IOException {
+    public Map<String,Object> insertPost (HttpServletRequest request, HttpServletResponse response,
+                                          @ModelAttribute PostDto postDto) throws Exception {
+        Map<String,Object> result = new HashMap<>();
+
         UserDto userDto = serverApiService.userInfo();  //로그인한 사용자 정보
-        Map<String,Object> result = serverApiService.settingParamsAndInsert(param, userDto);
+        logger.info("postDto : {}", postDto);
 
-        if(Integer.parseInt(result.get("postDtoInsertResult").toString()) != 1){
-            return ResponseEntity.badRequest().build();
-        }
+        Map<String,Object> insertResult = serverApiService.insertPostDto(postDto, userDto);
 
-        return ResponseEntity.ok().build();
+       return result;
     }
+
+//    @ResponseBody
+//    @GetMapping("/insertPost")
+//    public ResponseEntity<Void> insertPost (@RequestParam Map<String,Object> param) throws IOException {
+//        UserDto userDto = serverApiService.userInfo();  //로그인한 사용자 정보
+//        Map<String,Object> result = serverApiService.settingParamsAndInsert(param, userDto);
+//
+//        if(Integer.parseInt(result.get("postDtoInsertResult").toString()) != 1){
+//            return ResponseEntity.badRequest().build();
+//        }
+//
+//        return ResponseEntity.ok().build();
+//    }
 
 
 }
