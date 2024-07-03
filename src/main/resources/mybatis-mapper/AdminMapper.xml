@@ -4,35 +4,56 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.chattingweb.main.repository.MainRepository">
 
-    <select id="getCnt" resultType="Integer">
-        select count(*) from employees
-    </select>
-
     <insert id="insertUser" parameterType="User">
-        <selectKey keyProperty="userId" resultType="int" order="BEFORE">
-            SELECT user_seq.NEXTVAL FROM dual
-        </selectKey>
-        INSERT INTO users (USER_ID, USERNAME, PASSWORD, EMAIL)
-        VALUES (#{userId}, #{userName}, #{password}, #{email})
+        INSERT INTO chattingWeb.USERS (USERNAME, PASSWORD, EMAIL,ROLE)
+        VALUES (#{userName}, #{password}, #{email},'ROLE_USER')
     </insert>
 
     <select id="emailCheck" parameterType="EmailDto">
         SELECT count(*)
-        FROM USERS
+        FROM chattingWeb.USERS
+        WHERE USERS.EMAIL = #{email}
+    </select>
+
+    <select id="emailCntCheck" parameterType="EmailDto">
+        SELECT count(*)
+        FROM chattingWeb.USERS
         WHERE USERS.EMAIL = #{email}
     </select>
 
     <select id="loginCheck" parameterType="User">
         SELECT count(*)
-        FROM USERS
+        FROM chattingWeb.USERS
         WHERE USERS.EMAIL = #{email}
-        and  USERS.password = #{password}
+          and  USERS.password = #{password}
     </select>
 
     <select id="login" parameterType="User" resultType="User">
         SELECT *
-        FROM USERS
+        FROM chattingWeb.USERS
         WHERE USERS.EMAIL = #{email}
           and  USERS.password = #{password}
     </select>
+
+    <select id="findById" parameterType="Integer" resultType="User">
+        SELECT *
+        FROM chattingWeb.USERS
+        WHERE USERS.USER_ID = #{userId}
+    </select>
+
+    <select id="findByUserName" parameterType="String" resultType="User">
+        SELECT *
+        FROM chattingWeb.USERS
+        WHERE USERS.EMAIL = #{username}
+    </select>
+    <select id="findByEmail" parameterType="String" resultType="User">
+        SELECT user_id as userId,
+                userName as userName,
+                password as password ,
+                email as email,
+                role as role
+        FROM chattingWeb.USERS
+        WHERE USERS.email = #{email}
+    </select>
+
 </mapper>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.chattingweb.api.repository.ServerApiRepository">
+    <!-- INSERT 쿼리문 -->
+    <insert id="insertPostDto" parameterType="Map" useGeneratedKeys="true" keyProperty="postId">
+        INSERT INTO chattingWeb.post (
+                title,
+                content,
+                user_id,
+                location_registered
+        )
+        VALUES (
+                #{title}  ,
+                #{content},
+                #{userId} ,
+                #{locationRegistered}
+                )
+    </insert>
+
+    <insert id="insertPlaceDto" parameterType="Map" useGeneratedKeys="true" keyProperty="placeId">
+        INSERT INTO chattingWeb.place (post_id, placeName, address
+        , longitude, latitude
+        )
+        VALUES (#{postId}, #{placeName}, #{address}
+        , #{longitude}, #{latitude}
+        )
+    </insert>
+
+    <update id="updatePostPlaceId" parameterType="Map">
+        UPDATE chattingWeb.post
+        SET place_id = #{placeId}
+        WHERE post_id = #{postId}
+    </update>
+
+    <select id="selectPostsByUserId" resultType="Map" parameterType="User">
+        SELECT  p.post_id as postId,
+                p.place_id as placeId,
+                p.user_id as userId,
+                p.title   as title,
+                p.content  as content,
+                p.location_registered as locationRegistered,
+                p.createDt as createDt,
+                p2.placeName as placeName,
+                p2.address as address,
+                p2.longitude as longitude,
+                p2.latitude as latitude
+        FROM chattingWeb.post p
+        LEFT JOIN chattingWeb.place p2 ON p.post_id = p2.post_id
+        WHERE 1=1
+        AND p.user_yn = 'Y'
+        AND p.user_id = #{userId}
+        order by p.post_id desc , p.createDt
+        LIMIT #{start}, #{pageSize}
+    </select>
+    <select id="selectPostsByUserIdTotalPage" resultType="int" parameterType="User">
+        SELECT CEIL(count(*)/5)
+        FROM chattingWeb.post p
+        LEFT JOIN chattingWeb.place p2 ON p.post_id = p2.post_id
+        WHERE 1=1
+        AND p.user_yn = 'Y'
+        AND p.user_id = #{userId}
+    </select>
+
+    <!-- INSERT 쿼리문 -->
+    <insert id="insertPhoteUpload" parameterType="Map" useGeneratedKeys="true" keyProperty="photoId">
+        INSERT INTO chattingWeb.PhotoUpload (
+                post_id
+        <if test="fileName1 != null">, fileName1</if>
+        <if test="fileName2 != null">, fileName2</if>
+        <if test="fileName3 != null">, fileName3</if>
+        <if test="fileName4 != null">, fileName4</if>
+        <if test="fileName5 != null">, fileName5</if>
+        )
+        VALUES (
+                #{postId}
+        <if test="fileName1 != null">, #{fileName1}</if>
+        <if test="fileName2 != null">, #{fileName2}</if>
+        <if test="fileName3 != null">, #{fileName3}</if>
+        <if test="fileName4 != null">, #{fileName4}</if>
+        <if test="fileName5 != null">, #{fileName5}</if>
+        )
+    </insert>
+
+    <update id="updatePhoteUploadPhoteId" parameterType="Map">
+        UPDATE chattingWeb.post
+        SET photo_id = #{photoId}
+        WHERE post_id = #{postId}
+    </update>
+    <update id="updatePhoteUpfilePath" parameterType="Map">
+        UPDATE chattingWeb.PhotoUpload
+        SET path = #{path}
+        WHERE photo_id = #{photoId}
+    </update>
+
+    <select id="selectPlaceInfo" resultType="int" parameterType="Map">
+        select *
+        from chattingWeb.place p
+        where 1=1
+          and   p.place_id =#{placeId}
+    </select>
+</mapper>

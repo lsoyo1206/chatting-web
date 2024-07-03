@@ -1,0 +1,14 @@
+# JDK 17을 베이스 이미지로 사용
+FROM adoptopenjdk:17-jre-hotspot
+
+# 작업 디렉토리 설정
+WORKDIR /app
+
+# 호스트의 JAR 파일을 컨테이너의 app 디렉토리로 복사
+COPY target/chattingWeb.jar /app/chattingWeb.jar
+
+# 애플리케이션의 포트 설정 (Spring Boot의 d기본 포트는 8080입니다)
+EXPOSE 8080
+
+# 컨테이너가 시작될 때 실행할 명령어dd
+CMD ["java", "-jar", "chattingWeb.jar"]

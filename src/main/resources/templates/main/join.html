@@ -8,20 +8,60 @@
     <script defer th:src="@{/main/main.js}"></script>
 </head>
 <body>
-
+<div th:include="main/header"></div>
 <div class="container">
-    <form>
-        <h1>회원가입 페이지 입니다.</h1><br>
-        <input type="text" placeholder="이름을 입력해주세요" id="userName" name="userName" /><br><br>
-
-        <input type="text" placeholder="이메일을 입력하세요" id="email" name="email" />
-        <button type="button" id="certificationEmail">이메일 인증</button><br>
-        <input type="text" placeholder="인증번호를 입력하세요" id="autoEmail"/>
-        <button type="button" id="checkAutoEmail">번호 확인</button><br><br>
-
-        <input type="password" placeholder="비밀번호 입력해주세요" id="password" name="password"/><br><br>
-        <button type="button" id="joinBtn">회원 가입</button>
-    </form>
+    <div class="row mt-5">
+        <div class="col-md-6 offset-md-3">
+            <form action="/joinProc" method="post" class="needs-validation border border-secondary rounded p-4" novalidate name="joinForm">
+                <h1 class="text-center mb-4">회원 가입</h1>
+                <div class="form-group">
+                    <label for="email">이메일</label>
+                    <div class="input-group">
+                        <input type="email" class="form-control" id="email" name="email" placeholder="이메일을 입력하세요" aria-describedby="emailHelp" required>
+<!--                        <div class="input-group-append">-->
+<!--                            <button class="btn btn-outline-secondary" type="button" id="certificationEmail">이메일 인증</button>-->
+<!--                        </div>-->
+                        <div class="invalid-feedback">
+                            이메일을 입력하세요.
+                        </div>
+                    </div>
+                </div>
+<!--                <div class="form-group">-->
+<!--                    <label for="autoEmail">인증번호</label>-->
+<!--                    <div class="input-group">-->
+<!--                        <input type="text" class="form-control" id="autoEmail" placeholder="인증번호를 입력하세요" required>-->
+<!--                        <div class="input-group-append">-->
+<!--                            <button class="btn btn-outline-secondary" type="button" id="checkAutoEmail">번호 확인</button>-->
+<!--                        </div>-->
+<!--                        <div class="invalid-feedback">-->
+<!--                            인증번호를 입력하세요.-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+                <div class="form-group">
+                    <label for="password">비밀번호</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호 입력해주세요" required>
+                    <div class="invalid-feedback">
+                        비밀번호를 입력해주세요.
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="userName">이름</label>
+                    <input type="text" class="form-control" id="userName" name="userName" placeholder="이름을 입력해주세요" required>
+                    <div class="invalid-feedback">
+                        이름을 입력해주세요.
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">가입하기</button>
+            </form>
+        </div>
+    </div>
 </div>
+
+
+<div th:if="${message}" class="alert alert-danger" role="alert">
+    <p th:text="${message}"></p>
+</div>
+
 </body>
 </html>
