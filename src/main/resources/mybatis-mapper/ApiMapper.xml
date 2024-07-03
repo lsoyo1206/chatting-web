@@ -4,23 +4,27 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.chattingweb.api.repository.ServerApiRepository">
     <!-- INSERT 쿼리문 -->
-    <insert id="insertPostDto" parameterType="Map" useGeneratedKeys="true" keyProperty="postId">
-        INSERT INTO chattingWeb.post (
+    <insert id="insertPostDto" parameterType="PostDto" useGeneratedKeys="true" keyProperty="postId">
+        INSERT INTO chattingWeb.TB_POST (
                 title,
                 content,
-                user_id,
-                location_registered
+                user_id
+                <if test="locationRegistered == true">
+                , location_registered
+                </if>
         )
         VALUES (
                 #{title}  ,
                 #{content},
-                #{userId} ,
-                #{locationRegistered}
+                #{userId}
+                <if test="locationRegistered == true">
+                , #{locationRegistered}
+                </if>
                 )
     </insert>
 
-    <insert id="insertPlaceDto" parameterType="Map" useGeneratedKeys="true" keyProperty="placeId">
-        INSERT INTO chattingWeb.place (post_id, placeName, address
+    <insert id="insertLocation" parameterType="Map" useGeneratedKeys="true" keyProperty="locationId">
+        INSERT INTO chattingWeb.TB_LOCATION (post_id, location_name, location_address
         , longitude, latitude
         )
         VALUES (#{postId}, #{placeName}, #{address}
@@ -28,9 +32,9 @@
         )
     </insert>
 
-    <update id="updatePostPlaceId" parameterType="Map">
-        UPDATE chattingWeb.post
-        SET place_id = #{placeId}
+    <update id="updatePostLocationId" parameterType="PostDto">
+        UPDATE chattingWeb.TB_POST
+        SET location_id = #{locationId}
         WHERE post_id = #{postId}
     </update>
 

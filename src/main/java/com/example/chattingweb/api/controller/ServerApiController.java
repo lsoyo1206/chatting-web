@@ -163,11 +163,23 @@ public class ServerApiController {
     public Map<String,Object> insertPost (HttpServletRequest request, HttpServletResponse response,
                                           @ModelAttribute PostDto postDto) throws Exception {
         Map<String,Object> result = new HashMap<>();
+        String msg = "";
+        String code = "";
 
         UserDto userDto = serverApiService.userInfo();  //로그인한 사용자 정보
         logger.info("postDto : {}", postDto);
 
         Map<String,Object> insertResult = serverApiService.insertPostDto(postDto, userDto);
+
+        Integer postResult = (Integer) insertResult.get("postDtoInsertResult");
+        Integer locationResult = (Integer) insertResult.get("LocationInsertResult");
+
+        if(postResult == 1 && locationResult == 1){
+            msg = "SUCCESS";
+            code = "R000";
+        }else{
+            msg ="FAIL";
+        }
 
        return result;
     }

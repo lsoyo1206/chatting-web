@@ -64,6 +64,7 @@ public class ServerApiService implements ServerApiServiceIf{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Map<String, Object> insertPostDto(PostDto postDto, UserDto userDto) {
         Map<String, Object> insertResult = new HashMap<>();
         postDto.setUserId(userDto.getUserId());
@@ -79,20 +80,21 @@ public class ServerApiService implements ServerApiServiceIf{
         System.out.println("LocationMap ===>" + LocationMap);
 
         //테이블 새로 생성하고 시도해보기 -> 쿼리문 바꿔주고
-//        int postDtoInsertResult = serverApiRepository.insertPostDto(postDto);
-//        insertResult.put("postDtoInsertResult", postDtoInsertResult);
-//        insertResult.put("postId", postDto.getPostId());
-//
-//        if(postDtoInsertResult == 1 && postDto.getLocationName().equals("")) {
-//            LocationMap.put("postId", postDto.getPostId());
-//            int LocationInsertResult = serverApiRepository.insertPlaceDto(LocationMap);
-//            insertResult.put("LocationInsertResult", LocationInsertResult);
-//
-//            if (LocationInsertResult == 1) {
-//                postDto.setLocationId((Integer) LocationMap.get("locationId")); //post 테이블의 locationId 업데이트
-//                LocationInsertResult = serverApiRepository.updatePostPlaceId(postDto);
-//            }
-//        }
+        int postDtoInsertResult = serverApiRepository.insertPostDto(postDto);
+        insertResult.put("postDtoInsertResult", postDtoInsertResult);
+        insertResult.put("postId", postDto.getPostId());
+
+        if(postDtoInsertResult == 1 && !postDto.getLocationName().equals("")) {
+            LocationMap.put("postId", postDto.getPostId());
+            int LocationInsertResult = serverApiRepository.insertLocation(LocationMap);
+            insertResult.put("LocationInsertResult", LocationInsertResult);
+
+            if (LocationInsertResult == 1) {
+                postDto.setLocationId((Integer) LocationMap.get("locationId")); //post 테이블의 locationId 업데이트
+                LocationInsertResult = serverApiRepository.updatePostLocationId(postDto);
+                insertResult.put("LocationInsertResult", LocationInsertResult);
+            }
+        }
 
         return insertResult;
     }

@@ -82,12 +82,6 @@ function fn_submit(){
     formData.append('title', $("#title").val());
     formData.append('content', $("#content").val());
 
-//  이미지는 장소, post 저장 후 저장해줌
-//    if (files.length !== 0 || files.length !== undefined) {
-//        for(let i=0 ; i<files.length ; i++){
-//            photoUpload['fileName' + (i + 1)] = files[i];
-//        }
-//    }
 
     if($("#locationRegistered").prop("checked") === true){
         var placeInfoArray = $("#placeName").val().split('|');
@@ -103,6 +97,13 @@ function fn_submit(){
         formData.append('locationRegistered', false);
     }
 
+//  이미지는 장소, post 저장 후 저장해줌
+//    if (files.length !== 0 || files.length !== undefined) {
+//        for(let i=0 ; i<files.length ; i++){
+//            photoUpload['fileName' + (i + 1)] = files[i];
+//        }
+//    }
+
     $.ajax({
         url : "/api/server/insertPost.do",
         type : "post",
@@ -113,12 +114,10 @@ function fn_submit(){
         data : formData,
         success : function(responseData) {
             var data = responseData;
-
             if(data.code == 'R000'){
-                alert('제출을 성공적으로 완료하였습니다');
                 location.reload();
             }else{
-                alert(responseData.msg);
+                alert("저장에 실패했습니다 네트워크를 확인해주세요");
             }
         },
         error : function(request, status, error) {
