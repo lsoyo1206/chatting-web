@@ -2,6 +2,7 @@ package com.example.chattingweb.api.controller;
 
 
 
+import com.example.chattingweb.api.dto.PhotoDto;
 import com.example.chattingweb.api.dto.PostDto;
 import com.example.chattingweb.api.repository.ServerApiRepository;
 import com.example.chattingweb.api.service.ServerApiService;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -175,9 +177,10 @@ public class ServerApiController {
         Integer locationResult = (Integer) insertResult.get("LocationInsertResult") != null ? (Integer) insertResult.get("LocationInsertResult") : 0;
 
         if(postResult == 1 || locationResult == 1){
-            msg = "SUCCESS";
             code = "R000";
+            msg = "SUCCESS";
         }else{
+            code = "R001";
             msg ="FAIL";
         }
 
@@ -186,6 +189,40 @@ public class ServerApiController {
         result.put("postId", Integer.parseInt(String.valueOf(insertResult.get("postId"))));
 
        return result;
+    }
+
+    @RequestMapping(value = "/insertAndUploadPhoto.do", method = {RequestMethod.POST})
+    @ResponseBody
+    public Map<String,Object> insertAndUploadPhoto (HttpServletRequest request, HttpServletResponse response,
+                                                    @RequestParam("postId") String postId,
+                                                    @RequestParam("files") List<MultipartFile> files) throws Exception {
+        Map<String,Object> result = new HashMap<>();
+        String msg = "";
+        String code = "";
+
+        UserDto userDto = serverApiService.userInfo();  //로그인한 사용자 정보
+        logger.info("postId : {}", postId);
+        for (MultipartFile file : files) {
+            logger.info("file : {}", file.getOriginalFilename());
+        }
+
+        Map<String,Object> insertResult = serverApiService.insertAndUploadPhoto(postId, files);
+
+        boolean photoUploadResult = (boolean) insertResult.get("allUploadFile");
+        Integer photoInsertResult = (Integer) insertResult.get("photoInsert") ;
+
+        if(photoUploadResult && photoInsertResult == 1){
+            code = "R000";
+            msg = "SUCCESS";
+        }else{
+            code = "R001";
+            msg ="FAIL";
+        }
+
+        result.put("msg", msg);
+        result.put("code", code);
+
+        return result;
     }
 
 //    @ResponseBody
