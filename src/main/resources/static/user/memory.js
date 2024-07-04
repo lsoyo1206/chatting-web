@@ -1,7 +1,5 @@
- $(document).ready(function () {
-
-
- });
+$(document).ready(function() {
+});
 
 var files = [];
 document.getElementById('photos').addEventListener('change', function(event) {
@@ -100,6 +98,8 @@ function fn_submit(){
 
     console.log(formData.locationRegistered)
 
+    console.log('11111===>'+$("#content").val())
+    return;
     $.ajax({
         url : "/api/server/insertPost.do",
         type : "post",

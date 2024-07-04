@@ -94,10 +94,11 @@
         SET photo_id = #{photoId}
         WHERE post_id = #{postId}
     </update>
-    <update id="updatePhoteUpfilePath" parameterType="Map">
-        UPDATE chattingWeb.PhotoUpload
-        SET path = #{path}
-        WHERE photo_id = #{photoId}
+
+    <update id="updatePostId" parameterType="Map">
+        UPDATE chattingWeb.TB_POST
+        SET photo_id = #{photoId}
+        WHERE post_id = #{postId}
     </update>
 
     <select id="selectPlaceInfo" resultType="int" parameterType="Map">
