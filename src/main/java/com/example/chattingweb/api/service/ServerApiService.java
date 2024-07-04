@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -29,7 +30,7 @@ import java.util.*;
 @Service
 public class ServerApiService implements ServerApiServiceIf{
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServerApiService.class);
+    private static final Logger Logger = LoggerFactory.getLogger(ServerApiService.class);
 
     @Autowired
     private MainService mainService;
@@ -59,11 +60,61 @@ public class ServerApiService implements ServerApiServiceIf{
     }
 
     @Override
-    public Map<String, Object> sendFileAndInsert(PostDto postDto, UserDto userDto) throws Exception {
-        return null;
+    @Transactional(readOnly = true)
+    public Map<String, Object> insertAndUploadPhoto(String postId, List<MultipartFile> files) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        int photoInsert = 0;
+
+        Map<String,Object> path = createDirectory();	//디렉토리 생성 함수
+        String month = path.get("month").toString();    //파일이 들어갈 날짜 경로
+        String uuid  = path.get("uuid").toString();     //파일이 들어갈 uuid 경로
+
+        Logger.info("month : {}", month);
+        Logger.info("uuid : {}", uuid);
+
+        // 파일 저장
+        boolean allUploadFile = true;
+        int index = 0;
+
+        for (MultipartFile file : files) {
+            try {
+                String fileName = uploadFile(file, month, uuid);
+
+                // 파일명과 확장자 분리
+                int lastDotIndex = fileName.lastIndexOf('.');
+                String baseFileName = (lastDotIndex == -1) ? fileName : fileName.substring(0, lastDotIndex);
+                String fileExtension = (lastDotIndex == -1) ? "" : fileName.substring(lastDotIndex);
+                long fileSize = file.getSize();
+                String nasPath = "C:" + File.separator + "nas" + File.separator + month + File.separator + uuid;
+
+                PhotoDto photoDto = PhotoDto.builder()
+                        .postId(Integer.parseInt(String.valueOf(postId)))
+                        .groupVOrder(index)
+                        .filePath(nasPath)
+                        .fileName(baseFileName)
+                        .fileExtension(fileExtension)
+                        .fileSize(fileSize)
+                        .build();
+                index += 1;
+
+                photoInsert = serverApiRepository.insertPhote(photoDto);
+            } catch (IOException e) {
+                Logger.error("File save error: " + e.getMessage());
+                allUploadFile = false;
+                photoInsert = 0;
+                break;
+            }
+        }
+
+        result.put("allUploadFile", allUploadFile);
+        result.put("photoInsert", photoInsert);
+
+
+        return result;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Map<String, Object> insertPostDto(PostDto postDto, UserDto userDto) {
         Map<String, Object> insertResult = new HashMap<>();
         postDto.setUserId(userDto.getUserId());
@@ -79,20 +130,21 @@ public class ServerApiService implements ServerApiServiceIf{
         System.out.println("LocationMap ===>" + LocationMap);
 
         //테이블 새로 생성하고 시도해보기 -> 쿼리문 바꿔주고
-//        int postDtoInsertResult = serverApiRepository.insertPostDto(postDto);
-//        insertResult.put("postDtoInsertResult", postDtoInsertResult);
-//        insertResult.put("postId", postDto.getPostId());
-//
-//        if(postDtoInsertResult == 1 && postDto.getLocationName().equals("")) {
-//            LocationMap.put("postId", postDto.getPostId());
-//            int LocationInsertResult = serverApiRepository.insertPlaceDto(LocationMap);
-//            insertResult.put("LocationInsertResult", LocationInsertResult);
-//
-//            if (LocationInsertResult == 1) {
-//                postDto.setLocationId((Integer) LocationMap.get("locationId")); //post 테이블의 locationId 업데이트
-//                LocationInsertResult = serverApiRepository.updatePostPlaceId(postDto);
-//            }
-//        }
+        int postDtoInsertResult = serverApiRepository.insertPostDto(postDto);
+        insertResult.put("postDtoInsertResult", postDtoInsertResult);
+        insertResult.put("postId", postDto.getPostId());
+
+        if(postDtoInsertResult == 1 && postDto.getLocationName() != null ) {
+            LocationMap.put("postId", postDto.getPostId());
+            int LocationInsertResult = serverApiRepository.insertLocation(LocationMap);
+            insertResult.put("LocationInsertResult", LocationInsertResult);
+
+            if (LocationInsertResult == 1) {
+                postDto.setLocationId(Integer.parseInt(String.valueOf(LocationMap.get("locationId"))));                 //post 테이블의 locationId 업데이트
+                LocationInsertResult = serverApiRepository.updatePostLocationId(postDto);
+                insertResult.put("LocationInsertResult", LocationInsertResult);
+            }
+        }
 
         return insertResult;
     }
@@ -102,14 +154,7 @@ public class ServerApiService implements ServerApiServiceIf{
         int start = userDto.getCurrentPage() * userDto.getPageSize();
         userDto.setStart(start);
         List<Map<String,Object>> postList = (List<Map<String, Object>>) serverApiRepository.selectPostsByUserId(userDto);
-        System.out.printf("postList ===<>"+postList);
-
         return postList;
-    }
-
-    @Override
-    public int insertCollectionTeacher(Map<String, Object> photeUploadMap) throws IOException {
-        return 0;
     }
 
 //    @Override
@@ -304,46 +349,61 @@ public class ServerApiService implements ServerApiServiceIf{
 //        }
 //        return result;
 //    }
-//
-//    //파일 업로드 폴더 생성
-//    public Map<String,Object> createDirectory() throws IOException {
-//        HashMap<String,Object> result = new HashMap<>();
-//
-//        Date date = new Date();
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
-//        String nowTime1 = dateFormat.format(date);
-//
-//        //1.디렉토리 생성 ex. 2023-11
-//
-//        // windows
-//        String nasPath = "C:" + File.separator + "nas" + File.separator;
-//
-//        // linux
-////        String nasPath = "/usr/local/nas/file_manage" + File.separator;
-//        //LOGGER.info("nasPath = {}", nasPath);
-//
-//        Path path = Paths.get(nasPath+nowTime1);
-//
-//        if(!Files.exists(path)) 			Files.createDirectory(path);
-//
-//        //2. 파일 uuid 디렉토리 생성
-//        String uuid = UUID.randomUUID().toString();
-//
-//        // windows
-//        String filePath = "C:" + File.separator + "nas" + File.separator + nowTime1 + File.separator + uuid;
-//
-//        // linux
-////        String filePath = "/usr/local/nas/file_manage" + File.separator + nowTime1 + File.separator + uuid;
-//        //LOGGER.info("nasFilePath = {}", filePath);
-//
-//        Path path1 = Paths.get(filePath);
-//        Files.createDirectory(path1);
-//
-//        result.put("month", nowTime1);
-//        result.put("uuid", uuid);
-//
-//        return result;
-//    }
+
+    // 파일 업로드 메서드
+    private String uploadFile(MultipartFile file, String month, String uuid) throws IOException {
+        // windows
+        String nasPath = "C:" + File.separator + "nas" + File.separator + month + File.separator + uuid;
+
+        // linux
+//        String nasPath = "/usr/local/nas/file_manage" + File.separator + month + File.separator + uuid;
+
+        String fileName = file.getOriginalFilename();
+        Path filePath = Paths.get(nasPath, fileName);
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        return fileName;
+    }
+
+
+    public Map<String,Object> createDirectory() throws IOException {    //파일 업로드 폴더 생성
+        HashMap<String,Object> result = new HashMap<>();
+
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
+        String nowTime1 = dateFormat.format(date);
+
+        //1.디렉토리 생성 ex. 2023-11
+
+        // windows
+        String nasPath = "C:" + File.separator + "nas" + File.separator;
+
+        // linux
+//        String nasPath = "/usr/local/nas/file_manage" + File.separator;
+        //LOGGER.info("nasPath = {}", nasPath);
+
+        Path path = Paths.get(nasPath+nowTime1);
+
+        if(!Files.exists(path)) 			Files.createDirectory(path);
+
+        //2. 파일 uuid 디렉토리 생성
+        String uuid = UUID.randomUUID().toString();
+
+        // windows
+        String filePath = "C:" + File.separator + "nas" + File.separator + nowTime1 + File.separator + uuid;
+
+        // linux
+//        String filePath = "/usr/local/nas/file_manage" + File.separator + nowTime1 + File.separator + uuid;
+        //LOGGER.info("nasFilePath = {}", filePath);
+
+        Path path1 = Paths.get(filePath);
+        Files.createDirectory(path1);
+
+        result.put("month", nowTime1);
+        result.put("uuid", uuid);
+
+        return result;
+    }
 
 
 }

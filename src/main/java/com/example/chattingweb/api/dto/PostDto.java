@@ -16,7 +16,7 @@ public class PostDto{
     private String content;
     private MultipartFile file ;
 
-    private boolean locationRegistered;    //장소 등록여부
+    private String locationRegistered;    //장소 등록여부
     private String locationName;
     private String locationAddress;
     private String longitude;   //경도

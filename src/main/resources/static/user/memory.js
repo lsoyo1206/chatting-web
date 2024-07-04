@@ -32,8 +32,9 @@ document.getElementById('photos').addEventListener('change', function(event) {
 
     //파일 배열에 미리 넣어놓기
     for (let i = 0; i < input.files.length; i++) {
-        files.push(input.files[i].name);
+        files.push(input.files[i]);
         console.log(input.files[i].name)
+        console.log(input.files[i])
     }
 });
 
@@ -82,12 +83,6 @@ function fn_submit(){
     formData.append('title', $("#title").val());
     formData.append('content', $("#content").val());
 
-//  이미지는 장소, post 저장 후 저장해줌
-//    if (files.length !== 0 || files.length !== undefined) {
-//        for(let i=0 ; i<files.length ; i++){
-//            photoUpload['fileName' + (i + 1)] = files[i];
-//        }
-//    }
 
     if($("#locationRegistered").prop("checked") === true){
         var placeInfoArray = $("#placeName").val().split('|');
@@ -103,6 +98,8 @@ function fn_submit(){
         formData.append('locationRegistered', false);
     }
 
+    console.log(formData.locationRegistered)
+
     $.ajax({
         url : "/api/server/insertPost.do",
         type : "post",
@@ -112,18 +109,60 @@ function fn_submit(){
         cache: false,
         data : formData,
         success : function(responseData) {
-            var data = responseData;
-
-            if(data.code == 'R000'){
-                alert('제출을 성공적으로 완료하였습니다');
-                location.reload();
+            console.log(responseData.code)
+            if(responseData.code == 'R000'){
+                if(files.length !== 0 || files.length !== undefined){
+                    let postId = responseData.postId;
+                    sendPhotoAndInsert(postId);
+                }
             }else{
-                alert(responseData.msg);
+                alert("저장에 실패했습니다 네트워크를 확인해주세요");
             }
         },
         error : function(request, status, error) {
         }
     });
+}
+
+
+function sendPhotoAndInsert(postId){
+    var formData = new FormData();
+
+    formData.append('postId', postId)
+    //이미지는 장소, post 저장 후 저장해줌
+    for(let i=0 ; i<files.length ; i++){
+        //photos['fileName' + (i + 1)] = files[i];
+        //photos.push(files[i]);
+        //formData.append('file'+(i+1), files[i])
+        formData.append('files', files[i]);
+    }
+
+    // formData의 모든 키-값 쌍을 출력
+    for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + (pair[1] instanceof File ? pair[1].name : pair[1]));
+    }
+
+    $.ajax({
+        url : "/api/server/insertAndUploadPhoto.do",
+        type : "post",
+        enctype : "multipart/form-data",
+        processData: false,
+        contentType: false,
+        cache: false,
+        data : formData,
+        success : function(responseData) {
+            console.log(responseData.code)
+            if(responseData.code == 'R000'){
+                alert("저장에 성공했습니다.");
+                window.location.href = "/api/server/map.do"; // 추억저장소 페이지로 redirect
+            }else{
+                alert("저장에 실패했습니다 네트워크를 확인해주세요");
+            }
+        },
+        error : function(request, status, error) {
+        }
+    });
+
 }
 /* function postInsert() {
     var isSpaceChecked = $("#locationRegistered").prop("checked");

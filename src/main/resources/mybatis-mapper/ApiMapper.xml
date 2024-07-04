@@ -4,33 +4,37 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.chattingweb.api.repository.ServerApiRepository">
     <!-- INSERT 쿼리문 -->
-    <insert id="insertPostDto" parameterType="Map" useGeneratedKeys="true" keyProperty="postId">
-        INSERT INTO chattingWeb.post (
+    <insert id="insertPostDto" parameterType="PostDto" useGeneratedKeys="true" keyProperty="postId">
+        INSERT INTO chattingWeb.TB_POST (
                 title,
                 content,
-                user_id,
-                location_registered
+                user_id
+                <if test="locationRegistered == 'true'">
+                , location_registered
+                </if>
         )
         VALUES (
                 #{title}  ,
                 #{content},
-                #{userId} ,
-                #{locationRegistered}
+                #{userId}
+                <if test="locationRegistered == 'true'">
+                , 'Y'
+                </if>
                 )
     </insert>
 
-    <insert id="insertPlaceDto" parameterType="Map" useGeneratedKeys="true" keyProperty="placeId">
-        INSERT INTO chattingWeb.place (post_id, placeName, address
+    <insert id="insertLocation" parameterType="Map" useGeneratedKeys="true" keyProperty="locationId">
+        INSERT INTO chattingWeb.TB_LOCATION (post_id, location_name, location_address
         , longitude, latitude
         )
-        VALUES (#{postId}, #{placeName}, #{address}
+        VALUES (#{postId}, #{locationName}, #{locationAddress}
         , #{longitude}, #{latitude}
         )
     </insert>
 
-    <update id="updatePostPlaceId" parameterType="Map">
-        UPDATE chattingWeb.post
-        SET place_id = #{placeId}
+    <update id="updatePostLocationId" parameterType="PostDto">
+        UPDATE chattingWeb.TB_POST
+        SET location_id = #{locationId}
         WHERE post_id = #{postId}
     </update>
 
@@ -64,22 +68,24 @@
     </select>
 
     <!-- INSERT 쿼리문 -->
-    <insert id="insertPhoteUpload" parameterType="Map" useGeneratedKeys="true" keyProperty="photoId">
-        INSERT INTO chattingWeb.PhotoUpload (
-                post_id
-        <if test="fileName1 != null">, fileName1</if>
-        <if test="fileName2 != null">, fileName2</if>
-        <if test="fileName3 != null">, fileName3</if>
-        <if test="fileName4 != null">, fileName4</if>
-        <if test="fileName5 != null">, fileName5</if>
+    <insert id="insertPhote" parameterType="PhotoDto" useGeneratedKeys="true" keyProperty="photoId">
+        INSERT INTO chattingWeb.TB_PHOTO
+        (
+                post_id,
+                GROUP_V_ORDER,
+                FILE_PATH,
+                FILE_NAME,
+                FILE_EXTENSION,
+                FILE_SIZE
         )
-        VALUES (
-                #{postId}
-        <if test="fileName1 != null">, #{fileName1}</if>
-        <if test="fileName2 != null">, #{fileName2}</if>
-        <if test="fileName3 != null">, #{fileName3}</if>
-        <if test="fileName4 != null">, #{fileName4}</if>
-        <if test="fileName5 != null">, #{fileName5}</if>
+        VALUES
+        (
+                #{postId},
+                #{groupVOrder},
+                #{filePath},
+                #{fileName},
+                #{fileExtension},
+                #{fileSize}
         )
     </insert>
 
