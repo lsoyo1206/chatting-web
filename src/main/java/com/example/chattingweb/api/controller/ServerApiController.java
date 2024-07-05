@@ -51,7 +51,6 @@ public class ServerApiController {
     public String memorySave(Model model){
         UserDto userDto = serverApiService.userInfo();  //사용자 정보
         logger.info("/memorySave.do userInfo = {}",  userDto.toString());
-
         model.addAttribute("userDto",userDto);
         return "user/memorySave";
     }

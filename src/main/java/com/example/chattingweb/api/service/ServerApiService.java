@@ -113,7 +113,6 @@ public class ServerApiService implements ServerApiServiceIf{
         result.put("allUploadFile", allUploadFile);
         result.put("photoInsert", photoInsert);
 
-
         return result;
     }
 
@@ -126,7 +125,8 @@ public class ServerApiService implements ServerApiServiceIf{
         //location 테이블에 넣어줄 파라미터 세팅
         Map<String, Object> LocationMap = new HashMap<>();
         LocationMap.put("locationName", postDto.getLocationName());
-        LocationMap.put("locationAddress", postDto.getLocationAddress());
+        LocationMap.put("address", postDto.getAddress());
+        LocationMap.put("roadAddress", postDto.getRoadAddress());
         LocationMap.put("latitude", postDto.getLatitude());
         LocationMap.put("longitude", postDto.getLongitude());
 

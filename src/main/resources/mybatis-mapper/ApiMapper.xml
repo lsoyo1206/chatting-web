@@ -24,11 +24,29 @@
     </insert>
 
     <insert id="insertLocation" parameterType="Map" useGeneratedKeys="true" keyProperty="locationId">
-        INSERT INTO chattingWeb.TB_LOCATION (post_id, location_name, location_address
-        , longitude, latitude
+        INSERT INTO chattingWeb.TB_LOCATION (
+                post_id,
+                location_name,
+                <if test="address != null and address != ''">
+                    address,
+                </if>
+                <if test="roadAddress != null and roadAddress != ''">
+                    road_address,
+                </if>
+                longitude,
+                latitude
         )
-        VALUES (#{postId}, #{locationName}, #{locationAddress}
-        , #{longitude}, #{latitude}
+        VALUES (
+                #{postId},
+                #{locationName},
+                <if test="address != null and address != ''">
+                    #{address},
+                </if>
+                <if test="roadAddress != null and roadAddress != ''">
+                    #{road_address},
+                </if>
+                #{longitude},
+                #{latitude}
         )
     </insert>
 

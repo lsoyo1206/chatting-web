@@ -60,9 +60,12 @@
                     <div class="row">
                         <div class="col-md-8 offset-md-2">
             <!--                <form th:action="/api/server/submitPost" method="post">-->
+                                <input type="hidden" name="address" id="address">
+                                <input type="hidden" name="road_address" id="road_address">
                                 <input type="hidden" name="latitude" id="latitude">  <!-- 위도 -->
                                 <input type="hidden" name="longitude" id="longitude">  <!-- 경도 -->
-                                <div class="form-group">
+
+                            <div class="form-group">
                                     <label for="title">제목</label>
                                     <input type="text" class="form-control" id="title" name="title" required>
                                 </div>
