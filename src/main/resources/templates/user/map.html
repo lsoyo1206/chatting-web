@@ -103,22 +103,27 @@
                     <div class="card border-primary mb-4">
                         <div class="card-header bg-primary text-white">
                             <h5 class="card-title mb-0" >
-                            <a class="title" th:if="${post['locationId']}" th:text="${post['title']}"
-                               th:data-postId="${post['postId']}"
-                              th:data-placeId="${post['locationId']}"
-                              th:data-placeName="${post['locationName']}"
-                              th:data-address="${post['address']}" th:data-roadAddress="${post['roadAddress']}"
-                              th:data-longitude="${post['longitude']}"
-                              th:data-latitude="${post['latitude']}"
-                               th:data-title="${post['title']}"
-                               th:data-filePath="${post['filePullPath'] != null ? post['filePullPath'] : ''}">
-                            </a>
+                                <a class="title" th:if="${post['locationId']}" th:text="${post['title']}"
+                                   th:data-postId="${post['postId']}"
+                                  th:data-placeId="${post['locationId']}"
+                                  th:data-placeName="${post['locationName']}"
+                                  th:data-address="${post['address']}" th:data-roadAddress="${post['roadAddress']}"
+                                  th:data-longitude="${post['longitude']}"
+                                  th:data-latitude="${post['latitude']}"
+                                   th:data-title="${post['title']}"
+                                   th:data-filePath="${post['filePullPath'] != null ? post['filePullPath'] : ''}">
+                                </a>
 
                                 <a class="title" th:unless="${post['locationId']}"
                                    th:data-postId="${post['postId']}"
                                    th:data-title="${post['title']}"
                                    th:data-content="${post['content']}"
                                    th:text="${post['title']}"></a>
+
+                                <!-- 삭제 버튼 추가 -->
+                                <button type="button" class="btn btn-sm float-right ml-2" th:attr="data-postId=${post['postId']}" onclick="deletePost(this)">
+                                    X
+                                </button>
                             </h5>
                         </div>
                         <div class="card-body">

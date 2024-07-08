@@ -73,7 +73,9 @@
                 tp.FILE_PATH as filePath,
                 tp.FILE_NAME as fileName,
                 tp.FILE_EXTENSION as fileExtension
-        FROM chattingWeb.TB_POST p
+        FROM (
+                SELECT * FROM chattingWeb.TB_POST WHERE user_yn = 'Y'
+            ) p
         LEFT JOIN chattingWeb.TB_LOCATION p2 ON p.post_id = p2.post_id
         LEFT JOIN chattingWeb.TB_PHOTO tp ON p.post_id = tp.post_id
         WHERE 1=1
@@ -124,6 +126,24 @@
     <update id="updatePostId" parameterType="Map">
         UPDATE chattingWeb.TB_POST
         SET photo_id = #{photoId}
+        WHERE post_id = #{postId}
+    </update>
+
+    <update id="deletePostTable" parameterType="int">
+        update chattingWeb.TB_POST
+        SET user_yn = 'N'
+        WHERE post_id = #{postId}
+    </update>
+
+    <update id="deleteLocationTable" parameterType="int">
+        update chattingWeb.TB_LOCATION
+        SET use_yn ='N'
+        WHERE post_id = #{postId}
+    </update>
+
+    <update id="deletePhotoTable" parameterType="int">
+        update chattingWeb.TB_PHOTO
+        SET user_yn = 'N'
         WHERE post_id = #{postId}
     </update>
 

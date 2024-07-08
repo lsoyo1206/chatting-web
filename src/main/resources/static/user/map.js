@@ -1,6 +1,5 @@
 $(document).ready(function () {
     initSetting();
-    valueSetting();
 });
 let imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";  //커서 이미지 주소
 
@@ -247,16 +246,30 @@ $(".title").click(function() {      /* 상세페이지로 이동 */
 
     var newUrl = "/api/server/memoryEdit.do?postId=" + postId;
     window.location.href = newUrl
-
-//    $.ajax({
-//        url:"/api/server/memoryEdit.do",
-//        type:"get",
-//        contentType:"application/json",
-//        data: { postId: postId } ,
-//        success:function(response){
-//            var html = "";
-//            console.log("response ===> "+response)
-//        }
-//    })
 });
+
+function deletePost(button) {
+    var postId = $(button).attr("data-postId");
+    console.log("Deleting post with ID: " + postId);
+
+    // AJAX 요청을 통해 삭제 처리
+    $.ajax({
+        url: "/api/server/deletePost.do",
+        type: "post",
+        data: { postId: postId },
+        success: function(response) {
+            console.log(response.code)
+            if(response.code == 'R000'){
+                alert("삭제 성공했습니다.");
+                window.location.href = "/api/server/map.do"; // 추억저장소 페이지로 redirect
+            }else{
+                alert("삭제에 실패했습니다 네트워크를 확인해주세요");
+            }
+
+        },
+        error: function(xhr, status, error) {
+            console.error("Error deleting post: " + error);
+        }
+    });
+}
 

@@ -264,4 +264,48 @@ public class ServerApiController {
 
         return result;
     }
+
+    @RequestMapping(value = "/deletePost.do", method = {RequestMethod.POST})
+    @ResponseBody
+    public Map<String,Object> deletePost(@RequestParam("postId") String postId, Model model){
+        Map<String,Object> result = new HashMap<>();
+        String msg = "";
+        String code = "";
+        int updatePostResult = 0;
+        int updateLocationResult = 0;
+        int updatePhotoResult = 0;
+
+        UserDto userDto = serverApiService.userInfo();
+        Map<String,Object> selectParam = new HashMap<>();
+        selectParam.put("postId", postId);
+        selectParam.put("userId", userDto.getUserId());
+
+        PostDto postDto = serverApiRepository.selectPostDetailInfo(selectParam);
+        updatePostResult = serverApiRepository.deletePostTable(Integer.parseInt(String.valueOf(postId)));
+
+        if(updatePostResult == 1 && "Y".equals(postDto.getLocationRegistered())){
+            updateLocationResult = serverApiRepository.deleteLocationTable(Integer.parseInt(String.valueOf(postId)));
+        }else{
+            updateLocationResult = 1;
+        }
+
+        if(updatePostResult == 1 && postDto.getPhotoId() != 0){
+            updatePhotoResult = serverApiRepository.deletePhotoTable(Integer.parseInt(String.valueOf(postId)));
+        }else{
+            updatePhotoResult = 1;
+        }
+
+        if(updatePostResult == 1 && updateLocationResult == 1 && updatePhotoResult == 1){
+            code = "R000";
+            msg = "SUCCESS";
+        }else{
+            code = "R001";
+            msg ="FAIL";
+        }
+
+        result.put("msg", msg);
+        result.put("code", code);
+
+        return result;
+    }
 }
