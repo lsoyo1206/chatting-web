@@ -43,7 +43,7 @@
                     #{address},
                 </if>
                 <if test="roadAddress != null and roadAddress != ''">
-                    #{road_address},
+                    #{roadAddress},
                 </if>
                 #{longitude},
                 #{latitude}
@@ -83,6 +83,7 @@
         order by p.post_id desc , p.createDt
         LIMIT #{start}, #{pageSize}
     </select>
+
     <select id="selectPostsByUserIdTotalPage" resultType="int" parameterType="User">
         SELECT CEIL(count(*)/5)
         FROM chattingWeb.TB_POST p
@@ -131,5 +132,37 @@
         from chattingWeb.place p
         where 1=1
           and   p.place_id =#{placeId}
+    </select>
+
+    <select id="selectPostDetailInfo" resultType="PostDto" parameterType="Map">
+        SELECT
+                p.post_id as postId,
+                p.location_id as locationId,
+                p.photo_id as photoId,
+                p.title as title,
+                p.content as content,
+                p.location_registered as locationRegistered,
+                p2.location_name as locationName,
+                p2.address as address,
+                p2.road_address as roadAddress
+        FROM chattingWeb.TB_POST p
+        LEFT JOIN chattingWeb.TB_LOCATION p2 ON p.post_id = p2.post_id
+        WHERE 1=1
+        AND p.user_yn = 'Y'
+        AND p.user_id = #{userId}
+        AND p.post_id = #{postId}
+    </select>
+
+    <select id="selectPhotoDetailInfo" resultType="PhotoDto" parameterType="int">
+        SELECT
+                p.photo_id as photoId,
+                p.GROUP_V_ORDER as groupVOrder,
+                p.FILE_PATH as filePath,
+                p.FILE_NAME as fileName,
+                p.FILE_EXTENSION as fileExtension
+        FROM chattingWeb.TB_PHOTO p
+        WHERE 1=1
+        AND p.user_yn = 'Y'
+        AND p.post_id  = #{postId}
     </select>
 </mapper>

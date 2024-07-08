@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>join</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- 도로명 주소로 경도와 위도 가져오기 위한 api -->
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <style>
+        #placesList li {list-style: none;}
+        #placesList .item {position:relative;border-bottom:1px solid #888;overflow: hidden;cursor: pointer;min-height: 65px;}
+        #placesList .item span {display: block;margin-top:4px;}
+        #placesList .item h5, #placesList .item .info {text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
+        #placesList .item .info{padding:10px 0 10px 55px;}
+        #placesList .info .gray {color:#8a8a8a;}
+        #placesList .info .jibun {padding-left:26px;background:url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_jibun.png) no-repeat;}
+        #placesList .info .tel {color:#009900;}
+        #placesList .item .markerbg {float:left;position:absolute;width:36px; height:37px;margin:10px 0 0 10px;background:url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png) no-repeat;}
+        #pagination {margin:10px auto;text-align: center;}
+
+        .thumbnail {
+            width: 100px;
+            height: 100px;
+            margin: 5px;
+            border-radius: 5px;
+            object-fit: cover;
+        }
+
+        .custom-file {
+            margin-bottom: 10px;
+        }
+
+        .custom-file-label {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .custom-file-input:focus + .custom-file-label {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+         .form-container {
+            margin-top: 30px;
+        }
+
+    </style>
+    <script defer th:src="@{/user/memory.js}"></script>
+</head>
+<body>
+<div th:include="main/header"></div>
+<div class="container">
+    <!-- "추억 등록" 영역 -->
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2 class="text-center">추억 수정</h2>
+                <div class="form-container">
+                    <div class="row">
+                        <div class="col-md-8 offset-md-2">
+            <!--                <form th:action="/api/server/submitPost" method="post">-->
+                                <input type="hidden" name="address" id="address">
+                                <input type="hidden" name="road_address" id="road_address">
+                                <input type="hidden" name="latitude" id="latitude">  <!-- 위도 -->
+                                <input type="hidden" name="longitude" id="longitude">  <!-- 경도 -->
+
+                            <div class="form-group">
+                                    <label for="title">제목</label>
+                                    <input type="text" class="form-control" id="title" name="title" th:value="${postDto.title}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="content">내용</label>
+<!--                                    <textarea class="form-control" id="content" name="content" rows="5" required></textarea>-->
+                                    <textarea class="form-control" id="content" name="content" rows="5" th:text="${postDto['content']}"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="photos">사진 업로드 (최대 5장)</label>
+                                    <div class="custom-file mb-3">
+                                        <input type="file" class="custom-file-input" id="photos" name="photos[]" accept="image/*" multiple>
+                                        <label class="custom-file-label" for="photos">사진 선택</label>
+                                    </div>
+                                    <small class="form-text text-muted">여러 장의 사진을 선택하여 업로드할 수 있습니다.</small>
+                                </div>
+                                <!-- 썸네일 컨테이너 -->
+                                <div id="thumbnail-container" class="d-flex flex-wrap"></div>
+
+                                <div class="form-group placeName" style="display: none;">
+                                    <label for="placeName">방문한 장소</label>
+                                    <input type="text" class="form-control" id="placeName" name="placeName" readonly>
+                                </div>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" id="locationRegistered" name="locationRegistered">
+                                    <label class="form-check-label" for="locationRegistered">위치 등록 여부</label>
+                                </div>
+                                <!-- 게시물 등록 버튼을 중앙으로 정렬 -->
+                                <div class="form-group text-center">
+                                    <button type="button" class="btn btn-primary" th:onclick="fn_check()">게시물 등록</button>
+                                </div>
+
+                                <div id="mapSearch" style="display: none;">
+                                    <div class="map_wrap">
+                                        <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
+                                        <div id="menu_wrap" class="bg_white p-3 rounded">
+                                            <div class="option d-flex justify-content-center">
+                                                <form onsubmit="searchPlaces(); return false;">
+                                                    <input type="text" id="keyword" placeholder="장소를 입력하세요" aria-label="장소를 입력하세요">
+                                                    <button type="submit" class="btn btn-outline-secondary" id="button-addon2">장소검색</button>
+                                                </form>
+                                            </div>
+                                            <hr>
+                                            <ul id="placesList" ></ul>
+                                            <div id="pagination"></div>
+                                        </div>
+                                    </div>
+                                    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=92ef8d9822b2fa9e38f28f32d15d230a&libraries=services"></script>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

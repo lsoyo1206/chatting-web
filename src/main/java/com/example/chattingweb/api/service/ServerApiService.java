@@ -34,11 +34,11 @@ public class ServerApiService implements ServerApiServiceIf{
     private static final Logger Logger = LoggerFactory.getLogger(ServerApiService.class);
 
     @Autowired
+    private FileUtil fileUtil;
+    @Autowired
     private MainService mainService;
     @Autowired
     private ServerApiRepository serverApiRepository;
-    @Autowired
-    private FileUtil fileUtil;
 
     @Override
     public String foodSearch(Map<String, Object> param) {
@@ -132,6 +132,7 @@ public class ServerApiService implements ServerApiServiceIf{
 
         System.out.println("postDto ===>"+postDto);
         System.out.println("LocationMap ===>" + LocationMap);
+        System.out.println("LocationMap ===>" + LocationMap.get("roadAddress"));
 
         int postDtoInsertResult = serverApiRepository.insertPostDto(postDto);
         insertResult.put("postDtoInsertResult", postDtoInsertResult);

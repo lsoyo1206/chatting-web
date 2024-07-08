@@ -59,6 +59,27 @@ public class ServerApiController {
         return "user/memorySave";
     }
 
+    @GetMapping("/memoryEdit.do")
+    public String memoryEdit(@RequestParam("postId") String postId, Model model){
+        UserDto userDto = serverApiService.userInfo();
+        Map<String,Object> selectParam = new HashMap<>();
+        selectParam.put("postId", postId);
+        selectParam.put("userId", userDto.getUserId());
+
+        PhotoDto photoDto = new PhotoDto();
+        PostDto postDto = serverApiRepository.selectPostDetailInfo(selectParam);
+
+        int photoId = postDto.getPhotoId() != 0 ? postDto.getPhotoId() : 0 ;
+        if(photoId != 0 ){
+            photoDto = serverApiRepository.selectPhotoDetailInfo(photoId);
+        }
+
+        model.addAttribute("postDto", postDto);
+        model.addAttribute("photoDto", photoDto);
+
+        return "user/memoryEdit";
+    }
+
     @ResponseBody
     @GetMapping("/selectPlaceInfo.do")
     public Map<String,Object> selectPlaceInfo(@RequestParam Map<String,Object> data){
@@ -243,19 +264,4 @@ public class ServerApiController {
 
         return result;
     }
-
-//    @ResponseBody
-//    @GetMapping("/insertPost")
-//    public ResponseEntity<Void> insertPost (@RequestParam Map<String,Object> param) throws IOException {
-//        UserDto userDto = serverApiService.userInfo();  //로그인한 사용자 정보
-//        Map<String,Object> result = serverApiService.settingParamsAndInsert(param, userDto);
-//
-//        if(Integer.parseInt(result.get("postDtoInsertResult").toString()) != 1){
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//        return ResponseEntity.ok().build();
-//    }
-
-
 }

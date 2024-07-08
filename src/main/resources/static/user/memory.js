@@ -100,7 +100,7 @@ function fn_submit(){
         formData.append('locationRegistered', false);
     }
 
-    console.log('content ===>'+$("#content").val())
+    console.log('content ===>'+$("#road_address").val())
 
     $.ajax({
         url : "/api/server/insertPost.do",
