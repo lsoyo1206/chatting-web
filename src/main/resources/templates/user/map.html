@@ -53,7 +53,7 @@
     .title{
         color: white;
     }
-    .col-md-4 {
+    .col-md-3 {
         max-height: 90vh; /* 화면 높이의 90% 이상이 되도록 최대 높이 설정 */
         overflow-y: auto; /* 내용이 넘칠 경우 스크롤바 표시 */
     }
@@ -76,7 +76,20 @@
     .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
     .info .link {color: #5085BB;}
 
-
+    .ellipsis {
+        display: inline-block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 90%; /* 요소의 최대 너비 */
+        vertical-align: bottom; /* 텍스트의 정렬 */
+        font-size: 14px; /* 폰트 사이즈 */
+        line-height: 1.2em; /* 행 높이 */
+        color: #333; /* 글자색 */
+        background-color: #f0f0f0; /* 배경색 */
+        border-radius: 3px; /* 모서리 반지름 */
+        padding: 3px 6px; /* 내부 여백 */
+    }
 </style>
 <body>
 <div th:include="main/header"></div>
@@ -84,38 +97,51 @@
 <div class="container-fluid">
     <div class="row no-gutters">
         <!-- 왼쪽 게시글 영역 -->
-        <div class="col-md-4" id="post-column">
+        <div class="col-md-3" id="post-column">
             <div class="포스트">
                 <div th:each="post : ${postList}" class="post">
                     <div class="card border-primary mb-4">
                         <div class="card-header bg-primary text-white">
-                            <h5 class="card-title mb-0">
-                            <a class="title" th:if="${post['placeId']}" th:text="${post['title']}"
-                               th:data-postId="${post['postId']}"
-                              th:data-placeId="${post['placeId']}"
-                              th:data-placeName="${post['placeName']}"
-                              th:data-address="${post['address']}"
-                              th:data-longitude="${post['longitude']}"
-                              th:data-latitude="${post['latitude']}"
-                               th:data-title="${post['title']}"
-                               th:data-content="${post['content']}"></a>
+                            <h5 class="card-title mb-0" >
+                                <a class="title" th:if="${post['locationId']}" th:text="${post['title']}"
+                                   th:data-postId="${post['postId']}"
+                                  th:data-placeId="${post['locationId']}"
+                                  th:data-placeName="${post['locationName']}"
+                                  th:data-address="${post['address']}" th:data-roadAddress="${post['roadAddress']}"
+                                  th:data-longitude="${post['longitude']}"
+                                  th:data-latitude="${post['latitude']}"
+                                   th:data-title="${post['title']}"
+                                   th:data-filePath="${post['filePullPath'] != null ? post['filePullPath'] : ''}">
+                                </a>
 
-                                <a class="title" th:unless="${post['placeId']}"
+                                <a class="title" th:unless="${post['locationId']}"
                                    th:data-postId="${post['postId']}"
                                    th:data-title="${post['title']}"
                                    th:data-content="${post['content']}"
                                    th:text="${post['title']}"></a>
+
+                                <!-- 삭제 버튼 추가 -->
+                                <button type="button" class="btn btn-sm float-right ml-2" th:attr="data-postId=${post['postId']}" onclick="deletePost(this)">
+                                    X
+                                </button>
                             </h5>
                         </div>
                         <div class="card-body">
-                            <div th:if="${post['placeId']}" class="address-wrapper">
+                            <div th:if="${post['locationId']}" class="address-wrapper">
                                 <p class="card-address text-muted">
                                     <i class="fas fa-map-marker-alt"></i>
-                                    <span th:text="${post['address']}" th:onclick="|mapSearch(${post['placeId']})|" ></span>
+                                    <span th:text="${post['locationName']}"></span><br>
+                                    &nbsp;&nbsp; <span class="ellipsis" th:if="${post['address']}" th:text="${post['address']}" th:onclick="|mapSearch(${post['locationId']})|" ></span>
+                                    &nbsp;&nbsp; <span class="ellipsis" th:unless="${post['address']}" th:text="${post['roadAddress']}" th:onclick="|mapSearch(${post['locationId']})|" ></span>
                                 </p>
                             </div>
                             <div class="content-wrapper">
-                                <p class="card-text"><i class="fas fa-info-circle"></i> <span th:text="${post['content']}"></span></p>
+<!--                                <p class="card-text"><i class="fas fa-info-circle"></i> <span th:text="${post['content']}"></span></p>-->
+                                <p class="card-text">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="ellipsis" id="textOnlyContent" th:text="${post['textOnlyContent']}"></span>
+<!--                                    <textarea class="form-control" id="content" name="content" rows="5" th:text="${post['content']}"></textarea>-->
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -123,25 +149,25 @@
             </div>
 
             <!-- 모달 창 -->
-            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="myModalLabel"></h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">글 수정하기</button>
-                            <button type="button" class="btn btn-secondary">닫기</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!--            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">-->
+<!--                <div class="modal-dialog modal-dialog-centered" role="document">-->
+<!--                    <div class="modal-content">-->
+<!--                        <div class="modal-header">-->
+<!--                            <h5 class="modal-title" id="myModalLabel"></h5>-->
+<!--                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--                                <span aria-hidden="true">&times;</span>-->
+<!--                            </button>-->
+<!--                        </div>-->
+<!--                        <div class="modal-body">-->
+<!--&lt;!&ndash;                            <textarea class="form-control" id="content" name="content" rows="5" th:text="${post['content']}"></textarea>&ndash;&gt;-->
+<!--                        </div>-->
+<!--                        <div class="modal-footer">-->
+<!--                            <button type="button" class="btn btn-primary" data-dismiss="modal">글 수정하기</button>-->
+<!--                            <button type="button" class="btn btn-secondary">닫기</button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
 
             <ul class="pagination justify-content-center mt-3">
                 <li th:class="${userDto.currentPage == 0 or postList.isEmpty()} ? 'page-item disabled' : 'page-item'">
@@ -165,7 +191,7 @@
         </div>
 
         <!-- 오른쪽 지도 영역 -->
-        <div class="col-md-8" id="memorySave.do">
+        <div class="col-md-9" id="memorySave.do">
             <div class="yes_place">
                 <div id="map" style="position: absolute; top: 0; left: 8px; width: 100%; height: 96%;"></div>
             </div>

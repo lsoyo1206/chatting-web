@@ -1,7 +1,5 @@
- $(document).ready(function () {
-
-
- });
+$(document).ready(function() {
+});
 
 var files = [];
 document.getElementById('photos').addEventListener('change', function(event) {
@@ -85,20 +83,24 @@ function fn_submit(){
 
 
     if($("#locationRegistered").prop("checked") === true){
-        var placeInfoArray = $("#placeName").val().split('|');
-        locationName = placeInfoArray[0].trim(); // 가게 이름
-        locationAddress = placeInfoArray[1].trim(); // 주소
+        //var placeInfoArray = $("#placeName").val().split('|');
+        //locationName = placeInfoArray[0].trim(); // 가게 이름
+        //locationAddress = placeInfoArray[1].trim(); // 주소
+        locationName = $("#placeName").val();
+        address = $("#address").val();
+        roadAddress = $("#road_address").val();
 
         formData.append('locationRegistered', true);
         formData.append('locationName', locationName);
-        formData.append('locationAddress', locationAddress);
+        formData.append('address', address);
+        formData.append('roadAddress', roadAddress);
         formData.append('latitude', $("#latitude").val());
         formData.append('longitude', $("#longitude").val());
     }else{
         formData.append('locationRegistered', false);
     }
 
-    console.log(formData.locationRegistered)
+    console.log('content ===>'+$("#road_address").val())
 
     $.ajax({
         url : "/api/server/insertPost.do",
@@ -109,11 +111,15 @@ function fn_submit(){
         cache: false,
         data : formData,
         success : function(responseData) {
-            console.log(responseData.code)
+            var photoSize = $('#photos').get(0).files.length;
+
             if(responseData.code == 'R000'){
-                if(files.length !== 0 || files.length !== undefined){
+                if(photoSize > 0){
                     let postId = responseData.postId;
                     sendPhotoAndInsert(postId);
+                }else{
+                    alert("저장에 성공했습니다.");
+                    window.location.href = "/api/server/map.do"; // 추억저장소 페이지로 redirect
                 }
             }else{
                 alert("저장에 실패했습니다 네트워크를 확인해주세요");
@@ -359,7 +365,10 @@ function getListItem(index, places) {
         var address = places.address_name || '';
         var phone = places.phone || '';
 
-        $("#placeName").val(placeName+' | '+places.road_address_name);
+//        $("#placeName").val(placeName+' | '+places.road_address_name);
+        $("#placeName").val(placeName);
+        $("#address").val(address);             //도로명 주소
+        $("#road_address").val(roadAddress);    //지번
 
         const geocoder = new kakao.maps.services.Geocoder();
         geocoder.addressSearch(address, (result, status) => {

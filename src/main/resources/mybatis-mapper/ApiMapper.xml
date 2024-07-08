@@ -24,11 +24,29 @@
     </insert>
 
     <insert id="insertLocation" parameterType="Map" useGeneratedKeys="true" keyProperty="locationId">
-        INSERT INTO chattingWeb.TB_LOCATION (post_id, location_name, location_address
-        , longitude, latitude
+        INSERT INTO chattingWeb.TB_LOCATION (
+                post_id,
+                location_name,
+                <if test="address != null and address != ''">
+                    address,
+                </if>
+                <if test="roadAddress != null and roadAddress != ''">
+                    road_address,
+                </if>
+                longitude,
+                latitude
         )
-        VALUES (#{postId}, #{locationName}, #{locationAddress}
-        , #{longitude}, #{latitude}
+        VALUES (
+                #{postId},
+                #{locationName},
+                <if test="address != null and address != ''">
+                    #{address},
+                </if>
+                <if test="roadAddress != null and roadAddress != ''">
+                    #{roadAddress},
+                </if>
+                #{longitude},
+                #{latitude}
         )
     </insert>
 
@@ -40,28 +58,38 @@
 
     <select id="selectPostsByUserId" resultType="Map" parameterType="User">
         SELECT  p.post_id as postId,
-                p.place_id as placeId,
+                p.location_id as locationId,
                 p.user_id as userId,
                 p.title   as title,
                 p.content  as content,
                 p.location_registered as locationRegistered,
                 p.createDt as createDt,
-                p2.placeName as placeName,
+                p2.location_name as locationName,
                 p2.address as address,
+                p2.road_address as roadAddress,
                 p2.longitude as longitude,
-                p2.latitude as latitude
-        FROM chattingWeb.post p
-        LEFT JOIN chattingWeb.place p2 ON p.post_id = p2.post_id
+                p2.latitude as latitude,
+                tp.GROUP_V_ORDER as groupVOrder,
+                tp.FILE_PATH as filePath,
+                tp.FILE_NAME as fileName,
+                tp.FILE_EXTENSION as fileExtension
+        FROM (
+                SELECT * FROM chattingWeb.TB_POST WHERE user_yn = 'Y'
+            ) p
+        LEFT JOIN chattingWeb.TB_LOCATION p2 ON p.post_id = p2.post_id
+        LEFT JOIN chattingWeb.TB_PHOTO tp ON p.post_id = tp.post_id
         WHERE 1=1
         AND p.user_yn = 'Y'
         AND p.user_id = #{userId}
+        AND tp.GROUP_V_ORDER = 0  OR tp.GROUP_V_ORDER is null
         order by p.post_id desc , p.createDt
         LIMIT #{start}, #{pageSize}
     </select>
+
     <select id="selectPostsByUserIdTotalPage" resultType="int" parameterType="User">
         SELECT CEIL(count(*)/5)
-        FROM chattingWeb.post p
-        LEFT JOIN chattingWeb.place p2 ON p.post_id = p2.post_id
+        FROM chattingWeb.TB_POST p
+        LEFT JOIN chattingWeb.TB_LOCATION p2 ON p.post_id = p2.post_id
         WHERE 1=1
         AND p.user_yn = 'Y'
         AND p.user_id = #{userId}
@@ -94,10 +122,29 @@
         SET photo_id = #{photoId}
         WHERE post_id = #{postId}
     </update>
-    <update id="updatePhoteUpfilePath" parameterType="Map">
-        UPDATE chattingWeb.PhotoUpload
-        SET path = #{path}
-        WHERE photo_id = #{photoId}
+
+    <update id="updatePostId" parameterType="Map">
+        UPDATE chattingWeb.TB_POST
+        SET photo_id = #{photoId}
+        WHERE post_id = #{postId}
+    </update>
+
+    <update id="deletePostTable" parameterType="int">
+        update chattingWeb.TB_POST
+        SET user_yn = 'N'
+        WHERE post_id = #{postId}
+    </update>
+
+    <update id="deleteLocationTable" parameterType="int">
+        update chattingWeb.TB_LOCATION
+        SET use_yn ='N'
+        WHERE post_id = #{postId}
+    </update>
+
+    <update id="deletePhotoTable" parameterType="int">
+        update chattingWeb.TB_PHOTO
+        SET user_yn = 'N'
+        WHERE post_id = #{postId}
     </update>
 
     <select id="selectPlaceInfo" resultType="int" parameterType="Map">
@@ -105,5 +152,37 @@
         from chattingWeb.place p
         where 1=1
           and   p.place_id =#{placeId}
+    </select>
+
+    <select id="selectPostDetailInfo" resultType="PostDto" parameterType="Map">
+        SELECT
+                p.post_id as postId,
+                p.location_id as locationId,
+                p.photo_id as photoId,
+                p.title as title,
+                p.content as content,
+                p.location_registered as locationRegistered,
+                p2.location_name as locationName,
+                p2.address as address,
+                p2.road_address as roadAddress
+        FROM chattingWeb.TB_POST p
+        LEFT JOIN chattingWeb.TB_LOCATION p2 ON p.post_id = p2.post_id
+        WHERE 1=1
+        AND p.user_yn = 'Y'
+        AND p.user_id = #{userId}
+        AND p.post_id = #{postId}
+    </select>
+
+    <select id="selectPhotoDetailInfo" resultType="PhotoDto" parameterType="int">
+        SELECT
+                p.photo_id as photoId,
+                p.GROUP_V_ORDER as groupVOrder,
+                p.FILE_PATH as filePath,
+                p.FILE_NAME as fileName,
+                p.FILE_EXTENSION as fileExtension
+        FROM chattingWeb.TB_PHOTO p
+        WHERE 1=1
+        AND p.user_yn = 'Y'
+        AND p.post_id  = #{postId}
     </select>
 </mapper>

@@ -53,14 +53,20 @@ function initSetting(){
         let placeId = title.getAttribute('data-placeId');
         let placeName = title.getAttribute('data-placeName');
         let address = title.getAttribute('data-address');
+        let roadAddress = title.getAttribute('data-roadAddress');
         let longitude = title.getAttribute('data-longitude');
         let latitude = title.getAttribute('data-latitude');
+        let filePullPath = title.getAttribute('data-filePath');
+
+        console.log('roadAddress ===>'+roadAddress)
 
         if (placeId && longitude && latitude) {
             let data = {
                 placeId   : placeId,
                 placeName : placeName,
+                filePullPath : filePullPath,
                 address   : address,
+                roadAddress : roadAddress,
                 longitude : longitude,
                 latitude  : latitude,
                 latlng    : new kakao.maps.LatLng(latitude, longitude)
@@ -95,6 +101,8 @@ function initSetting(){
 
         //지도에 마커 표시
         var imageSize = new kakao.maps.Size(24, 35);
+        var fileImgSrc = dataList[i].filePullPath;
+        console.log('fileImgSrc==>'+fileImgSrc)
         var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
         var marker = new kakao.maps.Marker({
            map: map, // 마커를 표시할 지도
@@ -103,11 +111,11 @@ function initSetting(){
        });
 
         var data = dataList[i];
-        settingMapOverRay(data, map, marker)
+        settingMapOverRay(data, map, marker, fileImgSrc)
     }
 }
 
-function settingMapOverRay(data, map, marker){
+function settingMapOverRay(data, map, marker, fileImgSrc){
     var content = document.createElement('div');
     content.classList.add('wrap');
 
@@ -117,6 +125,9 @@ function settingMapOverRay(data, map, marker){
     var titleDiv = document.createElement('div');
     titleDiv.classList.add('title');
     titleDiv.textContent = data.placeName;
+    titleDiv.style.color = "#333";
+    titleDiv.style.borderRadius = "8px";
+
 
     var closeDiv = document.createElement('div');
     closeDiv.classList.add('close');
@@ -133,7 +144,7 @@ function settingMapOverRay(data, map, marker){
     var imgDiv = document.createElement('div');
     imgDiv.classList.add('img');
     var img = document.createElement('img');
-    img.setAttribute('src', 'https://www.highziumstudio.com/wp-content/uploads/2022/11/03_1345-copy-1-scaled-1-486x657.jpg');
+    img.setAttribute('src', fileImgSrc);  //marker 클릭시 나오는 이미지
     img.setAttribute('width', '73');
     img.setAttribute('height', '70');
     imgDiv.appendChild(img);
@@ -141,20 +152,34 @@ function settingMapOverRay(data, map, marker){
     var descDiv = document.createElement('div');
     descDiv.classList.add('desc');
 
-    var jibunDiv = document.createElement('div');
-    jibunDiv.classList.add('jibun', 'ellipsis');
-    jibunDiv.textContent = data.address;
+    if(data.address != null){
+        var doroDiv = document.createElement('div');
+        doroDiv.classList.add('jibun', 'ellipsis');
+        doroDiv.textContent = "도로명 : " + data.address;
+        descDiv.appendChild(doroDiv);
+    }
+    if(data.roadAddress != null){
+        var breakDiv = document.createElement('div');
+        doroDiv.style.marginBottom = '5px';
+        descDiv.appendChild(breakDiv);
 
-    var linkDiv = document.createElement('div');
-    var linkA = document.createElement('a');
-    linkA.setAttribute('href', 'https://www.kakaocorp.com/main');
-    linkA.setAttribute('target', '_blank');
-    linkA.classList.add('link');
-    linkA.textContent = '홈페이지';
-    linkDiv.appendChild(linkA);
+        var jibunDiv = document.createElement('div');
+        jibunDiv.classList.add('jibun', 'ellipsis');
+        jibunDiv.textContent = "지번  : " + data.roadAddress;
+        doroDiv.style.marginBottom = '5px';
+        descDiv.appendChild(jibunDiv);
+    }
 
-    descDiv.appendChild(jibunDiv);
-    descDiv.appendChild(linkDiv);
+
+//    var linkDiv = document.createElement('div');
+//    var linkA = document.createElement('a');
+//    linkA.setAttribute('href', 'https://www.kakaocorp.com/main');
+//    linkA.setAttribute('target', '_blank');
+//    linkA.classList.add('link');
+//    linkA.textContent = '홈페이지';
+//    linkDiv.appendChild(linkA);
+
+//    descDiv.appendChild(linkDiv);
 
     bodyDiv.appendChild(imgDiv);
     bodyDiv.appendChild(descDiv);
@@ -215,13 +240,36 @@ function mapSearch(placeId){
     // map.panTo(moveLatLon);
 }
 
-$(".title").click(function() {
+$(".title").click(function() {      /* 상세페이지로 이동 */
     var postId = $(this).attr("data-postId");
-    var title = $(this).attr("data-title");
-    var content = $(this).attr("data-content");
     console.log("Clicked post ID: " + postId);
 
-    $("#myModalLabel").text(title);
-    $(".modal-body").text(content);
-    $("#myModal").modal("show");
+    var newUrl = "/api/server/memoryEdit.do?postId=" + postId;
+    window.location.href = newUrl
 });
+
+function deletePost(button) {
+    var postId = $(button).attr("data-postId");
+    console.log("Deleting post with ID: " + postId);
+
+    // AJAX 요청을 통해 삭제 처리
+    $.ajax({
+        url: "/api/server/deletePost.do",
+        type: "post",
+        data: { postId: postId },
+        success: function(response) {
+            console.log(response.code)
+            if(response.code == 'R000'){
+                alert("삭제 성공했습니다.");
+                window.location.href = "/api/server/map.do"; // 추억저장소 페이지로 redirect
+            }else{
+                alert("삭제에 실패했습니다 네트워크를 확인해주세요");
+            }
+
+        },
+        error: function(xhr, status, error) {
+            console.error("Error deleting post: " + error);
+        }
+    });
+}
+

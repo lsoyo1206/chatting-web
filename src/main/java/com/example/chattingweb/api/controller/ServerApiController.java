@@ -9,10 +9,13 @@ import com.example.chattingweb.api.service.ServerApiService;
 import com.example.chattingweb.main.dto.UserDto;
 import com.example.chattingweb.main.service.impl.MainService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,6 +27,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -51,9 +55,29 @@ public class ServerApiController {
     public String memorySave(Model model){
         UserDto userDto = serverApiService.userInfo();  //사용자 정보
         logger.info("/memorySave.do userInfo = {}",  userDto.toString());
-
-        //model.addAttribute("userDto",userDto);
+        model.addAttribute("userDto",userDto);
         return "user/memorySave";
+    }
+
+    @GetMapping("/memoryEdit.do")
+    public String memoryEdit(@RequestParam("postId") String postId, Model model){
+        UserDto userDto = serverApiService.userInfo();
+        Map<String,Object> selectParam = new HashMap<>();
+        selectParam.put("postId", postId);
+        selectParam.put("userId", userDto.getUserId());
+
+        PhotoDto photoDto = new PhotoDto();
+        PostDto postDto = serverApiRepository.selectPostDetailInfo(selectParam);
+
+        int photoId = postDto.getPhotoId() != 0 ? postDto.getPhotoId() : 0 ;
+        if(photoId != 0 ){
+            photoDto = serverApiRepository.selectPhotoDetailInfo(photoId);
+        }
+
+        model.addAttribute("postDto", postDto);
+        model.addAttribute("photoDto", photoDto);
+
+        return "user/memoryEdit";
     }
 
     @ResponseBody
@@ -76,6 +100,22 @@ public class ServerApiController {
         userDto.setPageSize(5);
         userDto.setTotalPages(totalPages);
         List<Map<String,Object>> postList = serverApiService.settingPostList(userDto);
+
+        for(int i=0 ; i<postList.size() ; i++){
+            String htmlString = String.valueOf(postList.get(i).get("content"));
+            String textOnlyContent = Jsoup.parse(htmlString).text();
+            postList.get(i).put("textOnlyContent", textOnlyContent); //content html 부분 제외한 텍스트 부분만 추출
+
+            if(postList.get(i).get("filePath") != null){    //사진 pullPath 추출
+                StringBuilder fileBuilder = new StringBuilder();
+                fileBuilder.append(String.valueOf(postList.get(i).get("filePath")));
+                fileBuilder.append(File.separator);
+                fileBuilder.append(String.valueOf(postList.get(i).get("fileName")));
+                fileBuilder.append(String.valueOf(postList.get(i).get("fileExtension")));
+                String file = fileBuilder.toString();
+                postList.get(i).put("filePullPath", file);
+            }
+        }
 
         model.addAttribute("postList", postList);
         model.addAttribute("userDto",userDto);      //사용자 정보
@@ -225,18 +265,47 @@ public class ServerApiController {
         return result;
     }
 
-//    @ResponseBody
-//    @GetMapping("/insertPost")
-//    public ResponseEntity<Void> insertPost (@RequestParam Map<String,Object> param) throws IOException {
-//        UserDto userDto = serverApiService.userInfo();  //로그인한 사용자 정보
-//        Map<String,Object> result = serverApiService.settingParamsAndInsert(param, userDto);
-//
-//        if(Integer.parseInt(result.get("postDtoInsertResult").toString()) != 1){
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//        return ResponseEntity.ok().build();
-//    }
+    @RequestMapping(value = "/deletePost.do", method = {RequestMethod.POST})
+    @ResponseBody
+    public Map<String,Object> deletePost(@RequestParam("postId") String postId, Model model){
+        Map<String,Object> result = new HashMap<>();
+        String msg = "";
+        String code = "";
+        int updatePostResult = 0;
+        int updateLocationResult = 0;
+        int updatePhotoResult = 0;
 
+        UserDto userDto = serverApiService.userInfo();
+        Map<String,Object> selectParam = new HashMap<>();
+        selectParam.put("postId", postId);
+        selectParam.put("userId", userDto.getUserId());
 
+        PostDto postDto = serverApiRepository.selectPostDetailInfo(selectParam);
+        updatePostResult = serverApiRepository.deletePostTable(Integer.parseInt(String.valueOf(postId)));
+
+        if(updatePostResult == 1 && "Y".equals(postDto.getLocationRegistered())){
+            updateLocationResult = serverApiRepository.deleteLocationTable(Integer.parseInt(String.valueOf(postId)));
+        }else{
+            updateLocationResult = 1;
+        }
+
+        if(updatePostResult == 1 && postDto.getPhotoId() != 0){
+            updatePhotoResult = serverApiRepository.deletePhotoTable(Integer.parseInt(String.valueOf(postId)));
+        }else{
+            updatePhotoResult = 1;
+        }
+
+        if(updatePostResult == 1 && updateLocationResult == 1 && updatePhotoResult == 1){
+            code = "R000";
+            msg = "SUCCESS";
+        }else{
+            code = "R001";
+            msg ="FAIL";
+        }
+
+        result.put("msg", msg);
+        result.put("code", code);
+
+        return result;
+    }
 }

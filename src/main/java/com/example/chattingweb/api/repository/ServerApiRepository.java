@@ -21,8 +21,14 @@ public interface ServerApiRepository {
     public int selectPostsByUserIdTotalPage(UserDto userDto);
     public int insertPhote(PhotoDto photoDto);
     public int updatePhoteUploadPhoteId(Map<String,Object> postDtoMap);
-    //파일pah 업데이트
-    public int updatePhoteUpfilePath(Map<String,Object> postDtoMap);
+    public int updatePostId(PhotoDto photoDto);
     public Map<String,Object> selectPlaceInfo(int placeId);
+    public PostDto selectPostDetailInfo(Map<String,Object> selectParam);
+    public PhotoDto selectPhotoDetailInfo(int photoId);
+
+    public int deletePostTable(int postId);
+    public int deleteLocationTable(int postId);
+    public int deletePhotoTable(int postId);
+
 
 }
