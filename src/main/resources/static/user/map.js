@@ -55,11 +55,13 @@ function initSetting(){
         let address = title.getAttribute('data-address');
         let longitude = title.getAttribute('data-longitude');
         let latitude = title.getAttribute('data-latitude');
+        let filePullPath = title.getAttribute('data-filePath');
 
         if (placeId && longitude && latitude) {
             let data = {
                 placeId   : placeId,
                 placeName : placeName,
+                filePullPath : filePullPath,
                 address   : address,
                 longitude : longitude,
                 latitude  : latitude,
@@ -95,6 +97,8 @@ function initSetting(){
 
         //지도에 마커 표시
         var imageSize = new kakao.maps.Size(24, 35);
+        var fileImgSrc = dataList[i].filePullPath;
+        console.log('fileImgSrc==>'+fileImgSrc)
         var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
         var marker = new kakao.maps.Marker({
            map: map, // 마커를 표시할 지도
@@ -103,11 +107,11 @@ function initSetting(){
        });
 
         var data = dataList[i];
-        settingMapOverRay(data, map, marker)
+        settingMapOverRay(data, map, marker, fileImgSrc)
     }
 }
 
-function settingMapOverRay(data, map, marker){
+function settingMapOverRay(data, map, marker, fileImgSrc){
     var content = document.createElement('div');
     content.classList.add('wrap');
 
@@ -133,7 +137,7 @@ function settingMapOverRay(data, map, marker){
     var imgDiv = document.createElement('div');
     imgDiv.classList.add('img');
     var img = document.createElement('img');
-    img.setAttribute('src', 'https://www.highziumstudio.com/wp-content/uploads/2022/11/03_1345-copy-1-scaled-1-486x657.jpg');
+    img.setAttribute('src', fileImgSrc);  //marker 클릭시 나오는 이미지
     img.setAttribute('width', '73');
     img.setAttribute('height', '70');
     imgDiv.appendChild(img);

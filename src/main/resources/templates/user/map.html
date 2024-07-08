@@ -75,8 +75,6 @@
     .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
     .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
     .info .link {color: #5085BB;}
-
-
 </style>
 <body>
 <div th:include="main/header"></div>
@@ -90,17 +88,18 @@
                     <div class="card border-primary mb-4">
                         <div class="card-header bg-primary text-white">
                             <h5 class="card-title mb-0">
-                            <a class="title" th:if="${post['placeId']}" th:text="${post['title']}"
+                            <a class="title" th:if="${post['locationId']}" th:text="${post['title']}"
                                th:data-postId="${post['postId']}"
-                              th:data-placeId="${post['placeId']}"
-                              th:data-placeName="${post['placeName']}"
-                              th:data-address="${post['address']}"
+                              th:data-placeId="${post['locationId']}"
+                              th:data-placeName="${post['locationName']}"
+                              th:data-address="${post['address']}" th:data-roadAddress="${post['roadAddress']}"
                               th:data-longitude="${post['longitude']}"
                               th:data-latitude="${post['latitude']}"
                                th:data-title="${post['title']}"
-                               th:data-content="${post['content']}"></a>
+                               th:data-filePath="${post['filePullPath'] != null ? post['filePullPath'] : ''}">
+                            </a>
 
-                                <a class="title" th:unless="${post['placeId']}"
+                                <a class="title" th:unless="${post['locationId']}"
                                    th:data-postId="${post['postId']}"
                                    th:data-title="${post['title']}"
                                    th:data-content="${post['content']}"
@@ -108,14 +107,20 @@
                             </h5>
                         </div>
                         <div class="card-body">
-                            <div th:if="${post['placeId']}" class="address-wrapper">
+                            <div th:if="${post['locationId']}" class="address-wrapper">
                                 <p class="card-address text-muted">
                                     <i class="fas fa-map-marker-alt"></i>
-                                    <span th:text="${post['address']}" th:onclick="|mapSearch(${post['placeId']})|" ></span>
+                                    <span th:text="${post['locationName']}"></span><br>
+                                    &nbsp;&nbsp; <span th:if="${post['address']}" th:text="${post['address']}" th:onclick="|mapSearch(${post['locationId']})|" ></span>
+                                    &nbsp;&nbsp; <span th:unless="${post['address']}" th:text="${post['roadAddress']}" th:onclick="|mapSearch(${post['locationId']})|" ></span>
                                 </p>
                             </div>
                             <div class="content-wrapper">
-                                <p class="card-text"><i class="fas fa-info-circle"></i> <span th:text="${post['content']}"></span></p>
+<!--                                <p class="card-text"><i class="fas fa-info-circle"></i> <span th:text="${post['content']}"></span></p>-->
+                                <p class="card-text"><i class="fas fa-info-circle"></i>
+                                    <span th:text="${post['textOnlyContent']}"></span>
+<!--                                    <textarea class="form-control" id="content" name="content" rows="5" th:text="${post['content']}"></textarea>-->
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -133,7 +138,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-
+<!--                            <textarea class="form-control" id="content" name="content" rows="5" th:text="${post['content']}"></textarea>-->
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary" data-dismiss="modal">글 수정하기</button>

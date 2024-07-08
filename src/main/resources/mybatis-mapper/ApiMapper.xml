@@ -58,28 +58,35 @@
 
     <select id="selectPostsByUserId" resultType="Map" parameterType="User">
         SELECT  p.post_id as postId,
-                p.place_id as placeId,
+                p.location_id as locationId,
                 p.user_id as userId,
                 p.title   as title,
                 p.content  as content,
                 p.location_registered as locationRegistered,
                 p.createDt as createDt,
-                p2.placeName as placeName,
+                p2.location_name as locationName,
                 p2.address as address,
+                p2.road_address as roadAddress,
                 p2.longitude as longitude,
-                p2.latitude as latitude
-        FROM chattingWeb.post p
-        LEFT JOIN chattingWeb.place p2 ON p.post_id = p2.post_id
+                p2.latitude as latitude,
+                tp.GROUP_V_ORDER as groupVOrder,
+                tp.FILE_PATH as filePath,
+                tp.FILE_NAME as fileName,
+                tp.FILE_EXTENSION as fileExtension
+        FROM chattingWeb.TB_POST p
+        LEFT JOIN chattingWeb.TB_LOCATION p2 ON p.post_id = p2.post_id
+        LEFT JOIN chattingWeb.TB_PHOTO tp ON p.post_id = tp.post_id
         WHERE 1=1
         AND p.user_yn = 'Y'
         AND p.user_id = #{userId}
+        AND tp.GROUP_V_ORDER = 0  OR tp.GROUP_V_ORDER is null
         order by p.post_id desc , p.createDt
         LIMIT #{start}, #{pageSize}
     </select>
     <select id="selectPostsByUserIdTotalPage" resultType="int" parameterType="User">
         SELECT CEIL(count(*)/5)
-        FROM chattingWeb.post p
-        LEFT JOIN chattingWeb.place p2 ON p.post_id = p2.post_id
+        FROM chattingWeb.TB_POST p
+        LEFT JOIN chattingWeb.TB_LOCATION p2 ON p.post_id = p2.post_id
         WHERE 1=1
         AND p.user_yn = 'Y'
         AND p.user_id = #{userId}

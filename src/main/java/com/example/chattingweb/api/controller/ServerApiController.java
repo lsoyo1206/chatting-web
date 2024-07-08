@@ -9,10 +9,13 @@ import com.example.chattingweb.api.service.ServerApiService;
 import com.example.chattingweb.main.dto.UserDto;
 import com.example.chattingweb.main.service.impl.MainService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,6 +27,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -75,6 +79,22 @@ public class ServerApiController {
         userDto.setPageSize(5);
         userDto.setTotalPages(totalPages);
         List<Map<String,Object>> postList = serverApiService.settingPostList(userDto);
+
+        for(int i=0 ; i<postList.size() ; i++){
+            String htmlString = String.valueOf(postList.get(i).get("content"));
+            String textOnlyContent = Jsoup.parse(htmlString).text();
+            postList.get(i).put("textOnlyContent", textOnlyContent); //content html 부분 제외한 텍스트 부분만 추출
+
+            if(postList.get(i).get("filePath") != null){    //사진 pullPath 추출
+                StringBuilder fileBuilder = new StringBuilder();
+                fileBuilder.append(String.valueOf(postList.get(i).get("filePath")));
+                fileBuilder.append(File.separator);
+                fileBuilder.append(String.valueOf(postList.get(i).get("fileName")));
+                fileBuilder.append(String.valueOf(postList.get(i).get("fileExtension")));
+                String file = fileBuilder.toString();
+                postList.get(i).put("filePullPath", file);
+            }
+        }
 
         model.addAttribute("postList", postList);
         model.addAttribute("userDto",userDto);      //사용자 정보
