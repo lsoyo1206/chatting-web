@@ -1,5 +1,20 @@
 $(document).ready(function () {
     initSetting();
+
+    $(".btn-in").click(function(){
+        $('.btn-in').css("display","none");
+        $('.btn-out').css("display","block");
+//        $('.list-wrap').css("right","-380px");
+        $('.slide-btn').css("right","49px");
+//        $('.location .map_area').css("right","0");
+    });
+    $(".btn-out").click(function(){
+        $('.btn-in').css("display","block");
+        $('.btn-out').css("display","none");
+//        $('.list-wrap').css("right","0");
+        $('.slide-btn').css("right","435px");
+//        $('.location .map_area').css("right","360px");
+    });
 });
 let imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";  //커서 이미지 주소
 
@@ -252,7 +267,6 @@ function deletePost(button) {
     var postId = $(button).attr("data-postId");
     console.log("Deleting post with ID: " + postId);
 
-    // AJAX 요청을 통해 삭제 처리
     $.ajax({
         url: "/api/server/deletePost.do",
         type: "post",
