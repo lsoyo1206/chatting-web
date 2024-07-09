@@ -117,10 +117,51 @@ public class ServerApiController {
             }
         }
 
-        model.addAttribute("postList", postList);
-        model.addAttribute("userDto",userDto);      //사용자 정보
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String postListJson = objectMapper.writeValueAsString(postList);
 
+            // 모델에 JSON 문자열 추가
+            model.addAttribute("postList", postListJson);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        model.addAttribute("userDto", userDto);
         return "user/map";
+    }
+
+    @PostMapping("/postSearch.do")
+    public String postSearch(Model model, @RequestParam(defaultValue = "0", value="page") int page){
+
+        UserDto userDto = serverApiService.userInfo();
+        userDto.setPageSize(4);
+
+        //페이징 처리
+        int totalPages = serverApiRepository.selectPostsByUserIdTotalPage(userDto);
+        userDto.setCurrentPage(page);
+        userDto.setTotalPages(totalPages);
+        List<Map<String,Object>> postList = serverApiService.settingPostList(userDto);
+
+        for(int i=0 ; i<postList.size() ; i++){
+            String htmlString = String.valueOf(postList.get(i).get("content"));
+            String textOnlyContent = Jsoup.parse(htmlString).text();
+            postList.get(i).put("textOnlyContent", textOnlyContent); //content html 부분 제외한 텍스트 부분만 추출
+
+            if(postList.get(i).get("filePath") != null){    //사진 pullPath 추출
+                StringBuilder fileBuilder = new StringBuilder();
+                fileBuilder.append(String.valueOf(postList.get(i).get("filePath")));
+                fileBuilder.append(File.separator);
+                fileBuilder.append(String.valueOf(postList.get(i).get("fileName")));
+                fileBuilder.append(String.valueOf(postList.get(i).get("fileExtension")));
+                String file = fileBuilder.toString();
+                postList.get(i).put("filePullPath", file);
+            }
+        }
+
+        model.addAttribute("postList", postList);
+        model.addAttribute("userDto", userDto);
+        return "user/mapSide";
     }
 
     @ResponseBody

@@ -6,9 +6,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
-<script>
-
-</script>
 
 <style>
     .addressName{
@@ -102,121 +99,29 @@
         margin-bottom:2rem
     }
 
+
 </style>
 <body>
-<div th:include="main/header"></div>
+<div th:include="main/header" id="header"></div>
+<input type="hidden" name="postList" th:value="${postList}">
+<!--<input type="hidden" name="userDtoJson" th:value="${userDtoJson}">-->
+
 <div style="margin-bottom:13px;"></div>
 <div class="container-fluid">
-    <div class="row no-gutters">
-        <!-- 왼쪽 게시글 영역 -->
-        <div class="col-md-3" id="post-column">
-            <div class="slide-btn">
-                <img th:src="@{/image/v2/btn-slide-in.png}" class="btn-in" alt="slide in button" style="display:none;">
-                <img th:src="@{/image/v2/btn-slide-out.png}" class="btn-out" alt="slide out button">
-            </div>
-
-            <div class="포스트">
-                <div th:each="post : ${postList}" class="post">
-                    <div class="card border-primary mb3">
-                        <div class="card-header bg-primary text-white" style="padding: 0.4rem ">
-                            <h5 class="card-title mb-0" >
-                                <a class="title" th:if="${post['locationId']}" th:text="${post['title']}"
-                                   th:data-postId="${post['postId']}"
-                                  th:data-placeId="${post['locationId']}"
-                                  th:data-placeName="${post['locationName']}"
-                                  th:data-address="${post['address']}" th:data-roadAddress="${post['roadAddress']}"
-                                  th:data-longitude="${post['longitude']}"
-                                  th:data-latitude="${post['latitude']}"
-                                   th:data-title="${post['title']}"
-                                   th:data-filePath="${post['filePullPath'] != null ? post['filePullPath'] : ''}">
-                                </a>
-
-                                <a class="title" th:unless="${post['locationId']}"
-                                   th:data-postId="${post['postId']}"
-                                   th:data-title="${post['title']}"
-                                   th:data-content="${post['content']}"
-                                   th:text="${post['title']}"></a>
-
-                                <!-- 삭제 버튼 추가 -->
-                                <button type="button" class="btn btn-sm float-right ml-2" th:attr="data-postId=${post['postId']}" onclick="deletePost(this)">
-                                    X
-                                </button>
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div th:if="${post['locationId']}" class="address-wrapper">
-                                <p class="card-address text-muted">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <span class="addressName" th:text="${post['locationName']}"></span><br> &nbsp;&nbsp;
-                                    <span class="ellipsis" th:if="${post['address']}" th:text="${post['address']}" th:onclick="|mapSearch(${post['locationId']})|" ></span>
-                                    &nbsp;<span class="ellipsis" th:unless="${post['address']}" th:text="${post['roadAddress']}" th:onclick="|mapSearch(${post['locationId']})|" ></span>
-                                </p>
-                            </div>
-                            <div class="content-wrapper">
-<!--                                <p class="card-text"><i class="fas fa-info-circle"></i> <span th:text="${post['content']}"></span></p>-->
-                                <p class="card-text">
-                                    <i class="fas fa-info-circle"></i>
-                                    <span class="ellipsis" id="textOnlyContent" th:text="${post['textOnlyContent']}"></span>
-<!--                                    <textarea class="form-control" id="content" name="content" rows="5" th:text="${post['content']}"></textarea>-->
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 모달 창 -->
-<!--            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">-->
-<!--                <div class="modal-dialog modal-dialog-centered" role="document">-->
-<!--                    <div class="modal-content">-->
-<!--                        <div class="modal-header">-->
-<!--                            <h5 class="modal-title" id="myModalLabel"></h5>-->
-<!--                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--                                <span aria-hidden="true">&times;</span>-->
-<!--                            </button>-->
-<!--                        </div>-->
-<!--                        <div class="modal-body">-->
-<!--&lt;!&ndash;                            <textarea class="form-control" id="content" name="content" rows="5" th:text="${post['content']}"></textarea>&ndash;&gt;-->
-<!--                        </div>-->
-<!--                        <div class="modal-footer">-->
-<!--                            <button type="button" class="btn btn-primary" data-dismiss="modal">글 수정하기</button>-->
-<!--                            <button type="button" class="btn btn-secondary">닫기</button>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-
-            <ul class="pagination justify-content-center mt-3">
-                <li th:class="${userDto.currentPage == 0 or postList.isEmpty()} ? 'page-item disabled' : 'page-item'">
-                    <a class="page-link" th:href="@{/api/server/map.do(page=0)}">&lt;&lt;</a>
-                </li>
-                <li th:class="${userDto.currentPage == 0 or postList.isEmpty()} ? 'page-item disabled' : 'page-item'">
-                    <a class="page-link" th:href="@{/api/server/map.do(page=${userDto.currentPage - 1})}">&lt;</a>
-                </li>
-                <th:block th:each="pageItem : ${#numbers.sequence(userDto.currentPage - 2, userDto.currentPage + 2)}" th:if="${pageItem >= 0 and pageItem < userDto.totalPages}">  <!-- 현재 페이지 기준으로 앞뒤로 2페이지씩만 표시 -->
-                    <li th:class="${userDto.currentPage == pageItem} ? 'page-item active' : 'page-item'">
-                        <a class="page-link" th:href="@{/api/server/map.do(page=${pageItem})}" th:text="${pageItem + 1}"></a>
-                    </li>
-                </th:block>
-                <li th:class="${userDto.currentPage + 1 == userDto.totalPages or postList.isEmpty()} ? 'page-item disabled' : 'page-item'">
-                    <a class="page-link" th:href="@{/api/server/map.do(page=${userDto.currentPage + 1})}">&gt;</a>
-                </li>
-                <li th:class="${userDto.currentPage + 1 == userDto.totalPages or postList.isEmpty()} ? 'page-item disabled' : 'page-item'">
-                    <a class="page-link" th:href="@{/api/server/map.do(page=${userDto.totalPages - 1})}">&gt;&gt;</a>
-                </li>
-            </ul>
-        </div>
-
+    <div class="col-md-3" id="post-column">
+        <div id="mapContent"></div>
+    </div>
+    <div class="col-md-9" id="map-column">
         <!-- 오른쪽 지도 영역 -->
-        <div class="col-md-9" id="memorySave.do">
+        <div id="memorySave">
             <div class="yes_place">
-                <div id="map" style="position: absolute; top: 0; left: 8px; width: 100%; height: 96%;"></div>
+                <div id="map"></div>
             </div>
             <div class="no_place text-center py-5" style="display: none;">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-6 offset-md-3">
-<!--                            <img src="https://source.unsplash.com/200x200/?travel" class="img-fluid mb-4 rounded-circle" alt="No places" style="width: 200px;">-->
+    <!--                            <img src="https://source.unsplash.com/200x200/?travel" class="img-fluid mb-4 rounded-circle" alt="No places" style="width: 200px;">-->
                             <h4 class="text-muted mb-3">지도에 표시할 장소가 없습니다.</h4>
                             <p class="text-muted">새로운 장소를 추가해보세요!</p>
                         </div>
@@ -224,6 +129,7 @@
                 </div>
             </div>
         </div>
+    </div>
 </div>
 
 <!-- kakao 지도 api -->
