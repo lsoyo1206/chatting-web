@@ -4,17 +4,18 @@ $(document).ready(function () {
     $(".btn-in").click(function(){
         $('.btn-in').css("display","none");
         $('.btn-out').css("display","block");
+        $('.slide-btn').css("right","435px");
 //        $('.list-wrap').css("right","-380px");
-        $('.slide-btn').css("right","49px");
 //        $('.location .map_area').css("right","0");
     });
     $(".btn-out").click(function(){
         $('.btn-in').css("display","block");
         $('.btn-out').css("display","none");
+        $('.slide-btn').css("right","49px");
 //        $('.list-wrap').css("right","0");
-        $('.slide-btn').css("right","435px");
 //        $('.location .map_area').css("right","360px");
     });
+
 });
 let imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";  //커서 이미지 주소
 
@@ -139,6 +140,7 @@ function settingMapOverRay(data, map, marker, fileImgSrc){
 
     var titleDiv = document.createElement('div');
     titleDiv.classList.add('title');
+    titleDiv.classList.add('locationTitle');
     titleDiv.textContent = data.placeName;
     titleDiv.style.color = "#333";
     titleDiv.style.borderRadius = "8px";

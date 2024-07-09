@@ -87,7 +87,7 @@
     </select>
 
     <select id="selectPostsByUserIdTotalPage" resultType="int" parameterType="User">
-        SELECT CEIL(count(*)/5)
+        SELECT CEIL(count(*)/#{pageSize})
         FROM chattingWeb.TB_POST p
         LEFT JOIN chattingWeb.TB_LOCATION p2 ON p.post_id = p2.post_id
         WHERE 1=1
