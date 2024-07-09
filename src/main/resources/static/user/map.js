@@ -1,19 +1,36 @@
 $(document).ready(function () {
     initSetting();
 
-    $(".btn-in").click(function(){
+    $(".btn-in").click(function(){ //postList 보이게
+//        $('#post-column').animate({width: '30%'}, 500, function() {
+//            $(this).show();
+//        });
+//        $('.btn-in').fadeOut(500, function() {
+//            $('.btn-out').fadeIn(500);
+//        });
+//        $('.slide-btn').animate({left: '24%'}, 500);
+//        $('#memorySave').removeClass('col-md-12').addClass('col-md-9');
+
+        $('#post-column').show();
         $('.btn-in').css("display","none");
         $('.btn-out').css("display","block");
-        $('.slide-btn').css("right","435px");
-//        $('.list-wrap').css("right","-380px");
-//        $('.location .map_area').css("right","0");
+        $('.slide-btn').css("left","24%");
+        $('#memorySave').removeClass('col-md-12').addClass('col-md-9');
     });
-    $(".btn-out").click(function(){
+    $(".btn-out").click(function(){ //postList 안보이게
+//        $('#post-column').animate({width: '10%'}, 500, function() {
+//            $(this).hide();
+//        });
+//        $('.btn-out').fadeOut(500, function() {
+//            $('.btn-in').fadeIn(500);
+//        });
+        $('.slide-btn').animate({left: '1%'}, 500);
+        $('#memorySave').removeClass('col-md-9').addClass('col-md-12');
+        $('#post-column').hide();
         $('.btn-in').css("display","block");
         $('.btn-out').css("display","none");
-        $('.slide-btn').css("right","49px");
-//        $('.list-wrap').css("right","0");
-//        $('.location .map_area').css("right","360px");
+        $('.slide-btn').css("left","1%");
+        $('#memorySave').removeClass('col-md-9').addClass('col-md-12');
     });
 
 });
