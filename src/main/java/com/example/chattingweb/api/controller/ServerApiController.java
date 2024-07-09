@@ -93,11 +93,11 @@ public class ServerApiController {
     public String map(Model model, @RequestParam(defaultValue = "0", value="page") int page){
 
         UserDto userDto = serverApiService.userInfo();
+        userDto.setPageSize(4);
 
         //페이징 처리
         int totalPages = serverApiRepository.selectPostsByUserIdTotalPage(userDto);
         userDto.setCurrentPage(page);
-        userDto.setPageSize(5);
         userDto.setTotalPages(totalPages);
         List<Map<String,Object>> postList = serverApiService.settingPostList(userDto);
 

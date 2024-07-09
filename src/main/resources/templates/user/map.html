@@ -11,52 +11,45 @@
 </script>
 
 <style>
-    /* 모달 스타일 */
-    .modal-content {
-        border-radius: 16px;
-        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+    .addressName{
+        color: #333;
+        font-size: 15px;
     }
-
-    /* 모달 헤더 스타일 */
-    .modal-header {
-        border: none;
-    }
-
-    .modal-title {
-        font-weight: bold;
-        font-size: 18px;
-    }
-
-    /* 모달 바디 스타일 */
-    .modal-body {
-        padding: 20px;
-    }
-
-    /* 모달 푸터 스타일 */
-    .modal-footer {
-        border: none;
-    }
-
-    /* 모달 닫기 버튼 스타일 */
-    .close {
-        font-size: 24px;
-        opacity: 0.7;
-    }
-
-    .close:hover {
-        opacity: 1;
+    .card-body{
+        padding: 1.05rem !important;
     }
 
     #post-column {
         position: relative;
+        padding-right: 1.04%; /* 스크롤바가 오른쪽에 나타나도록 여백 추가 */
+        padding-left:1%;
+        padding-left : 1.5%;
     }
-    .title{
+    .title {
         color: white;
+        font-size: 17px; /* 원하는 크기로 조정 */
+        font-family: 'Malgun Gothic', dotum, '돋움', sans-serif; /* 귀여운 글꼴로 변경 */
+        text-decoration: none; /* 밑줄 제거 */
+        transition: color 0.3s ease; /* 호버 효과를 위한 색상 전환 */
+
+        display: inline-block; /* 인라인 요소를 블록 요소로 변경하여 가운데 정렬을 적용 */
+        text-align: center; /* 가운데 정렬 */
+        padding: 4px 16px; /* 내부 여백 설정 */
+        cursor: pointer; /* 포인터 형태의 커서 */
+        margin: 0 auto; /* 가운데 정렬을 위해 좌우 마진을 자동으로 설정 */
     }
+
     .col-md-3 {
         max-height: 90vh; /* 화면 높이의 90% 이상이 되도록 최대 높이 설정 */
         overflow-y: auto; /* 내용이 넘칠 경우 스크롤바 표시 */
+        direction: rtl;
+        padding-left: 20px;
     }
+
+    .col-md-3 * {
+        direction: ltr; /* 내부 콘텐츠는 다시 왼쪽에서 오른쪽으로 읽히도록 설정 */
+    }
+
     html, body {
         overflow: hidden;
         height: 100%;
@@ -83,13 +76,32 @@
         white-space: nowrap;
         max-width: 90%; /* 요소의 최대 너비 */
         vertical-align: bottom; /* 텍스트의 정렬 */
-        font-size: 14px; /* 폰트 사이즈 */
+        font-size: 14.5px; /* 폰트 사이즈 */
         line-height: 1.2em; /* 행 높이 */
         color: #333; /* 글자색 */
         background-color: #f0f0f0; /* 배경색 */
         border-radius: 3px; /* 모서리 반지름 */
         padding: 3px 6px; /* 내부 여백 */
+        padding-right: 20px; /* 오른쪽 여백 추가 */
     }
+
+    .slide-btn {
+        position: absolute;
+        top: 50%;
+        right: 0; /* 버튼이 제대로 보이도록 조정 */
+        transform: translateY(-50%);
+        z-index: 1000; /* 버튼이 다른 요소 위에 보이도록 설정 */
+        transition: transform 0.3s ease; /* 움직임이 부드럽게 */
+    }
+
+    .container-fluid{
+        padding-left: 0 !important; /* 필요시 body의 오른쪽 padding을 제거 */
+    }
+
+    .mb3{
+        margin-bottom:2rem
+    }
+
 </style>
 <body>
 <div th:include="main/header"></div>
@@ -98,10 +110,15 @@
     <div class="row no-gutters">
         <!-- 왼쪽 게시글 영역 -->
         <div class="col-md-3" id="post-column">
+            <div class="slide-btn">
+                <img th:src="@{/image/v2/btn-slide-in.png}" class="btn-in" alt="slide in button" style="display:none;">
+                <img th:src="@{/image/v2/btn-slide-out.png}" class="btn-out" alt="slide out button">
+            </div>
+
             <div class="포스트">
                 <div th:each="post : ${postList}" class="post">
-                    <div class="card border-primary mb-4">
-                        <div class="card-header bg-primary text-white">
+                    <div class="card border-primary mb3">
+                        <div class="card-header bg-primary text-white" style="padding: 0.4rem ">
                             <h5 class="card-title mb-0" >
                                 <a class="title" th:if="${post['locationId']}" th:text="${post['title']}"
                                    th:data-postId="${post['postId']}"
@@ -130,9 +147,9 @@
                             <div th:if="${post['locationId']}" class="address-wrapper">
                                 <p class="card-address text-muted">
                                     <i class="fas fa-map-marker-alt"></i>
-                                    <span th:text="${post['locationName']}"></span><br>
-                                    &nbsp;&nbsp; <span class="ellipsis" th:if="${post['address']}" th:text="${post['address']}" th:onclick="|mapSearch(${post['locationId']})|" ></span>
-                                    &nbsp;&nbsp; <span class="ellipsis" th:unless="${post['address']}" th:text="${post['roadAddress']}" th:onclick="|mapSearch(${post['locationId']})|" ></span>
+                                    <span class="addressName" th:text="${post['locationName']}"></span><br> &nbsp;&nbsp;
+                                    <span class="ellipsis" th:if="${post['address']}" th:text="${post['address']}" th:onclick="|mapSearch(${post['locationId']})|" ></span>
+                                    &nbsp;<span class="ellipsis" th:unless="${post['address']}" th:text="${post['roadAddress']}" th:onclick="|mapSearch(${post['locationId']})|" ></span>
                                 </p>
                             </div>
                             <div class="content-wrapper">

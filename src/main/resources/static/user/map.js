@@ -1,5 +1,21 @@
 $(document).ready(function () {
     initSetting();
+
+    $(".btn-in").click(function(){
+        $('.btn-in').css("display","none");
+        $('.btn-out').css("display","block");
+        $('.slide-btn').css("right","435px");
+//        $('.list-wrap').css("right","-380px");
+//        $('.location .map_area').css("right","0");
+    });
+    $(".btn-out").click(function(){
+        $('.btn-in').css("display","block");
+        $('.btn-out').css("display","none");
+        $('.slide-btn').css("right","49px");
+//        $('.list-wrap').css("right","0");
+//        $('.location .map_area').css("right","360px");
+    });
+
 });
 let imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";  //커서 이미지 주소
 
@@ -124,10 +140,9 @@ function settingMapOverRay(data, map, marker, fileImgSrc){
 
     var titleDiv = document.createElement('div');
     titleDiv.classList.add('title');
+    titleDiv.classList.add('locationTitle');
     titleDiv.textContent = data.placeName;
-    titleDiv.style.color = "#333";
-    titleDiv.style.borderRadius = "8px";
-
+    titleDiv.style.cssText = "background-color: #eee !important; color: #333;";
 
     var closeDiv = document.createElement('div');
     closeDiv.classList.add('close');
@@ -249,27 +264,28 @@ $(".title").click(function() {      /* 상세페이지로 이동 */
 });
 
 function deletePost(button) {
-    var postId = $(button).attr("data-postId");
-    console.log("Deleting post with ID: " + postId);
+    if (confirm("게시물을 삭제하시겠습니까?")) {
+        var postId = $(button).attr("data-postId");
+        console.log("Deleting post with ID: " + postId);
 
-    // AJAX 요청을 통해 삭제 처리
-    $.ajax({
-        url: "/api/server/deletePost.do",
-        type: "post",
-        data: { postId: postId },
-        success: function(response) {
-            console.log(response.code)
-            if(response.code == 'R000'){
-                alert("삭제 성공했습니다.");
-                window.location.href = "/api/server/map.do"; // 추억저장소 페이지로 redirect
-            }else{
-                alert("삭제에 실패했습니다 네트워크를 확인해주세요");
+        $.ajax({
+            url: "/api/server/deletePost.do",
+            type: "post",
+            data: { postId: postId },
+            success: function(response) {
+                console.log(response.code)
+                if(response.code == 'R000'){
+                    alert("삭제 성공했습니다.");
+                    window.location.href = "/api/server/map.do"; // 추억저장소 페이지로 redirect
+                }else{
+                    alert("삭제에 실패했습니다 네트워크를 확인해주세요");
+                }
+
+            },
+            error: function(xhr, status, error) {
+                console.error("Error deleting post: " + error);
             }
-
-        },
-        error: function(xhr, status, error) {
-            console.error("Error deleting post: " + error);
-        }
-    });
+        });
+    }
 }
 
