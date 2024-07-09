@@ -12,6 +12,7 @@ $(document).ready(function () {
 //        $('#memorySave').removeClass('col-md-12').addClass('col-md-9');
 
         $('#post-column').show();
+//        $('#post-column').animate({width: '100%'}, 500)
         $('.btn-in').css("display","none");
         $('.btn-out').css("display","block");
         $('.slide-btn').css("left","24%");
@@ -24,9 +25,10 @@ $(document).ready(function () {
 //        $('.btn-out').fadeOut(500, function() {
 //            $('.btn-in').fadeIn(500);
 //        });
-        $('.slide-btn').animate({left: '1%'}, 500);
-        $('#memorySave').removeClass('col-md-9').addClass('col-md-12');
+
         $('#post-column').hide();
+//        $('#post-column').animate({width: '10%'}, 500)
+        $('.slide-btn').animate({left: '1%'}, 500);
         $('.btn-in').css("display","block");
         $('.btn-out').css("display","none");
         $('.slide-btn').css("left","1%");
