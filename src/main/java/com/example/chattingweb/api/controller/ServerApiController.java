@@ -30,10 +30,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j  //로그
 @Controller
@@ -66,18 +63,19 @@ public class ServerApiController {
         selectParam.put("postId", postId);
         selectParam.put("userId", userDto.getUserId());
 
-        PhotoDto photoDto = new PhotoDto();
-        PostDto postDto = serverApiRepository.selectPostDetailInfo(selectParam);
+        List<PhotoDto> photoDto = new ArrayList<>();
+          PostDto postDto = serverApiRepository.selectPostDetailInfo(selectParam);
 
         int photoId = postDto.getPhotoId() != 0 ? postDto.getPhotoId() : 0 ;
-        if(photoId != 0 ){
-            photoDto = serverApiRepository.selectPhotoDetailInfo(photoId);
+         if(photoId != 0 ){
+            photoDto = serverApiRepository.selectPhotoDetailInfo(Integer.parseInt(postId));
         }
 
+        model.addAttribute("userDto", userDto);
         model.addAttribute("postDto", postDto);
         model.addAttribute("photoDto", photoDto);
 
-        return "user/memoryEdit";
+        return "user/memorySave";
     }
 
     @ResponseBody

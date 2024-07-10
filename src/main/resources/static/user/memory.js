@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    fileSetting();
 });
 
 var files = [];
@@ -482,4 +483,41 @@ function findLatitudeLongitude(address){
             }
         });
     });
+}
+
+function fileSetting(){
+    var photos = $("#photoDto").val();
+
+   files = [];
+    var input = photos.target;
+    var label = photos.nextElementSibling;
+    var fileContainer = document.getElementById('thumbnail-container');
+    fileContainer.innerHTML = ''; // 컨테이너 초기화
+
+    if (photos && photos.length > 0) {
+        for (var i = 0; i < photos.length; i++) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var thumbnail = document.createElement('img');
+                thumbnail.classList.add('thumbnail');
+                thumbnail.setAttribute('src', e.photos.filePath);
+                fileContainer.appendChild(thumbnail);
+                console.log('e.photos ==>'+e.photos)
+            }
+            reader.readAsDataURL(photos[i]);
+        }
+    }
+    // 파일 선택 시 선택한 파일 이름을 표시
+    if (photos.length > 1) {
+        label.innerHTML = photos.length + '개의 파일 선택';
+    } else {
+        label.innerHTML = photos[0].fileName;
+    }
+
+    //파일 배열에 미리 넣어놓기
+    for (let i = 0; i < photos.length; i++) {
+        files.push(photos[i]);
+        console.log(photos[i].fileName)
+        console.log(photos[i])
+    }
 }
