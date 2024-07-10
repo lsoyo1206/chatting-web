@@ -190,11 +190,19 @@
         WHERE post_id = #{postId}
     </update>
 
-    <select id="selectPlaceInfo" resultType="int" parameterType="Map">
-        select *
-        from chattingWeb.place p
+    <select id="selectLocationInfo" resultType="Map" parameterType="int">
+        select
+            location_id as locationId,
+            post_id     as postId,
+            location_name as locationName,
+            address as address,
+            road_address as roadAddress,
+            longitude as  longitude,
+            latitude as latitude
+        from TB_LOCATION
         where 1=1
-          and   p.place_id =#{placeId}
+        and   location_id = #{locationId}
+        and   use_yn = 'Y'
     </select>
 
     <select id="selectPostDetailInfo" resultType="PostDto" parameterType="Map">

@@ -24,7 +24,7 @@ public interface ServerApiRepository {
     public int updatePostId(PhotoDto photoDto);
     public int updateLocation(Map<String,Object> LocationMap);
 
-    public Map<String,Object> selectPlaceInfo(int placeId);
+    public Map<String,Object> selectLocationInfo(int locationId);
     public PostDto selectPostDetailInfo(Map<String,Object> selectParam);
     public List<PhotoDto> selectPhotoDetailInfo(int postId);
 

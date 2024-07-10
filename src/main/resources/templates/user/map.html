@@ -83,8 +83,18 @@
         border-radius: 3px; /* 모서리 반지름 */
         padding: 3px 6px; /* 내부 여백 */
         padding-right: 20px; /* 오른쪽 여백 추가 */
+
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s, transform 0.3s;
     }
 
+    /* Hover 효과 */
+    .clickable-address:hover {
+        color: #fff;
+        background-color: #3498db;
+        transform: scale(1.05); /* 약간 확대 효과 */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    }
     .slide-btn {
         position: absolute;
         top: 50%;
@@ -149,8 +159,8 @@
                                 <p class="card-address text-muted">
                                     <i class="fas fa-map-marker-alt"></i>
                                     <span class="addressName" th:text="${post['locationName']}"></span><br> &nbsp;&nbsp;
-                                    <span class="ellipsis" th:if="${post['address']}" th:text="${post['address']}" th:onclick="|mapSearch(${post['locationId']})|" ></span>
-                                    &nbsp;<span class="ellipsis" th:unless="${post['address']}" th:text="${post['roadAddress']}" th:onclick="|mapSearch(${post['locationId']})|" ></span>
+                                    <span class="ellipsis clickable-address" th:if="${post['address']}" th:text="${post['address']}" th:onclick="|mapSearch(${post['locationId']})|" ></span>
+                                    &nbsp;<span class="ellipsis clickable-address" th:unless="${post['address']}" th:text="${post['roadAddress']}" th:onclick="|mapSearch(${post['locationId']})|" ></span>
                                 </p>
                             </div>
                             <div class="content-wrapper">

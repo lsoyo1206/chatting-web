@@ -21,6 +21,7 @@ $(document).ready(function () {
 
 });
 let imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";  //커서 이미지 주소
+var map; // 전역 변수로 선언
 
 window.onload = function() {
     var postElement = document.querySelector('.포스트');
@@ -113,7 +114,7 @@ function initSetting(){
     };
 
     //지도 열기
-    var map = new kakao.maps.Map(container, options);
+    map = new kakao.maps.Map(container, options);
 
     // 커스텀 오버레이 생성
     for(let i=0 ; i<dataList.length ; i++){
@@ -219,43 +220,28 @@ function settingMapOverRay(data, map, marker, fileImgSrc){
     })
 }
 
-function mapSearch(placeId){
+function mapSearch(locationId){
 
     let data = {
-        "placeId" : placeId
+        "locationId" : locationId
     }
+
     $.ajax({
-        url:"/api/server/selectPlaceInfo.do",
-        type:"get",
+        url:"/api/server/selectLocationInfo.do",
+        type:"post",
         contentType:"application/json",
-        data: data,
+        data: JSON.stringify(data),
         success:function(response){
             var html = "";
-            console.log("response ===> "+response)
 
-            // for(let i=0 ; i<response.items.length ; i++){
-            //     html += "<div>" + item[i].title + "</div>";
-            //     html += "<div>" + item[i].address + "</div>";
-            // }
+            // 이동할 위도 경도 위치를 생성합니다
+             var moveLatLon = new kakao.maps.LatLng(response.latitude, response.longitude);
 
-            // 결과를 화면에 출력
-            // $("#resultContainer").html(html);
+            // 지도 중심을 부드럽게 이동시킵니다
+            // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
+             map.panTo(moveLatLon);
         }
     })
-    // 클릭된 요소에서 데이터 가져오기
-    // let data = {
-    //     placeId   : placeId,
-    //     longitude : longitude,
-    //     latitude  : latitude,
-    //     latlng    : new kakao.maps.LatLng(latitude, longitude)
-    // };
-
-    // 이동할 위도 경도 위치를 생성합니다
-    // var moveLatLon = new kakao.maps.LatLng(latitude, longitude);
-
-    // 지도 중심을 부드럽게 이동시킵니다
-    // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
-    // map.panTo(moveLatLon);
 }
 
 $(".title").click(function() {      /* 상세페이지로 이동 */
@@ -291,4 +277,3 @@ function deletePost(button) {
         });
     }
 }
-

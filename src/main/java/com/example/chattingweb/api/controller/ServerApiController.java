@@ -79,11 +79,14 @@ public class ServerApiController {
     }
 
     @ResponseBody
-    @GetMapping("/selectPlaceInfo.do")
-    public Map<String,Object> selectPlaceInfo(@RequestParam Map<String,Object> data){
-        int placeId = (int) data.get("placeId");
-        Map<String,Object> result = serverApiRepository.selectPlaceInfo(placeId);  //사용자 정보
+    @PostMapping("/selectLocationInfo.do")
+    public Map<String,Object> selectLocationInfo(@RequestBody Map<String,Object> data){
+        Map<String,Object> result = new HashMap<>();
+
+        int locationId = (int) data.get("locationId");
+        result = serverApiRepository.selectLocationInfo(locationId);  //사용자 정보
         System.out.printf("result ===>"+result);
+
         return result;
     }
 
