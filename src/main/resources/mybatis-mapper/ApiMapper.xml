@@ -50,6 +50,23 @@
         )
     </insert>
 
+    <update id="updateLocation" parameterType="Map">
+        UPDATE chattingWeb.TB_LOCATION
+        SET
+        location_name = #{locationName},
+        <if test="address != null and address != ''">
+            address = #{address},
+        </if>
+        <if test="roadAddress != null and roadAddress != ''">
+            road_address = #{roadAddress},
+        </if>
+        longitude = #{longitude},
+        latitude = #{latitude},
+        use_yn = 'Y'
+        WHERE post_id = #{postId}
+    </update>
+
+
     <update id="updatePostLocationId" parameterType="PostDto">
         UPDATE chattingWeb.TB_POST
         SET location_id = #{locationId}
@@ -76,8 +93,14 @@
         FROM (
                 SELECT * FROM chattingWeb.TB_POST WHERE user_yn = 'Y'
             ) p
-        LEFT JOIN chattingWeb.TB_LOCATION p2 ON p.post_id = p2.post_id
-        LEFT JOIN chattingWeb.TB_PHOTO tp ON p.post_id = tp.post_id
+        LEFT JOIN (
+                SELECT * FROM chattingWeb.TB_LOCATION WHERE use_yn = 'Y'
+        ) p2
+        ON p.post_id = p2.post_id
+        LEFT JOIN (
+                SELECT * FROM chattingWeb.TB_PHOTO WHERE user_yn = 'Y'
+        ) tp
+        ON p.post_id = tp.post_id
         WHERE 1=1
         AND p.user_yn = 'Y'
         AND p.user_id = #{userId}
@@ -95,7 +118,27 @@
         AND p.user_id = #{userId}
     </select>
 
-    <!-- INSERT 쿼리문 -->
+    <update id="updatePostDto" parameterType="PostDto">
+        update chattingWeb.TB_POST
+        SET
+             title = #{title}
+                 , content = #{content}
+             <if test="locationRegistered == 'true'">
+                 , location_registered = 'Y'
+             </if>
+            <if test="locationRegistered == 'false'">
+                , location_registered = 'N'
+            </if>
+        WHERE post_id = #{postId}
+    </update>
+
+    <!-- locationId 삭제 -->
+    <update id="updateLocationId" parameterType="PostDto">
+        update chattingWeb.TB_POST
+        SET    location_id = NULL
+        WHERE post_id = #{postId}
+    </update>
+
     <insert id="insertPhote" parameterType="PhotoDto" useGeneratedKeys="true" keyProperty="photoId">
         INSERT INTO chattingWeb.TB_PHOTO
         (
@@ -167,11 +210,14 @@
                 p2.road_address as roadAddress,
                 p2.longitude as longitude,
                 p2.latitude as latitude
-        FROM chattingWeb.TB_POST p
-        LEFT JOIN chattingWeb.TB_LOCATION p2 ON p.post_id = p2.post_id
+        FROM (
+            SELECT * FROM chattingWeb.TB_POST where user_yn = 'Y'
+        ) p
+        LEFT JOIN (
+            SELECT * FROM chattingWeb.TB_LOCATION WHERE use_yn = 'Y'
+        ) p2
+        ON p.post_id = p2.post_id
         WHERE 1=1
-        AND p.user_yn = 'Y'
-        AND p.user_id = #{userId}
         AND p.post_id = #{postId}
     </select>
 

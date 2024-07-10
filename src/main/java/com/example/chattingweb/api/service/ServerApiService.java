@@ -154,6 +154,51 @@ public class ServerApiService implements ServerApiServiceIf{
     }
 
     @Override
+    public Map<String, Object> updatePostDto(PostDto postDto, UserDto userDto) {
+        Map<String, Object> insertResult = new HashMap<>();
+        int locationUpdateResult = 0;
+        postDto.setUserId(userDto.getUserId());
+
+        Map<String,Object> selectParam = new HashMap<>();
+        selectParam.put("postId", postDto.getPostId());
+        selectParam.put("userId", userDto.getUserId());
+        PostDto postDtoEx = serverApiRepository.selectPostDetailInfo(selectParam);
+
+        //location 테이블에 넣어줄 파라미터 세팅
+        Map<String, Object> LocationMap = new HashMap<>();
+        LocationMap.put("locationName", postDto.getLocationName());
+        LocationMap.put("address", postDto.getAddress());
+        LocationMap.put("roadAddress", postDto.getRoadAddress());
+        LocationMap.put("latitude", postDto.getLatitude());
+        LocationMap.put("longitude", postDto.getLongitude());
+        LocationMap.put("postId", postDto.getPostId());
+
+        System.out.println("postDto ===>" + postDto);
+        int postDtoUpdateResult = serverApiRepository.updatePostDto(postDto);
+        insertResult.put("postDtoUpdateResult", postDtoUpdateResult);
+
+        if(postDtoEx.getLocationId() == 0 && "N".equals(postDtoEx.getLocationRegistered())){       //기존에 없었는데 새로 insert
+            serverApiRepository.insertLocation(LocationMap);
+            postDto.setLocationId(Integer.parseInt(String.valueOf(LocationMap.get("locationId"))));
+            locationUpdateResult = serverApiRepository.updatePostLocationId(postDto);
+
+        }else if(postDtoEx.getLocationId() != 0 && "Y".equals(postDtoEx.getLocationRegistered())
+                    && LocationMap.get("locationName") != null ){                               //기존에 있었는데 새로 update
+            locationUpdateResult = serverApiRepository.updateLocation(LocationMap);
+
+
+        }else if(postDtoEx.getLocationId() != 0 && "Y".equals(postDtoEx.getLocationRegistered())
+                && LocationMap.get("locationName") == null){                                    //기존에 있었는데 없애려고 할 때
+            serverApiRepository.deleteLocationTable(Integer.parseInt(String.valueOf(postDto.getPostId())));
+            locationUpdateResult = serverApiRepository.updateLocationId(postDto);
+        }
+
+        insertResult.put("locationUpdateResult", locationUpdateResult);
+
+        return insertResult;
+    }
+
+    @Override
     public List<Map<String, Object>> settingPostList(UserDto userDto) {
         int start = userDto.getCurrentPage() * userDto.getPageSize();
         userDto.setStart(start);

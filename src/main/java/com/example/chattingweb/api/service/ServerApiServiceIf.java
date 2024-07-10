@@ -17,6 +17,7 @@ public interface ServerApiServiceIf {
 
     public Map<String,Object> insertAndUploadPhoto(String postId, List<MultipartFile> files) throws Exception; //file업로드
     public Map<String,Object> insertPostDto(PostDto postDto, UserDto userDto); //post테이블 insert
+    public Map<String,Object> updatePostDto(PostDto postDto, UserDto userDto); //post테이블 update
 
     public List<Map<String,Object>> settingPostList(UserDto userDto);
 }

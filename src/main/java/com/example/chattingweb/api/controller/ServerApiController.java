@@ -61,10 +61,9 @@ public class ServerApiController {
         UserDto userDto = serverApiService.userInfo();
         Map<String,Object> selectParam = new HashMap<>();
         selectParam.put("postId", postId);
-        selectParam.put("userId", userDto.getUserId());
 
         List<PhotoDto> photoDto = new ArrayList<>();
-          PostDto postDto = serverApiRepository.selectPostDetailInfo(selectParam);
+        PostDto postDto = serverApiRepository.selectPostDetailInfo(selectParam);
 
         int photoId = postDto.getPhotoId() != 0 ? postDto.getPhotoId() : 0 ;
          if(photoId != 0 ){
@@ -72,8 +71,9 @@ public class ServerApiController {
         }
 
         model.addAttribute("userDto", userDto);
-        model.addAttribute("postDto", postDto);
         model.addAttribute("photoDto", photoDto);
+        model.addAttribute("postDto", postDto);
+        model.addAttribute("postId", postDto.getPostId());
 
         return "user/memorySave";
     }
@@ -222,9 +222,10 @@ public class ServerApiController {
             msg ="FAIL";
         }
 
+        result.put("type", "insert");
+        result.put("postId", Integer.parseInt(String.valueOf(insertResult.get("postId"))));
         result.put("msg", msg);
         result.put("code", code);
-        result.put("postId", Integer.parseInt(String.valueOf(insertResult.get("postId"))));
 
        return result;
     }
@@ -293,7 +294,7 @@ public class ServerApiController {
             updatePhotoResult = 1;
         }
 
-        if(updatePostResult == 1 && updateLocationResult == 1 && updatePhotoResult == 1){
+        if(updatePostResult == 1 && updateLocationResult == 1 && updatePhotoResult >= 1){
             code = "R000";
             msg = "SUCCESS";
         }else{
@@ -301,6 +302,38 @@ public class ServerApiController {
             msg ="FAIL";
         }
 
+        result.put("msg", msg);
+        result.put("code", code);
+
+        return result;
+    }
+
+    @RequestMapping(value = "/EditPost.do", method = {RequestMethod.POST})
+    @ResponseBody
+    public Map<String,Object> EditPost(HttpServletRequest request, HttpServletResponse response,
+                                          @ModelAttribute PostDto postDto) throws Exception {
+        Map<String,Object> result = new HashMap<>();
+        String msg = "";
+        String code = "";
+
+        UserDto userDto = serverApiService.userInfo();  //로그인한 사용자 정보
+        logger.info("postDto : {}", postDto);
+
+        Map<String,Object> insertResult = serverApiService.updatePostDto(postDto, userDto);
+
+        Integer postResult = (Integer) insertResult.get("postDtoUpdateResult");
+        Integer locationResult = (Integer) insertResult.get("locationUpdateResult") != null ? (Integer) insertResult.get("locationUpdateResult") : 0;
+
+        if(postResult == 1 || locationResult == 1){
+            code = "R000";
+            msg = "SUCCESS";
+        }else{
+            code = "R001";
+            msg ="FAIL";
+        }
+
+        result.put("type", "edit");
+        result.put("postId", Integer.parseInt(String.valueOf(postDto.getPostId())));
         result.put("msg", msg);
         result.put("code", code);
 

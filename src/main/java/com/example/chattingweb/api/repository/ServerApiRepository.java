@@ -22,13 +22,16 @@ public interface ServerApiRepository {
     public int insertPhote(PhotoDto photoDto);
     public int updatePhoteUploadPhoteId(Map<String,Object> postDtoMap);
     public int updatePostId(PhotoDto photoDto);
+    public int updateLocation(Map<String,Object> LocationMap);
+
     public Map<String,Object> selectPlaceInfo(int placeId);
     public PostDto selectPostDetailInfo(Map<String,Object> selectParam);
     public List<PhotoDto> selectPhotoDetailInfo(int postId);
 
+    public int updatePostDto(PostDto postDto);
+    public int updateLocationId(PostDto postDto);
     public int deletePostTable(int postId);
     public int deleteLocationTable(int postId);
     public int deletePhotoTable(int postId);
-
 
 }

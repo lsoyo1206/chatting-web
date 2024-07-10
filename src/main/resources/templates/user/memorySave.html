@@ -51,6 +51,8 @@
 </head>
 <body>
 <div th:include="main/header"></div>
+
+<input type="hidden" name="postId" id="postId" th:if="${postId != null}" th:value="${postId}">
 <input type="hidden" name="photoDto" id="photoDto" th:if="${photoDto != null}" th:value="${photoDto}">
 
 <div class="container">
@@ -67,14 +69,25 @@
             <div class="form-container">
                 <div class="row">
                     <div class="col-md-8 offset-md-2">
-                            <input type="hidden" name="address" id="address"
-                                   th:if="${postDto != null and postDto.locationRegistered == 'Y'}" th:value="${postDto.address}">
-                            <input type="hidden" name="road_address" id="road_address"
-                                   th:if="${postDto != null and postDto.locationRegistered == 'Y'}" th:value="${postDto.roadAddress}">
-                            <input type="hidden" name="latitude" id="latitude"
-                                   th:if="${postDto != null and postDto.locationRegistered == 'Y'}" th:value="${postDto.latitude}">  <!-- 위도 -->
-                            <input type="hidden" name="longitude" id="longitude"
-                                   th:if="${postDto != null and postDto.locationRegistered == 'Y'}" th:value="${postDto.longitude}">  <!-- 경도 -->
+                        <!-- 추억 수정 -->
+                        <input type="hidden" name="address"
+                               th:if="${postDto != null and postDto.locationRegistered == 'Y'}" th:value="${postDto.address}">
+                        <input type="hidden" name="road_address"
+                               th:if="${postDto != null and postDto.locationRegistered == 'Y'}" th:value="${postDto.roadAddress}">
+                        <input type="hidden" name="latitude"
+                               th:if="${postDto != null and postDto.locationRegistered == 'Y'}" th:value="${postDto.latitude}">  <!-- 위도 -->
+                        <input type="hidden" name="longitude"
+                               th:if="${postDto != null and postDto.locationRegistered == 'Y'}" th:value="${postDto.longitude}">  <!-- 경도 -->
+
+                        <!-- 추억 등록 -->
+                        <input type="hidden" name="address"
+                               th:unless="${postDto != null and postDto.locationRegistered == 'Y'}">
+                        <input type="hidden" name="road_address"
+                               th:unless="${postDto != null and postDto.locationRegistered == 'Y'}">
+                        <input type="hidden" name="latitude"
+                               th:unless="${postDto != null and postDto.locationRegistered == 'Y'}">
+                        <input type="hidden" name="longitude"
+                               th:unless="${postDto != null and postDto.locationRegistered == 'Y'}">
 
                         <div class="form-group">
                                 <label for="title">제목</label>
@@ -110,7 +123,12 @@
                             </div>
                             <!-- 게시물 등록 버튼을 중앙으로 정렬 -->
                             <div class="form-group text-center">
-                                <button type="button" class="btn btn-primary" th:onclick="fn_check()">게시물 등록</button>
+                                <th:block th:if="${postDto == null}">
+                                    <button type="button" class="btn btn-primary" th:onclick="fn_check()">게시물 등록</button>
+                                </th:block>
+                                <th:block th:unless="${postDto == null}">
+                                    <button type="button" class="btn btn-primary" th:onclick="fn_check()">게시물 수정</button>
+                                </th:block>
                             </div>
 
                             <div id="mapSearch" style="display: none;">
