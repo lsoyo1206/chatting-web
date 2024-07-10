@@ -28,7 +28,7 @@ function searchFunction() {  // 검색 기능
     console.log("검색어: " + data.searchQuery);
 
     $.ajax({
-        url:"/api/server/initSettingMap",
+        url:"/api/server/foodSearch",
         type:"get",
         contentType:"application/json",
         data: data,

@@ -177,6 +177,8 @@ public class ServerApiService implements ServerApiServiceIf{
         int postDtoUpdateResult = serverApiRepository.updatePostDto(postDto);
         insertResult.put("postDtoUpdateResult", postDtoUpdateResult);
 
+
+
         if(postDtoEx.getLocationId() == 0 && "N".equals(postDtoEx.getLocationRegistered())){       //기존에 없었는데 새로 insert
             serverApiRepository.insertLocation(LocationMap);
             postDto.setLocationId(Integer.parseInt(String.valueOf(LocationMap.get("locationId"))));
