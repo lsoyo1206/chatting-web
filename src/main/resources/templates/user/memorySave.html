@@ -124,10 +124,10 @@
                             <!-- 게시물 등록 버튼을 중앙으로 정렬 -->
                             <div class="form-group text-center">
                                 <th:block th:if="${postDto == null}">
-                                    <button type="button" class="btn btn-primary" th:onclick="fn_check()">게시물 등록</button>
+                                    <button type="button" class="btn btn-primary" th:onclick="fn_check()">추억 등록</button>
                                 </th:block>
                                 <th:block th:unless="${postDto == null}">
-                                    <button type="button" class="btn btn-primary" th:onclick="fn_check()">게시물 수정</button>
+                                    <button type="button" class="btn btn-primary" th:onclick="fn_check()">추억 수정</button>
                                 </th:block>
                             </div>
 
