@@ -29,6 +29,9 @@
                                     비밀번호를 입력하세요.
                                 </div>
                             </div>
+                            <div>
+                                <img th:src="@{/image/v2/kakao_login.png}" alt="kakao button" style="width: 30px; height: 120px" th:onClick="window.location.href='/oauth2/kakao/callback'">
+                            </div>
                             <button type="submit" class="btn btn-primary btn-block">로그인</button>
                         </form>
                     </div>
@@ -42,5 +45,6 @@
     <div th:if="${message}" class="alert alert-success" role="alert" th:text="${message}"></div>
     <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
 </div>
+<div th:include="main/footer"></div>
 </body>
 </html>

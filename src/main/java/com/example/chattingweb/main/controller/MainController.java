@@ -1,6 +1,7 @@
 package com.example.chattingweb.main.controller;
 
 
+import com.example.chattingweb.api.common.ApiExplorer;
 import com.example.chattingweb.api.service.ServerApiService;
 import com.example.chattingweb.main.dto.CustomUserDetails;
 import com.example.chattingweb.main.dto.UserDto;
@@ -35,6 +36,16 @@ public class MainController{
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+
+    @GetMapping("/join")
+    public String joinPage(){   return "main/join";    }
+
+    @GetMapping("/login")
+    public String loginPage() {     return "main/login";       }
+
+    @GetMapping("/map.do")
+    public String map() {     return "main/map";       }
+
     @GetMapping("/")
     public String indexPage(HttpSession session, Model model){
 
@@ -57,11 +68,11 @@ public class MainController{
             session.setAttribute("userDto",userDto);
             System.out.println(userDto);
         }
+
+
+
         return "main/main";
     }
-
-    @GetMapping("/join")
-    public String joinPage(){   return "main/join";    }
 
     @GetMapping("/user/my-page")
     public String mypage(Model model){
@@ -90,12 +101,6 @@ public class MainController{
 
         return "redirect:/join";
     }
-
-    @GetMapping("/login")
-    public String loginPage() {     return "main/login";       }
-
-    @GetMapping("/map.do")
-    public String map() {     return "main/map";       }
 
     @GetMapping("/loginResult")
     public String loginResult(@RequestParam(name = "error", required = false) String error,
@@ -131,6 +136,16 @@ public class MainController{
 
         return response;
     }
+
+    @RequestMapping("/oauth2/kakao/callback")
+    public String kakaoLogin(@RequestParam String code){
+        // 1.인가 코드 받기 : @RequestParam String code
+
+        //2. 토큰 받기 https://innovation123.tistory.com/181#4.%20KakaoApi.getAccessToken(String%20code)-1
+//        String accessTokent = kakaoLogin.getS
+        return "result";
+    }
+
 
 //    @PostMapping("/logout")
 //    @ResponseBody

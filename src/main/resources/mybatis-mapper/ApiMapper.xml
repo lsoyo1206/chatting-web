@@ -103,7 +103,7 @@
         ON p.post_id = tp.post_id
         WHERE 1=1
         AND p.user_yn = 'Y'
-        AND p.user_id = #{userId}
+<!--        AND p.user_id = #{userId}-->
         AND tp.GROUP_V_ORDER = 0  OR tp.GROUP_V_ORDER is null
         order by p.post_id desc , p.createDt
         LIMIT #{start}, #{pageSize}
@@ -115,7 +115,7 @@
         LEFT JOIN chattingWeb.TB_LOCATION p2 ON p.post_id = p2.post_id
         WHERE 1=1
         AND p.user_yn = 'Y'
-        AND p.user_id = #{userId}
+<!--        AND p.user_id = #{userId}-->
     </select>
 
     <update id="updatePostDto" parameterType="PostDto">

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Footer</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            height:12%;
+        }
+        .content {
+            flex: 1;
+        }
+        .footer {
+            background-color: #343a40; /* Footer 배경 색상 */
+            color: white; /* 글자 색상 */
+            padding: 10px 0; /* 패딩 (기존 20px에서 줄임) */
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        .footer a {
+            color: #f8f9fa; /* 링크 색상 */
+            transition: color 0.2s;
+        }
+        .footer a:hover {
+            color: #adb5bd; /* 링크 호버 색상 */
+            text-decoration: none; /* 링크 호버 시 밑줄 제거 */
+        }
+        .footer .social-icons a {
+            margin-right: 15px; /* 소셜 아이콘 간격 */
+            font-size: 1.5rem; /* 소셜 아이콘 크기 */
+        }
+        .footer .social-icons a:last-child {
+            margin-right: 0;
+        }
+        .footer h5 {
+            margin-bottom: 1rem; /* 제목 아래 여백 */
+        }
+        .footer p, .footer ul, .footer li {
+            margin: 0; /* 여백 제거 */
+            padding: 0; /* 패딩 제거 */
+            list-style: none; /* 리스트 스타일 제거 */
+        }
+        .footer ul {
+            padding-left: 0; /* 리스트 안쪽 여백 제거 */
+        }
+    </style>
+</head>
+<body>
+<footer class="footer mt-auto py-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5>About Us</h5>
+                <p>We are a company dedicated to providing the best service. Learn more about our mission and values.</p>
+            </div>
+            <div class="col-md-4">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Follow Us</h5>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-center mt-3">
+                <p>&copy; 2024 Your Company. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</body>
+</html>

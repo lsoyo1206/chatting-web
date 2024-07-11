@@ -2,6 +2,7 @@ package com.example.chattingweb.api.controller;
 
 
 
+import com.example.chattingweb.api.common.ApiExplorer;
 import com.example.chattingweb.api.dto.PhotoDto;
 import com.example.chattingweb.api.dto.PostDto;
 import com.example.chattingweb.api.repository.ServerApiRepository;

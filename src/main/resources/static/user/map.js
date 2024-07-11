@@ -277,3 +277,6 @@ function deletePost(button) {
         });
     }
 }
+
+function fn_EditSetting(postId){
+}

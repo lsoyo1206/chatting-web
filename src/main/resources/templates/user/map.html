@@ -130,7 +130,7 @@
                 <div th:each="post : ${postList}" class="post">
                     <div class="card border-primary mb3">
                         <div class="card-header bg-primary text-white" style="padding: 0.4rem ">
-                            <h5 class="card-title mb-0" >
+                            <h5 class="card-title mb-0">
                                 <a class="title" th:if="${post['locationId']}" th:text="${post['title']}"
                                    th:data-postId="${post['postId']}"
                                   th:data-placeId="${post['locationId']}"
@@ -187,6 +187,7 @@
 <!--                            </button>-->
 <!--                        </div>-->
 <!--                        <div class="modal-body">-->
+<!--                                <textarea class="form-control" id="content" name="content" rows="5" th:text="${post['content']}"></textarea-->
 <!--&lt;!&ndash;                            <textarea class="form-control" id="content" name="content" rows="5" th:text="${post['content']}"></textarea>&ndash;&gt;-->
 <!--                        </div>-->
 <!--                        <div class="modal-footer">-->

@@ -15,11 +15,49 @@
     <!-- Summernote 웹 에디터 js/css -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.js"></script>
+    <style>
+        .navbar {
+             background-color: #343a40;
+        }
+        .navbar-nav .nav-item {
+            padding-right: 50px; /* padding 조정 */
+        }
+        .navbar-nav .nav-link {
+            color: white;
+            font-size: 18px; /* 글씨 크기 */
+            padding-top: 15px;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #888 !important; /* 호버 효과 색상 */
+        }
+        .form-control {
+            border-radius: 20px; /* 검색창 둥글게 */
+        }
+        .btn-outline-secondary {
+            border-radius: 20px; /* 검색 버튼 둥글게 */
+            color: #555;
+            border-color: #555;
+        }
+        .btn-outline-secondary:hover {
+            background-color: white;
+            color: #ff8c00;
+        }
+        .subdued-navbar {
+            background-color: #343a40;
+<!--            background-color: #f0f0f0; /* Light gray background */-->
+        }
+
+        .btn-outline-secondary {
+            background-color: #555;
+            color: #fff;
+        }
+    </style>
+
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
-        <a class="navbar-brand" onclick="location.href='/'">블로그</a>
+        <a class="navbar-brand" onclick="location.href='/'" style="color:white;">블로그</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -28,11 +66,27 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <!-- 메뉴 -->
-                <li class="nav-item text-center" style="padding-right:170px; padding-top:10px;"> <!-- text-center 클래스를 추가하여 내용을 가운데 정렬 -->
-                    <a class="nav-link" onclick="location.href='/api/server/map.do'">추억저장소</a>
+                <li class="nav-item dropdown ml-2">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMemory" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">
+                        추억
+                    </a>
+                    <div class="dropdown-menu text-center" aria-labelledby="navbarDropdownMemory"
+                         style="border-radius: 10px; border: none; box-shadow: 0px 8px 16px rgba(0,0,0,0.1); width: 200px;">
+                        <a class="dropdown-item" href="/api/server/map.do" style="color: #343a40;">추억저장소</a>
+                        <a class="dropdown-item" href="/api/server/memorySave.do" style="color: #343a40;">추억 등록</a>
+                    </div>
                 </li>
-                <li class="nav-item text-center" style="padding-right:170px; padding-top:10px;"> <!-- text-center 클래스를 추가하여 내용을 가운데 정렬 -->
-                    <a class="nav-link" onclick="location.href='/api/server/memorySave.do'">추억 등록</a>
+                <li class="nav-item dropdown ml-2">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMemory" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">
+                        주차장
+                    </a>
+                    <div class="dropdown-menu text-center" aria-labelledby="navbarDropdownMemory"
+                         style="border-radius: 10px; border: none; box-shadow: 0px 8px 16px rgba(0,0,0,0.1); width: 200px;">
+                        <a class="dropdown-item" href="/api/server/carPark.do" style="color: #343a40;">근처 주차장</a>
+<!--                        <a class="dropdown-item" href="/api/server/memorySave.do" style="color: #555;">추억 등록</a>-->
+                    </div>
                 </li>
 
                 <!-- 검색 창 -->
@@ -51,8 +105,9 @@
                 <!-- 동그란 이미지 -->
                 <li class="nav-item dropdown">
                     <a class="nav-link" href="#" id="navbarDropdownImageLink" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <img src="https://cdn3.iconfinder.com/data/icons/line/36/photo-512.png" width="30" height="30" class="rounded-circle" alt="이미지 검색">
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+                        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxAQEhMSEBAQFRAQEBAVEBIPDw8PDw8PFREWFhUSFRUYHiggGBolGxUVITEhJSkrLi4uFx8zODMtNygtLisBCgoKDg0OGhAQGi0lHSUtLS0tLS0tLS0tLS0tLS0tLS0rLS0tKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAOEA4QMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAACAwABBAUGBwj/xAA6EAACAQIDBAcFBwUAAwAAAAAAAQIDEQQhMQUSQXEGE1FhgbHRByIykaEUI1JTYpKTM0JDcsFj8PH/xAAaAQADAQEBAQAAAAAAAAAAAAAAAQIDBAUG/8QAJhEBAQACAQQCAQQDAAAAAAAAAAECEQMSITFBBFETFDKRoSJhcf/aAAwDAQACEQMRAD8A6br6n5lT+SfqBPFVMvvKn8k/UqWgpnI+hkh3X1PzKn8k/Uv7TUy+8qZ/+SfqLf8AwCfAD1GVLFT/ADKn8k/UW8TUt/UqfyT9QJK4LyQbExh08TU/MqfyT9STxNSy+8qfyT9RUxbeQtnqMmGKqfmVP5J+o5V5pf1Kn8k/Uwo6XG1HkhylZD3iJ2/qVP5J+pccVUy+8qfvn6mK5ZBQYbVMYz3Xnl78/wB8/UuNef456/jn6mNKeRN7Qe0zFlVq8/xz/fL1FwxM7/HP98/UGo72YprMFSTTL+1TT+Odr/jl6krV53+Oef65+pjah1Z6MNjpifaJp/1J5frn6hRxE7v35/vn6i60c79xUIgeppkfaJ3+Oef65+oaqT/HP98vUTFZIboxosguvnf456fjl6hqvPP35/vl6iaefzDj8TGVkM6+bt788/1y9Quvn+KX75a/MTFeYcln9Rpshzqzf98/3S9Qp1pW+KX7peoqPkMksmu3NDRZG33n2v5shMyFuHTh3IprQlvItrQ5nqBi9WWy0rJhU9PEBtaZU4lXs2MprIY8FTF7thk3mXOIj2GWUSJ3SKloUgArBp2t3lFcOQDZ+sSk9BcZahJ5DOHzeSKWl+8XvXGpZeIz8LsDPQOQHbyASik8kHbJ9whvIY3pyAjaE+AdXUTQlmOTvvZaDK+UpceYb+IXwT7S4v3gKnRZcRd9V3hwf1Giw2WXD/4XB69ydgJzus+wqjLPwGnXZvd8geRZo89wslkUHJ6IUzmeoslN6ol8wQAu8ZF28TB2htPD4eDdetTh3OV5PwNNX6e7NTS66Ttq4wdhyVGWeM7Wx0U3mS+prcBt7CYr+hXhJ/hfuz+TNhPJ+YNJZZ2BfIuT0KnGxKmiEZkWGxfeXKTyAhNZBReVgW813lsaoZTQ2LzQpvQOWowOWuXaBH4mFDVlRWfiAABi8VToxlUrTUKcFeUpO3gu8Y3meUe17a8p4lYaMmqdFRcktHUfF8h4zdZc/N+PDbM2x7U5qTWCpRUeFSsrt9+6aOHtH2om310c+Dpq3I7fpD0a2Y9jU61OpBVaVOLjutXlNrNNHjaNMdWeHkZfI5Mrvb0vZPtYqK0cXQjKN850spLvsembNxlKvCFWlNSpzV4yXk+8+aT0D2RbddKvLCTf3ddN07vKFVLhzXkGWPuOn4/ycurpy9vYE/MKL+jFw/6MRD0aLe1DivIXF9o2OXihoreFlENHnOJbzQIclYqxzvV0A5Ppz0kqUJQwuFzxVa13q6cXpbvOvZ4VtXbM/t9TEp3lCs3G/ZF2S+hWE3XJ8vluGHbzR9J+jmNwjjUxilermpSk5Xb7TRHY9OOn9XalOnTlTUYwtftbRxptN67vJ/6fOqrxlTThJW+GT17Uz1XoD0nljIOjWd8RRV4y/Mp9/ejyQ2vRXGOji6E0/wDIk++MsmhZY7jfg5bhnL69vdK3AuUbouqr+BZzvZDwJbJFtcC7aAcSa07g0i9zUaqWSHo4W4jZLiG6WhcoWHowrW4W7qSKy8A4RyXiBUq2ceZ4B01nKWPxLlr10vlwPoNLNHjvtc2NKliftKX3VdK7SyjUSzTLw8uL52NvHLPTh+tlbd3pbv4bvd+QJRZq8pDa9Fd77bhtz4uuhblfP6GrjFu7SbS1stDtPZPst1sZ1zX3eHi23bLfeSXmK+GnFjcs5J9va933mGncCDzu+Ny6WbaMnuU231Lby5eRSldcipvIaHQFi8yi3nacluklGwxRzI878jF6pKjfXk+R4B0owMsPi69OStapJrvjJ3T+p7/HicT7S+i0sVBYmgr1qUbVIpZ1Kfau9FYXVcvzOK54dvMeREJOLTs001qmrNFGzx1m26KYR1sZQgl/kTfJZmDSoxlDKTdVytGCTbZ6l7OeiUsNH7TXVq042pwesIPi+8nK6jf4/FeTOfXt21tSorQakGqeaMNPbJnDRl9WZMqQcKd0PR+iqMMh9NEjTzDSzHIVqrA1Ijd0JQz5j0nq0U4+QUI5LmOlTyZVOIaT1diIw+hh7Y2XSxVGVGtHepz17YvhJPgzZbtnf5klT1QaFsvl4f0i9mmLoNyw9q1LVbrtUiuxo5+j0W2hOW7HCVr/AOlvqfRTi0HGb7WV11y5fCwveV490d9m+NlF/aKkaFGeU4q0qsl2LsPTNi7Ko4WkqNCO7COr/um/xSfFmylHJ8ynDO/aK3bo4eHDj8eQJX8BuHvdgwiMorUTXK9hJce8ko5P6l0+Ny3b5ppjQ3RQe6Qt5+3LqJcI28UFbUk9TJ6m2NOnnzKSz5GTVjmgJU7Z94tKlafaXR/CYl/fYeDf4kt2XzRp5+zfZsmnu1Y34KbaOwjx5Etkh7sZZ8WGXmRpdl9GMFhM6FCO8v75+/P6mzUW2Pki6MReVY4zGakSNLQvi+4YmLS+ozhko5IbRp5FWy5B007DZ29knHMulG5hY3a2Goq9WvSj3OSb+Rq6nT7ZlL/O5vshFsqRGWWo6VQBijj6ntQwEb7sK0r/AKbGNL2pYT8it8h9NR+SPQYtMVTjmcVh/ajgW1vU60V27tzf7L6V4DEtdViYb1/hm9yX1DRTKNpOOqLSur/MZUhr9LO6YPAWlb7E1YAJDO1dnkVJZrvE0lLS1AtoNkrMBrLkJUXR1sVJNO5W9ncJSv4gFyKcrp8i+H/uguD18fkAjf3ZArIhpp523NrQtZgtZIukzJ6npLXfIuvoiLIXJgJ5W1w7iuCInm+QLkIxtEbtYGrLJC51Pe8ABtNjFqIjLI1nSjb8cDR6y16ssqUX+LtfcOdyysk2d0g6TYfAwfWPeqP4KUc5N9/YjzLbXTHG4ptdZ1VN6QpZO3ezSYivOrOVSrJyqTbbb8l3Fwhc6McHHcrlexLp3d5Xk+2TcncJU12L5Gxw2Ccjc4ToxVqfDB/IvUVOH3XL7he4douhta2cWYOJ6PzhrEfZU4ZfFcw4gSprx7Vk14m0xOE3TBnENIy49N/0b6b4vBNRk3WocYTfvxX6WeubJ2rRxdFVqElKL1X90Hxi0eAtG26J7fngK6mn9zUajXhw3X/cu9GeWKZdXu9yqcH2oXvZd8dC6VRTinF3i7OL7YtZALJtGLokFUlezF8eZTdhe9di2uYmNWfcwYv6MuqyRed+1Afo1u6FNeRcpZBOStzQE3xRdiGjzXNSdy6epVFXClZK6Mnq36SoLvqMvoJm9QognkhHWZDJSyMGdTsJtB8p/Ri97PmKlUFxqZoWy2zt/JLvPKemm03iMVPP3KPuQXC61Z6ZOt2dj8jxnEP7ypfXrJX53NeLyw58v8ZEiZWHiYsR9GdjpjLjrv8AoPg6M5rftfhc9So0KcF7sUuR4XsjaLpyTTOyh0xkopcQ13acvDlyauNegVpxWtjmNuV6VtFc5rEdJpS4mlxm1HLiVrZ8Xxrj3tK21u7ztoc7W1Nhiq+8a6ox60vlspLAmr5dobBkRXLk9c9m20ZVcHFSd5UpOGeu6tDpass+a+pwvspi1Qqvg6uXNLM7GpP6XObLy6uLHclNlK5izlZhSlmu9CZzuRa3k0zHPLmiqMjGpzy5DKMg2Wux6YNWVkxcKl7g4qd14Bs5j3dPvkFXIa7eb0tBSqWiRSuYkanAZh5mO3pa9shuwqvIqpOwupK6AhSll4GDIc53MeoKkVUqaCY1c+TBqv6Cb5iRazI1Ty7bOH6rEVYfrbXJnoqnZHO9Mdn78VXgruCtUS1ce0047qseabx3PTkkw0xaYSZ1SufGsmlVsZMcSzXphqRcrbHOth9oAlWMRSI5FbX10ydQTJkcgGybWdyRgTlkW2bbopsd4uuk191SalUfDLSJnbpn3yuo9F6H4X7PhKUX8U05y5yNy3qIrNLdtpZJLsSAlVyOS3u9KTWMkM3s0Lc/MXGd7MGcrN94hb2PU9S1PIxOs8g3PJC2If1mZKlTJ8n5GO55FSnl4PyFtpHY7xBdyzd5blKdTMJTzMSNWzL3zDb0mTOoV1pjOZbnmGxTZytcW35A1Xn4C5PyGypNbQxJzszMq5/I11fUGeQ3UHUmnF3zTyaejTMKEhtGeXiCduS6QbDlQk5wV6Mnw1pvsfcadM9LbUrppNPVPNM5navRq954d97pv/hthyeqwz4r5xc2mFcGrCUHaScX2NWKTN5WUyMuS4u5Lj2rqG2U2A5G22N0dr4p6OFLjOStl3Im5SCbyuowsBgamImqdJXbeb4QXaz1bYezaeEpxpU1/vLjOXaYmzNn0sLDcpL/AGk/im+82UZs588+p2cfF0Td8mVZac7CKks2gas8vERWq537jNr1MmlLIW6maMdV7IGUs0wRay2ypzyRjqqScriVjT3Ire8n5C1Iresvn5CaTJ3BYNyzoeVtwe+MjIxt4bSnqc71LTN8kp5Ct7QkpAW2Q5XsBKQvfyA3xs8lOWRh4mXEfOeRg4l5chssqCE9Q6c8vEw+tDp1CtM+psYTyuFCRhUqmVuwyKc8hLxyPrYelVjapCMu96/M1FborQn8EpR+qNrTkMhOwS2HcccvMc3LobLhWVuQ6h0Mj/fWduO6joVUCVQfXkU4cPpjYHo/haOcae9LtnmbanUy7uC0RixqDFOyRNu20knaHU8wt+yfIVGYupUyt2sDtXUqZGFXrlYvEW4mBKqPTK592d12iLVW7MFTMii8rgnqZUZhKpkIjMkXmJcrJjULqTy8H5CUST91vjZ+Qmkyd/vEFlm7z9uCuFGQuTui1LIwd/UYp8CpTF34kQaLY98uTFNk3hptVWy5MxKq1MttNWMWqNnWsrxtoKp1jKxEHwNZUoTvvLRlRjl5bOnWzv26mRTrGkhWayZlQxGaDRzJtlVHqrxNTCrqh9OsLTTqZyqBqqYPWh9aLSutn05hurwMCNaxbrJK7fINH1M7rsmxOIxSXyMKpisrIqnhpVHeWnYGiuf0wcTiakndL3V2h0W9WbGWGVmjDnTtkNncaOi/qZKlwMemPpoDh0dRi1FQeYURNJTk9SpaeD8gUyqsrJ8n5COV6CQDeKNnA4CMrB3+ohahOZk7dm/9L4chalcK4HtcmDIjLYDapiqmaGuQqaBNY+7fIqpSVh6jxJUQy019fCp8DCnhGtOBuZIpQTa5D2i4yl4Xo9iKkFOnKDvwbsy6uwsbH/DfkzoOjVVJOD4O6Omg+8W3BnzZ4ZXGvO4bGxj/AMEvFoyaPR7GS/xqP+0jvk+8JC2X6rP/AE4/D9D60rdZVjFdkc2b/ZvRbDU2nJOpJcZ6fI2qE4vaEaUXn7zTSXeG0fl5eS9Mv8OLxuGUq1SSSS32klokMhC2g6T17W7iovUT2scOnHQJQMKtS1ZsJaIRUQyrXKNmHvDJQFWGz0bB2L3hUWFBiM6D4lTzTb7Hb5AJl1Z+6+T8gPb0IgNyGzj286UySkI3/mGpGTq2cu1DFO4mEi2/mI+o1SC3hKkXF/QD2Nk1BTDiAWkLGC0AJmwKcrDqiFyiNJ1Gq1mnmtDb0NrTSWdzRpWGKWQtIz48M/3R0dPb36Q3t7sic3Bjrgj9JxfX9trPbFSfG3IRKpd5v5mFFGSuAnRhx44ftmhMjiG0U2DTYZiGNchM2CSpox2jImKm+A0UqWRFIqQLGnYlICtPJ8nf5FNi6ryfJ+QB6XcgJZs5Hmr1CIQxdUHHiWWQALgSnqWQFGQ4hLQsgjUgVxIQYBIpkIBJLQvgUQBDVwGkIJQzIjw5EIChoH0IQRly0EzIQafRXFCpasog0UMgOBCAkAEtJcn5EIBvSSEIbuV//9k="
+                             width="30" height="30" class="rounded-circle" alt="이미지 검색">
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownImageLink">
                         <p th:unless="${userDto}">
