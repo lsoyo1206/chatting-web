@@ -42,10 +42,10 @@
             border-color: #007bff;
             box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
         }
-         .form-container {
+
+        .form-container {
             margin-top: 30px;
         }
-
     </style>
     <script defer th:src="@{/user/memory.js}"></script>
 </head>
@@ -54,103 +54,99 @@
 
 <input type="hidden" name="postId" id="postId" th:if="${postId != null}" th:value="${postId}">
 <input type="hidden" name="photoDto" id="photoDto" th:if="${photoDto != null}" th:value="${photoDto}">
+<!-- 추억 수정 -->
+<input type="hidden" name="address"
+       th:if="${postDto != null and postDto.locationRegistered == 'Y'}" th:value="${postDto.address}">
+<input type="hidden" name="road_address"
+       th:if="${postDto != null and postDto.locationRegistered == 'Y'}" th:value="${postDto.roadAddress}">
+<input type="hidden" name="latitude"
+       th:if="${postDto != null and postDto.locationRegistered == 'Y'}" th:value="${postDto.latitude}">  <!-- 위도 -->
+<input type="hidden" name="longitude"
+       th:if="${postDto != null and postDto.locationRegistered == 'Y'}" th:value="${postDto.longitude}">  <!-- 경도 -->
 
-<div class="container">
+<!-- 추억 등록 -->
+<input type="hidden" name="address"
+       th:unless="${postDto != null and postDto.locationRegistered == 'Y'}">
+<input type="hidden" name="road_address"
+       th:unless="${postDto != null and postDto.locationRegistered == 'Y'}">
+<input type="hidden" name="latitude"
+       th:unless="${postDto != null and postDto.locationRegistered == 'Y'}">
+<input type="hidden" name="longitude"
+       th:unless="${postDto != null and postDto.locationRegistered == 'Y'}">
+
+
+<div class="container" style="margin-top:20px;">
     <!-- "추억 등록" 영역 -->
+    <th:block th:if="${postDto == null}">
+        <h2 class="text-center">추억 등록</h2>
+    </th:block>
+    <th:block th:unless="${postDto == null}">
+        <h2 class="text-center">추억 수정</h2>
+    </th:block>
     <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <th:block th:if="${postDto == null}">
-                <h2 class="text-center">추억 등록</h2>
-            </th:block>
-            <th:block th:unless="${postDto == null}">
-                <h2 class="text-center">추억 수정</h2>
-            </th:block>
-
+        <div class="col-md-6">
             <div class="form-container">
-                <div class="row">
-                    <div class="col-md-8 offset-md-2">
-                        <!-- 추억 수정 -->
-                        <input type="hidden" name="address"
-                               th:if="${postDto != null and postDto.locationRegistered == 'Y'}" th:value="${postDto.address}">
-                        <input type="hidden" name="road_address"
-                               th:if="${postDto != null and postDto.locationRegistered == 'Y'}" th:value="${postDto.roadAddress}">
-                        <input type="hidden" name="latitude"
-                               th:if="${postDto != null and postDto.locationRegistered == 'Y'}" th:value="${postDto.latitude}">  <!-- 위도 -->
-                        <input type="hidden" name="longitude"
-                               th:if="${postDto != null and postDto.locationRegistered == 'Y'}" th:value="${postDto.longitude}">  <!-- 경도 -->
+                <div class="form-group">
+                    <label for="title">제목</label>
+                    <input type="text" class="form-control" id="title" name="title"
+                           th:value="${postDto != null ? postDto.title : ''}" required>
+                </div>
+                <div class="form-group">
+                    <label for="content">내용</label>
+                    <textarea class="form-control" id="content" name="content" rows="5"
+                              th:value="${postDto != null ? postDto.content : ''}"
+                              th:text="${postDto != null ? postDto.content : ''}" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="photos">사진 업로드 (최대 5장)</label>
+                    <div class="custom-file mb-3">
+                        <input type="file" class="custom-file-input" id="photos" name="photos[]" accept="image/*" multiple>
+                        <label class="custom-file-label" for="photos">사진 선택</label>
+                    </div>
+                    <small class="form-text text-muted">여러 장의 사진을 선택하여 업로드할 수 있습니다.</small>
+                </div>
+                <!-- 썸네일 컨테이너 -->
+                <div id="thumbnail-container" class="d-flex flex-wrap"></div>
+            </div>
+            <!-- 게시물 등록 버튼을 중앙으로 정렬 -->
+            <div class="form-group text-center">
+                <th:block th:if="${postDto == null}">
+                    <button type="button" class="btn btn-primary" th:onclick="fn_check()">추억 등록</button>
+                </th:block>
+                <th:block th:unless="${postDto == null}">
+                    <button type="button" class="btn btn-primary" th:onclick="fn_check()">추억 수정</button>
+                </th:block>
+            </div>
+        </div>
 
-                        <!-- 추억 등록 -->
-                        <input type="hidden" name="address"
-                               th:unless="${postDto != null and postDto.locationRegistered == 'Y'}">
-                        <input type="hidden" name="road_address"
-                               th:unless="${postDto != null and postDto.locationRegistered == 'Y'}">
-                        <input type="hidden" name="latitude"
-                               th:unless="${postDto != null and postDto.locationRegistered == 'Y'}">
-                        <input type="hidden" name="longitude"
-                               th:unless="${postDto != null and postDto.locationRegistered == 'Y'}">
-
-                        <div class="form-group">
-                                <label for="title">제목</label>
-                                <input type="text" class="form-control" id="title" name="title"
-                                       th:value="${postDto != null ? postDto.title : ''}" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="content">내용</label>
-                                <textarea class="form-control" id="content" name="content" rows="5"
-                                          th:value="${postDto != null ? postDto.content : ''}"
-                                          th:text="${postDto != null ? postDto.content : ''}"       required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="photos">사진 업로드 (최대 5장)</label>
-                                <div class="custom-file mb-3">
-                                    <input type="file" class="custom-file-input" id="photos" name="photos[]" accept="image/*" multiple>
-                                    <label class="custom-file-label" for="photos">사진 선택</label>
-                                </div>
-                                <small class="form-text text-muted">여러 장의 사진을 선택하여 업로드할 수 있습니다.</small>
-                            </div>
-                            <!-- 썸네일 컨테이너 -->
-                            <div id="thumbnail-container" class="d-flex flex-wrap"></div>
-
-                            <div class="form-group placeName" th:attr="style=${postDto != null and postDto.locationRegistered == 'Y'} ? 'display: block;' : 'display: none;'">
-                                <label for="placeName">방문한 장소</label>
-                                <input type="text" class="form-control" id="placeName" name="placeName"
-                                       th:value="${postDto != null and postDto.locationName != null ? postDto.locationName : ''}" readonly>
-                            </div>
-                            <div class="form-group form-check">
-                                <input type="checkbox" class="form-check-input" id="locationRegistered" name="locationRegistered"
-                                       th:checked="${postDto != null and postDto.locationRegistered == 'Y'}">
-                                <label class="form-check-label" for="locationRegistered">위치 등록 여부</label>
-                            </div>
-                            <!-- 게시물 등록 버튼을 중앙으로 정렬 -->
-                            <div class="form-group text-center">
-                                <th:block th:if="${postDto == null}">
-                                    <button type="button" class="btn btn-primary" th:onclick="fn_check()">추억 등록</button>
-                                </th:block>
-                                <th:block th:unless="${postDto == null}">
-                                    <button type="button" class="btn btn-primary" th:onclick="fn_check()">추억 수정</button>
-                                </th:block>
-                            </div>
-
-                            <div id="mapSearch" style="display: none;">
-                                <div class="map_wrap">
-                                    <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
-                                    <div id="menu_wrap" class="bg_white p-3 rounded">
-                                        <div class="option d-flex justify-content-center">
-                                            <form onsubmit="searchPlaces(); return false;">
-                                                <input type="text" id="keyword" placeholder="장소를 입력하세요" aria-label="장소를 입력하세요">
-                                                <button type="submit" class="btn btn-outline-secondary" id="button-addon2">장소검색</button>
-                                            </form>
-                                        </div>
-                                        <hr>
-                                        <ul id="placesList" ></ul>
-                                        <div id="pagination"></div>
-                                    </div>
-                                </div>
-                                <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=92ef8d9822b2fa9e38f28f32d15d230a&libraries=services"></script>
-                            </div>
+        <div class="col-md-6" style="margin-top:2.8%;">
+            <div class="form-group placeName" th:attr="style=${postDto != null and postDto.locationRegistered == 'Y'} ? 'display: block;' : 'display: none;'">
+                <label for="placeName">방문한 장소</label>
+                <input type="text" class="form-control" id="placeName" name="placeName"
+                       th:value="${postDto != null and postDto.locationName != null ? postDto.locationName : ''}" readonly>
+            </div>
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="locationRegistered" name="locationRegistered"
+                       th:checked="${postDto != null and postDto.locationRegistered == 'Y'}">
+                <label class="form-check-label" for="locationRegistered">위치 등록 여부</label>
+            </div>
+            <div id="mapSearch" style="display:none;">
+                <div class="map_wrap">
+                    <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
+                    <div id="menu_wrap" class="bg_white p-3 rounded">
+                        <div class="option d-flex justify-content-center">
+                            <form onsubmit="searchPlaces(); return false;">
+                                <input type="text" id="keyword" placeholder="장소를 입력하세요" aria-label="장소를 입력하세요">
+                                <button type="submit" class="btn btn-outline-secondary" id="button-addon2">장소검색</button>
+                            </form>
                         </div>
+                        <hr>
+                        <ul id="placesList" ></ul>
+                        <div id="pagination"></div>
                     </div>
                 </div>
+                <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=92ef8d9822b2fa9e38f28f32d15d230a&libraries=services"></script>
+            </div>
         </div>
     </div>
 </div>

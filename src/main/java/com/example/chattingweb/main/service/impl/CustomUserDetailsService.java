@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         //username은 login의 input name 같아야함
-        System.out.println("loadUserByUsername email ==>" + email);
+        System.out.println("loadUserByUsername email ==> " + email);
         UserDto userDto = mainRepository.findByEmail(email);
 
         if(userDto == null){

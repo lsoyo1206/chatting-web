@@ -59,7 +59,7 @@ public class MainController{
         String role = auth.getAuthority();
 
         System.out.println(role);
-        System.out.println("email =>"+email);
+        System.out.println("email => "+email);
 
 
         if(email != null){

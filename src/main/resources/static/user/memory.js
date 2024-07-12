@@ -125,7 +125,6 @@ function fn_submit(){
                     let postId = responseData.postId;
                         console.log('장소 저장 수정은 성공!')
                         console.log(type)
-                        return;
                     sendPhotoAndInsert(type, postId);
                 }else{
                     alert("저장에 성공했습니다.");
@@ -156,7 +155,6 @@ function sendPhotoAndInsert(type, postId){
     for (let pair of formData.entries()) {
         console.log(pair[0] + ': ' + (pair[1] instanceof File ? pair[1].name : pair[1]));
     }
-
 
     $.ajax({
         url : "/api/server/insertAndUploadPhoto.do",
