@@ -66,10 +66,15 @@ public class ServerApiController {
         List<PhotoDto> photoDto = new ArrayList<>();
         PostDto postDto = serverApiRepository.selectPostDetailInfo(selectParam);
 
-        int photoId = postDto.getPhotoId() != 0 ? postDto.getPhotoId() : 0 ;
+         int photoId = postDto.getPhotoId() != 0 ? postDto.getPhotoId() : 0 ;
          if(photoId != 0 ){
             photoDto = serverApiRepository.selectPhotoDetailInfo(Integer.parseInt(postId));
-        }
+             for(PhotoDto photo : photoDto){
+                 String filePath = photo.getFilePath();
+                 photo.setFilePath( photo.getFilePath() + File.separator + photo.getFileName() + photo.getFileExtension());
+             }
+         }
+
 
         model.addAttribute("userDto", userDto);
         model.addAttribute("photoDto", photoDto);
