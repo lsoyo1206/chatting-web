@@ -16,7 +16,7 @@
         font-size: 15px;
     }
     .card-body{
-        padding: 1.05rem !important;
+        padding: 0.7rem !important;
     }
 
     #post-column {
@@ -129,7 +129,7 @@
             <div class="포스트">
                 <div th:each="post : ${postList}" class="post">
                     <div class="card border-primary mb3">
-                        <div class="card-header bg-primary text-white" style="padding: 0.4rem ">
+                        <div class="card-header bg-primary text-white" style="padding: 0.2rem ">
                             <h5 class="card-title mb-0">
                                 <a class="title" th:if="${post['locationId']}" th:text="${post['title']}"
                                    th:data-postId="${post['postId']}"
@@ -160,7 +160,7 @@
                                     <i class="fas fa-map-marker-alt"></i>
                                     <span class="addressName" th:text="${post['locationName']}"></span><br> &nbsp;&nbsp;
                                     <span class="ellipsis clickable-address" th:if="${post['address']}" th:text="${post['address']}" th:onclick="|mapSearch(${post['locationId']})|" ></span>
-                                    &nbsp;<span class="ellipsis clickable-address" th:unless="${post['address']}" th:text="${post['roadAddress']}" th:onclick="|mapSearch(${post['locationId']})|" ></span>
+                                    <span class="ellipsis clickable-address" th:unless="${post['address']}" th:text="${post['roadAddress']}" th:onclick="|mapSearch(${post['locationId']})|" ></span>
                                 </p>
                             </div>
                             <div class="content-wrapper">

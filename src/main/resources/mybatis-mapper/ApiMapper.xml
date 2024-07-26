@@ -103,7 +103,7 @@
         ON p.post_id = tp.post_id
         WHERE 1=1
         AND p.user_yn = 'Y'
-<!--        AND p.user_id = #{userId}-->
+        AND p.user_id = #{userId}
         AND tp.GROUP_V_ORDER = 0  OR tp.GROUP_V_ORDER is null
         order by p.post_id desc , p.createDt
         LIMIT #{start}, #{pageSize}
@@ -111,11 +111,21 @@
 
     <select id="selectPostsByUserIdTotalPage" resultType="int" parameterType="User">
         SELECT CEIL(count(*)/#{pageSize})
-        FROM chattingWeb.TB_POST p
-        LEFT JOIN chattingWeb.TB_LOCATION p2 ON p.post_id = p2.post_id
+        FROM (
+                SELECT * FROM chattingWeb.TB_POST WHERE user_yn = 'Y'
+            ) p
+        LEFT JOIN (
+            SELECT * FROM chattingWeb.TB_LOCATION WHERE use_yn = 'Y'
+            ) p2
+            ON p.post_id = p2.post_id
+        LEFT JOIN (
+            SELECT * FROM chattingWeb.TB_PHOTO WHERE user_yn = 'Y'
+            ) tp
+            ON p.post_id = tp.post_id
         WHERE 1=1
         AND p.user_yn = 'Y'
-<!--        AND p.user_id = #{userId}-->
+        AND p.user_id = #{userId}
+        AND tp.GROUP_V_ORDER = 0  OR tp.GROUP_V_ORDER is null
     </select>
 
     <update id="updatePostDto" parameterType="PostDto">

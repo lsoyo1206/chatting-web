@@ -19,6 +19,24 @@ $(document).ready(function() {
     });
 });
 
+$("#searchInput").on('input', searchFunction);
+
+// 검색 입력 필드 클릭 시 입력 그룹 보이기
+$("#searchInput").on('focus', function() {
+    $("#suggestion_box").show();
+});
+// 문서의 빈 공간 클릭 시 suggestion_box 숨기기
+$(document).on('mousedown', function(event) {
+    var $suggestionBox = $("#suggestion_box");
+
+    // 클릭된 위치가 #suggestion_box 내부가 아닌 경우에만 숨기기
+    if (!$(event.target).closest($suggestionBox).length) {
+        $suggestionBox.hide();
+    }
+//    $("#suggestion_box").hide();
+});
+
+
 function searchFunction() {  // 검색 기능
     // 검색어를 가져오는 코드
     let data = {
@@ -31,21 +49,42 @@ function searchFunction() {  // 검색 기능
         url:"/api/server/foodSearch",
         type:"get",
         contentType:"application/json",
-        data: data,
+        data: $.param(data),
         success:function(response){
-            var html = "";
-            console.log("response ===> "+response)
+           console.log("response ===> ", response);
+           var result = JSON.parse(response);
 
-            // for(let i=0 ; i<response.items.length ; i++){
-            //     html += "<div>" + item[i].title + "</div>";
-            //     html += "<div>" + item[i].address + "</div>";
-            // }
+           var $recommendBox = $("#suggestion_box");
+           $recommendBox.removeClass('invisible');
+           $recommendBox.empty();
 
-            // 결과를 화면에 출력
-            // $("#resultContainer").html(html);
+
+           // 응답 데이터 구조 확인
+           if (result && Array.isArray(result.items) && result.items.length > 0) {
+               var html = "";
+
+               // 검색 결과를 반복문을 통해 화면에 출력
+               for(let i = 0; i < result.items.length; i++){
+                   html += "<div class='search-result-item'>";
+                   html += "<h5>" + result.items[i].title + "</h5>";
+                   html += "<p>" + result.items[i].address + "</p>";
+                   if (result.items[i].link != null && result.items[i].link != "") {
+                           html += "<a href='" + result.items[i].link + "' target='_blank'>"+ result.items[i].title +" 바로가기</a>";
+                       }
+                   html += "</div>";
+               }
+
+               // 결과를 화면에 출력
+               $recommendBox.append(html);
+           }
+//           else {
+               // 검색 결과가 없을 때 처리
+//               $("#searchInput").val("검색 결과가 없습니다.")
+//           }
+
         },
         error:function(request,status,error){
-            alert('인증 실패하였습니다. 다시 입력해주세요.')
+//            alert('인증 실패하였습니다. 다시 입력해주세요.')
         }
     })
 }

@@ -16,6 +16,100 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.js"></script>
     <style>
+        /* 검색 박스 스타일 */
+        #suggestion_box {
+            position: fixed;
+            top: 6.5%; /* 화면 상단에서 떨어진 위치 */
+            left: 71%;
+            padding: 0.5%;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px; /* 모서리 둥글게 */
+            transform: translateX(-50%);
+            z-index: 9999;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 300px; /* 최대 너비 설정 */
+            width: auto;
+        }
+
+        /* 검색 결과 아이템 스타일 */
+        .search-result-item {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none; /* 마지막 아이템은 하단 테두리 없음 */
+        }
+
+        .search-result-item:hover {
+            background-color: #f8f9fa; /* 호버 시 배경색 변경 */
+        }
+
+        .search-result-item h5 {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .search-result-item p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .search-result-item a {
+            display: inline-block; /* 버튼처럼 보이게 하기 위한 설정 */
+            padding: 5px 10px; /* 여백 설정 */
+            margin-top: 5px; /* 상단 여백 설정 */
+            text-decoration: none; /* 밑줄 제거 */
+            color: #007bff; /* 기본 글씨 색상 */
+            background-color: #e9ecef; /* 기본 배경색 */
+            border-radius: 4px; /* 둥근 모서리 */
+            border: 1px solid #007bff; /* 경계선 색상 */
+            font-size: 14px; /* 글씨 크기 설정 */
+            font-weight: bold; /* 글씨 굵기 설정 */
+            transition: background-color 0.3s ease, border-color 0.3s ease; /* 부드러운 전환 효과 */
+        }
+
+        .search-result-item a:hover {
+            background-color: #007bff; /* 호버 시 배경색 */
+            color: #fff; /* 호버 시 글씨 색상 */
+            border-color: #007bff; /* 호버 시 경계선 색상 */
+        }
+
+        /* 스크롤바 스타일 (웹킷 기반 브라우저) */
+        #suggestion_box::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #suggestion_box::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        #suggestion_box::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+
+        header {
+            position: relative; /* 상대 위치 */
+            background: #f8f9fa;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            overflow: visible; /* 자식 요소가 넘쳐도 숨기지 않음 */
+            z-index: 1; /* 기본 z-index 설정 */
+        }
+
+        #suggested_items{
+            overflow: auto; /* 스크롤바 추가 */
+        }
+
+
         .navbar {
              background-color: #343a40;
         }
@@ -97,6 +191,9 @@
                             <button class="btn btn-outline-secondary" type="submit">
                                 <i class="fas fa-search"></i>
                             </button>
+                        </div>
+                        <div id="suggestion_box" class = "invisible">
+                            <div id = suggested_items></div>
                         </div>
                     </div>
                 </form>

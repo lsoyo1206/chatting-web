@@ -135,6 +135,11 @@ public class ServerApiController {
     public String foodSearch(@RequestParam Map<String,Object> data){
         String query = String.valueOf(data.get("searchQuery"));
         log.info("query : {}", query);
+
+        if (query == null || query.trim().isEmpty()) {
+            return "{\"response\": []}";
+        }
+
         String encode = Base64.getEncoder().encodeToString(query.getBytes(StandardCharsets.UTF_8));
 
         // https://openapi.naver.com
@@ -146,7 +151,7 @@ public class ServerApiController {
         URI uri = UriComponentsBuilder
                 .fromUriString("https://openapi.naver.com")
                 .path("/v1/search/local.json")
-                .queryParam("query", "제일곱창 왕십리")
+                .queryParam("query", query)
                 .queryParam("display", 10)
                 .queryParam("start", 1)
                 .queryParam("sort", "random")
