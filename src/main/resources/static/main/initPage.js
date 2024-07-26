@@ -59,9 +59,9 @@ function searchFunction() {  // 검색 기능
            $recommendBox.empty();
 
 
+           var html = "";
            // 응답 데이터 구조 확인
            if (result && Array.isArray(result.items) && result.items.length > 0) {
-               var html = "";
 
                // 검색 결과를 반복문을 통해 화면에 출력
                for(let i = 0; i < result.items.length; i++){
@@ -73,14 +73,17 @@ function searchFunction() {  // 검색 기능
                        }
                    html += "</div>";
                }
-
-               // 결과를 화면에 출력
-               $recommendBox.append(html);
+           }else {
+                //검색 결과가 없을 때 처리
+                if($("#searchInput").val().length > 0){
+                    html += "<div class='search-result-item'>";
+                    html += "<h5>검색결과가 없습니다.</h5>";
+                    html += "</div>";
+                }
            }
-//           else {
-               // 검색 결과가 없을 때 처리
-//               $("#searchInput").val("검색 결과가 없습니다.")
-//           }
+           // 결과를 화면에 출력
+           $recommendBox.append(html);
+
 
         },
         error:function(request,status,error){
