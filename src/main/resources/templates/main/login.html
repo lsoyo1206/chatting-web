@@ -29,10 +29,13 @@
                                     비밀번호를 입력하세요.
                                 </div>
                             </div>
-                            <div>
-                                <img th:src="@{/image/v2/kakao_login.png}" alt="kakao button" style="width: 30px; height: 120px" th:onClick="window.location.href='/oauth2/kakao/callback'">
-                            </div>
                             <button type="submit" class="btn btn-primary btn-block">로그인</button>
+                            <div>
+                                <a href="https://kauth.kakao.com/oauth/authorize"
+                                   th:href="@{https://kauth.kakao.com/oauth/authorize(client_id=${kakaoApiKey}, redirect_uri=${redirectUri}, response_type='code')}">
+                                    <img th:src="@{/image/v2/kakao_login_medium_wide.png}">
+                                </a>
+                            </div>
                         </form>
                     </div>
                 </div>

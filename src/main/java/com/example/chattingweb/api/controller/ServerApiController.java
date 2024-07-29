@@ -100,7 +100,7 @@ public class ServerApiController {
     public String map(Model model, @RequestParam(defaultValue = "0", value="page") int page){
 
         UserDto userDto = serverApiService.userInfo();
-        userDto.setPageSize(4);
+        userDto.setPageSize(5);
 
         //페이징 처리
         int totalPages = serverApiRepository.selectPostsByUserIdTotalPage(userDto);
@@ -154,7 +154,7 @@ public class ServerApiController {
                 .queryParam("query", query)
                 .queryParam("display", 10)
                 .queryParam("start", 1)
-                .queryParam("sort", "random")
+                .queryParam("sort", "sim")
                 .encode()
                 .build()
                 .toUri();

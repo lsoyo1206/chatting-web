@@ -33,7 +33,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return userDto != null ? userDto.getPassword() : null;
+        return userDto != null ? userDto.getPassword() : "";
     }
 
     @Override

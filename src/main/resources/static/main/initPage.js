@@ -52,38 +52,43 @@ function searchFunction() {  // 검색 기능
         data: $.param(data),
         success:function(response){
            console.log("response ===> ", response);
-           var result = JSON.parse(response);
+           var result;
 
-           var $recommendBox = $("#suggestion_box");
-           $recommendBox.removeClass('invisible');
-           $recommendBox.empty();
+           try {
+               result = JSON.parse(response);
+               var $recommendBox = $("#suggestion_box");
+               $recommendBox.removeClass('invisible');
+               $recommendBox.empty();
 
+               var html = "";
+               // 응답 데이터 구조 확인
+               if (result && Array.isArray(result.items) && result.items.length > 0) {
 
-           var html = "";
-           // 응답 데이터 구조 확인
-           if (result && Array.isArray(result.items) && result.items.length > 0) {
-
-               // 검색 결과를 반복문을 통해 화면에 출력
-               for(let i = 0; i < result.items.length; i++){
-                   html += "<div class='search-result-item'>";
-                   html += "<h5>" + result.items[i].title + "</h5>";
-                   html += "<p>" + result.items[i].address + "</p>";
-                   if (result.items[i].link != null && result.items[i].link != "") {
-                           html += "<a href='" + result.items[i].link + "' target='_blank'>"+ result.items[i].title +" 바로가기</a>";
-                       }
-                   html += "</div>";
+                   // 검색 결과를 반복문을 통해 화면에 출력
+                   for(let i = 0; i < result.items.length; i++){
+                       html += "<div class='search-result-item'>";
+                       html += "<h5>" + result.items[i].title + "</h5>";
+                       html += "<p>" + result.items[i].address + "</p>";
+                       if (result.items[i].link != null && result.items[i].link != "") {
+                               html += "<a href='" + result.items[i].link + "' target='_blank'>"+ result.items[i].title +" 바로가기</a>";
+                           }
+                       html += "</div>";
+                   }
+               }else {
+                    //검색 결과가 없을 때 처리
+                    if($("#searchInput").val().length > 0){
+                        html += "<div class='search-result-item'>";
+                        html += "<h5>검색결과가 없습니다.</h5>";
+                        html += "</div>";
+                    }
                }
-           }else {
-                //검색 결과가 없을 때 처리
-                if($("#searchInput").val().length > 0){
-                    html += "<div class='search-result-item'>";
-                    html += "<h5>검색결과가 없습니다.</h5>";
-                    html += "</div>";
-                }
-           }
-           // 결과를 화면에 출력
-           $recommendBox.append(html);
+               // 결과를 화면에 출력
+               $recommendBox.append(html);
 
+           } catch (e) {
+               console.error("Failed to parse JSON response: ", e);
+               return;
+           }
 
         },
         error:function(request,status,error){

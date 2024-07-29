@@ -9,6 +9,11 @@
         VALUES (#{userName}, #{password}, #{email},'ROLE_USER')
     </insert>
 
+    <insert id="insertKakaoUser" parameterType="User">
+        INSERT INTO chattingWeb.USERS (USERNAME, EMAIL,ROLE,profilePicturePath)
+        VALUES (#{userName}, #{email}, 'ROLE_USER',#{ProfileImage})
+    </insert>
+
     <select id="emailCheck" parameterType="EmailDto">
         SELECT count(*)
         FROM chattingWeb.USERS
@@ -49,11 +54,21 @@
     <select id="findByEmail" parameterType="String" resultType="User">
         SELECT user_id as userId,
                 userName as userName,
-                password as password ,
+                <if test="password != null and password != ''">
+                    password as password ,
+                </if>
                 email as email,
                 role as role
         FROM chattingWeb.USERS
         WHERE USERS.email = #{email}
+    </select>
+
+    <select id="findByEmailAndNickName" parameterType="User" resultType="int">
+        select count(*)
+        from USERS
+        where 1=1
+        and   userName = #{userName}
+        and  email = #{email};
     </select>
 
 </mapper>

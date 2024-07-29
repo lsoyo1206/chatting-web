@@ -11,6 +11,7 @@
 </script>
 
 <style>
+
     .addressName{
         color: #333;
         font-size: 15px;
@@ -117,7 +118,7 @@
 </style>
 <body>
 <div th:include="main/header"></div>
-<div style="margin-bottom:13px;"></div>
+<!--<div style="margin-bottom:13px;"></div>-->
 <div class="container-fluid">
     <div class="row no-gutters">
         <!-- 왼쪽 게시글 영역 -->
@@ -125,7 +126,7 @@
             <img th:src="@{/image/v2/btn-slide-in.png}" class="btn-in" alt="slide in button" style="display:none; width: 30px; height: 120px;">
             <img th:src="@{/image/v2/btn-slide-out.png}" class="btn-out" alt="slide out button" style="width: 30px; height: 120px">
         </div>
-        <div class="col-md-2" id="post-column" >
+        <div class="col-md-2" id="post-column" style="background-color: ivory; margin-top:1%;">
             <div class="포스트">
                 <div th:each="post : ${postList}" class="post">
                     <div class="card border-primary mb3">

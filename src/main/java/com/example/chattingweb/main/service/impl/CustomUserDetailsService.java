@@ -1,5 +1,6 @@
 package com.example.chattingweb.main.service.impl;
 
+import com.example.chattingweb.api.dto.KakaoApi;
 import com.example.chattingweb.main.dto.CustomUserDetails;
 import com.example.chattingweb.main.dto.UserDto;
 import com.example.chattingweb.main.repository.MainRepository;
@@ -31,4 +32,5 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return new CustomUserDetails(userDto);
     }
+
 }

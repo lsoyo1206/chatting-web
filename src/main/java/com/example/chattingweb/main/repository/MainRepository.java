@@ -16,6 +16,8 @@ public interface MainRepository {
     public int getCnt();
 
     public int insertUser(UserDto user);
+    public int insertKakaoUser(UserDto user);
+
 
     public int emailCheck(EmailRequestDto emailDto);
 
@@ -25,4 +27,5 @@ public interface MainRepository {
 
     public UserDto findByUserName(String username);
     public UserDto findByEmail(String email);
+    public int findByEmailAndNickName(UserDto userDto);
 }

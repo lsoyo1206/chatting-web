@@ -41,6 +41,11 @@ public class MainService {
         return result;
     }
 
+    public int insertKakaoUser(UserDto userDto) {
+        int result = mainRepository.insertKakaoUser(userDto);
+        return result;
+    }
+
     public int emailCheck(EmailRequestDto emailDto){
         return mainRepository.emailCheck(emailDto);
     }
@@ -54,6 +59,9 @@ public class MainService {
     }
     public UserDto findByUserName(String username) {
         return mainRepository.findByUserName(username);
+    }
+    public int findByEmailAndNickName(UserDto userDto) {
+        return mainRepository.findByEmailAndNickName(userDto);
     }
 
 

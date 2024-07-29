@@ -2,17 +2,24 @@ package com.example.chattingweb.main.controller;
 
 
 import com.example.chattingweb.api.common.ApiExplorer;
+import com.example.chattingweb.api.dto.KakaoApi;
 import com.example.chattingweb.api.service.ServerApiService;
 import com.example.chattingweb.main.dto.CustomUserDetails;
 import com.example.chattingweb.main.dto.UserDto;
+import com.example.chattingweb.main.repository.MainRepository;
+import com.example.chattingweb.main.service.impl.CustomUserDetailsService;
 import com.example.chattingweb.main.service.impl.MainService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,20 +35,27 @@ import java.util.Map;
 public class MainController{
 
     @Autowired
-    private MainService mainService;
+    private KakaoApi kakaoApi;
 
     @Autowired
+    private MainService mainService;
+    @Autowired
     private ServerApiService serverApiService;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-
 
     @GetMapping("/join")
     public String joinPage(){   return "main/join";    }
 
     @GetMapping("/login")
-    public String loginPage() {     return "main/login";       }
+    public String loginPage(Model model) {
+        model.addAttribute("kakaoApiKey", kakaoApi.getKakaoApiKey());
+        model.addAttribute("redirectUri", kakaoApi.getKakaoRedirectUri());
+        return "main/login";
+    }
 
     @GetMapping("/map.do")
     public String map() {     return "main/map";       }
@@ -137,13 +151,50 @@ public class MainController{
         return response;
     }
 
-    @RequestMapping("/oauth2/kakao/callback")
-    public String kakaoLogin(@RequestParam String code){
-        // 1.인가 코드 받기 : @RequestParam String code
+    @GetMapping("/oauth2/kakao/callback")
+    public String kakaoLogin(@RequestParam("code") String code, HttpSession session){
+        // 1. 인가 코드 받기 (@RequestParam String code)
+        System.out.print("code ===>"+code);
+        // 2. 토큰 받기
+        String accessToken = kakaoApi.getAccessToken(code);
 
-        //2. 토큰 받기 https://innovation123.tistory.com/181#4.%20KakaoApi.getAccessToken(String%20code)-1
-//        String accessTokent = kakaoLogin.getS
-        return "result";
+        // 3. 사용자 정보 받기
+        Map<String, Object> userInfo = kakaoApi.getUserInfo(accessToken);
+
+        String nickname = (String)userInfo.get("nickname");
+        String accountEmail = (String)userInfo.get("accountEmail");
+        String profileImage = (String)userInfo.get("profileImageUrl");
+
+        UserDto userDto = new UserDto();
+        userDto.setEmail(accountEmail);
+        userDto.setUserName(nickname);
+
+        // 사용자 정보 저장
+        int result = mainService.findByEmailAndNickName(userDto);
+
+        if(result == 0){
+            userDto = new UserDto();
+            userDto.setEmail(accountEmail);
+            userDto.setUserName(nickname);
+            userDto.setProfileImage(profileImage);
+            mainService.insertKakaoUser(userDto);
+        }
+
+        // 3. 로그인 처리
+        UserDetails userDetails = userDetailsService.loadUserByUsername(accountEmail);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(authentication);
+        session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+        System.out.println("securityContext" +securityContext);
+
+        // 4-1. 이번에 회원가입 했다면, 회원가입 완료 안내페이지로 이동
+//        if(result == 0){
+//            return "redirect:/register/social";
+//        }
+        // 4-2. 로그인만 했다면, home으로 이동
+//        return "redirect:/board/home";
+        return "redirect:/";
     }
 
 

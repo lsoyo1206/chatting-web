@@ -12,6 +12,7 @@ public class UserDto extends Pagination {
     private String userName;
     private String password;
     private String email;
+    private String ProfileImage;
     private String role;
 
 }

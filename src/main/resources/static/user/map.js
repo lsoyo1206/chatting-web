@@ -110,7 +110,7 @@ function initSetting(){
 
     var options = {
         center: new kakao.maps.LatLng(dataList[0].latitude, dataList[0].longitude),
-        level: 3
+        level: 5
     };
 
     //지도 열기

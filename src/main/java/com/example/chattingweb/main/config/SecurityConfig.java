@@ -40,6 +40,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/", "/join", "/login", "/loginProc", "/joinProc", "/user/**").permitAll() //permitAll : 모든 사용자에게 로그인 하지않아도 접근 가능
+                        .requestMatchers("/oauth2/kakao/callback", "/result").permitAll()
+                        .requestMatchers("/image/v2/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")  //ADMIN role이 있으면 접근 가능
                         .requestMatchers("/user/**", "/api/server/**").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated())
