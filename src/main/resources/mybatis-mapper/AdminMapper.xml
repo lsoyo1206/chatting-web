@@ -57,6 +57,7 @@
                 <if test="password != null and password != ''">
                     password as password ,
                 </if>
+                profilePicturePath as ProfileImage,
                 email as email,
                 role as role
         FROM chattingWeb.USERS

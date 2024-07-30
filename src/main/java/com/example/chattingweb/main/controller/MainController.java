@@ -118,7 +118,7 @@ public class MainController{
 
     @GetMapping("/loginResult")
     public String loginResult(@RequestParam(name = "error", required = false) String error,
-                            Model model) {
+                              Model model) {
 
         System.out.printf("login error ===>"+error);
 
