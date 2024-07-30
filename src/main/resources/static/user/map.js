@@ -6,8 +6,8 @@ $(document).ready(function () {
 //        $('#post-column').animate({width: '100%'}, 500)
         $('.btn-in').css("display","none");
         $('.btn-out').css("display","block");
-        $('.slide-btn').css("left","16%");
-        $('#memorySave').removeClass('col-md-12').addClass('col-md-10');
+        $('.slide-btn').css("left","24%");
+        $('#memorySave').removeClass('col-md-12').addClass('col-md-9');
     });
     $(".btn-out").click(function(){ //postList 안보이게
         $('#post-column').hide();
@@ -15,8 +15,8 @@ $(document).ready(function () {
         $('.slide-btn').animate({left: '1%'}, 500);
         $('.btn-in').css("display","block");
         $('.btn-out').css("display","none");
-        $('.slide-btn').css("left","0.5%");
-        $('#memorySave').removeClass('col-md-10').addClass('col-md-12');
+        $('.slide-btn').css("left","0.3%");
+        $('#memorySave').removeClass('col-md-9').addClass('col-md-12');
     });
 
 });
@@ -98,6 +98,7 @@ function initSetting(){
 
     if (dataList.length === 0) {
         document.querySelector('.no_place').style.display = 'block';
+        document.querySelector('.pagination').style.display = 'none';
     } else {
         document.querySelector('.no_place').style.display = 'none'; // dataList가 비어있지 않을 때 no_place 클래스를 가진 div를 숨김
     }

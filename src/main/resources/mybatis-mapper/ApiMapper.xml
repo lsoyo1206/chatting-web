@@ -104,7 +104,7 @@
         WHERE 1=1
         AND p.user_yn = 'Y'
         AND p.user_id = #{userId}
-        AND tp.GROUP_V_ORDER = 0  OR tp.GROUP_V_ORDER is null
+        AND (tp.GROUP_V_ORDER = 0 OR tp.GROUP_V_ORDER is null)
         order by p.post_id desc , p.createDt
         LIMIT #{start}, #{pageSize}
     </select>
@@ -125,7 +125,7 @@
         WHERE 1=1
         AND p.user_yn = 'Y'
         AND p.user_id = #{userId}
-        AND tp.GROUP_V_ORDER = 0  OR tp.GROUP_V_ORDER is null
+        AND (tp.GROUP_V_ORDER = 0 OR tp.GROUP_V_ORDER is null)
     </select>
 
     <update id="updatePostDto" parameterType="PostDto">
