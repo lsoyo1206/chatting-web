@@ -87,7 +87,8 @@ public class ServerApiService implements ServerApiServiceIf{
                 String baseFileName = (lastDotIndex == -1) ? fileName : fileName.substring(0, lastDotIndex);
                 String fileExtension = (lastDotIndex == -1) ? "" : fileName.substring(lastDotIndex);
                 long fileSize = file.getSize();
-                String nasPath = "C:" + File.separator + "nas" + File.separator + month + File.separator + uuid;
+//                String nasPath = "C:" + File.separator + "nas" + File.separator + month + File.separator + uuid;
+                String nasPath = month + File.separator + uuid;
 
                 PhotoDto photoDto = PhotoDto.builder()
                         .postId(Integer.parseInt(String.valueOf(postId)))

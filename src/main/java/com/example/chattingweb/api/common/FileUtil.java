@@ -22,7 +22,7 @@ public class FileUtil {
 //        String nasPath = "C:" + File.separator + "nas" + File.separator + month + File.separator + uuid;
 
         // linux
-        String nasPath = "/usr/local/toyproject/nas/file_manage" + File.separator + month + File.separator + uuid;
+        String nasPath =  month + File.separator + uuid;
 
         String fileName = file.getOriginalFilename();
         Path filePath = Paths.get(nasPath, fileName);
@@ -45,7 +45,8 @@ public class FileUtil {
 //        String nasPath = "C:" + File.separator + "nas" + File.separator;
 
         // linux
-        String nasPath = "/usr/local/toyproject/nas/file_manage" + File.separator;
+        String nasPath = "";
+//                "/usr/local/toyproject/nas/file_manage" + File.separator;
         //LOGGER.info("nasPath = {}", nasPath);
 
         Path path = Paths.get(nasPath+nowTime1);
@@ -59,7 +60,7 @@ public class FileUtil {
 //        String filePath = "C:" + File.separator + "nas" + File.separator + nowTime1 + File.separator + uuid;
 
         // linux
-        String filePath = "/usr/local/toyproject/nas/file_manage" + File.separator + nowTime1 + File.separator + uuid;
+        String filePath = nowTime1 + File.separator + uuid;
         //LOGGER.info("nasFilePath = {}", filePath);
 
         Path path1 = Paths.get(filePath);

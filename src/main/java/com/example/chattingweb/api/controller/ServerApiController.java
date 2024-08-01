@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -29,8 +30,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Slf4j  //로그
@@ -97,7 +102,7 @@ public class ServerApiController {
     }
 
     @GetMapping("/map.do")
-    public String map(Model model, @RequestParam(defaultValue = "0", value="page") int page){
+    public String map(Model model, @RequestParam(defaultValue = "0", value="page") int page) throws IOException {
 
         UserDto userDto = serverApiService.userInfo();
         userDto.setPageSize(5);
@@ -119,8 +124,8 @@ public class ServerApiController {
                 fileBuilder.append(File.separator);
                 fileBuilder.append(String.valueOf(postList.get(i).get("fileName")));
                 fileBuilder.append(String.valueOf(postList.get(i).get("fileExtension")));
-                String file = fileBuilder.toString();
-                postList.get(i).put("filePullPath", file);
+                String fileFullPath = fileBuilder.toString();
+                postList.get(i).put("filePullPath",fileFullPath);
             }
         }
 
