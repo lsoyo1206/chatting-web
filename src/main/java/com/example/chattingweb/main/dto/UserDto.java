@@ -2,6 +2,7 @@ package com.example.chattingweb.main.dto;
 
 import lombok.*;
 
+@EqualsAndHashCode(callSuper = true)
 @Data   //getter,setter,toString
 @NoArgsConstructor  // 모든 필드를 인자로 받는 생성자를 생성
 @AllArgsConstructor //파라미터 없는 기본 생성자를 생성

@@ -75,6 +75,9 @@ function fn_check(){
 }
 
 function fn_submit(){
+
+    $("#loadingBar").show(); //로딩바 표시
+
     let postId = $("#postId").val();
 
     let locationDto = {};
@@ -127,6 +130,8 @@ function fn_submit(){
                         console.log(type)
                     sendPhotoAndInsert(type, postId);
                 }else{
+                    $("#loadingBar").hide();
+
                     alert("저장에 성공했습니다.");
                     window.location.href = "/api/server/map.do"; // 추억저장소 페이지로 redirect
                 }
@@ -136,12 +141,16 @@ function fn_submit(){
             }
         },
         error : function(request, status, error) {
+            // 로딩바 숨김
+            $("#loadingBar").hide();
         }
     });
 }
 
 
 function sendPhotoAndInsert(type, postId){
+
+    let url = "/api/server";
     var formData = new FormData();
 
     formData.append('postId', postId)
@@ -156,8 +165,14 @@ function sendPhotoAndInsert(type, postId){
         console.log(pair[0] + ': ' + (pair[1] instanceof File ? pair[1].name : pair[1]));
     }
 
+    if(type == 'insert'){
+        url += "/insertAndUploadPhoto.do";
+    }else if(type == 'edit'){
+        url += "/editAndUploadPhoto.do";
+    }
+
     $.ajax({
-        url : "/api/server/insertAndUploadPhoto.do",
+        url : url,
         type : "post",
         enctype : "multipart/form-data",
         processData: false,
@@ -165,6 +180,8 @@ function sendPhotoAndInsert(type, postId){
         cache: false,
         data : formData,
         success : function(responseData) {
+            $("#loadingBar").hide();
+
             console.log(responseData.code)
             if(responseData.code == 'R000'){
                 alert("저장에 성공했습니다.");
@@ -174,6 +191,7 @@ function sendPhotoAndInsert(type, postId){
             }
         },
         error : function(request, status, error) {
+            $("#loadingBar").hide();
         }
     });
 
@@ -499,7 +517,7 @@ function findLatitudeLongitude(address){
 }
 
 function fileSetting(){
-    var photos = $("#photoDto").val();
+    /* var photos = $("#photoDto").val();
 
    files = [];
     var input = photos.target;
@@ -533,5 +551,5 @@ function fileSetting(){
         files.push(photos[i]);
         console.log(photos[i].fileName)
         console.log(photos[i])
-    }
+    } */
 }

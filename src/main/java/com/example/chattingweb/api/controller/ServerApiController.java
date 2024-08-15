@@ -75,8 +75,11 @@ public class ServerApiController {
          if(photoId != 0 ){
             photoDto = serverApiRepository.selectPhotoDetailInfo(Integer.parseInt(postId));
              for(PhotoDto photo : photoDto){
-                 String filePath = photo.getFilePath();
-                 photo.setFilePath( photo.getFilePath() + File.separator + photo.getFileName() + photo.getFileExtension());
+                 String filePath = "http://3.27.210.64:8081/files" + File.separator +
+                         photo.getFilePath() + File.separator + photo.getFileName() + photo.getFileExtension();
+
+                photo.setFilePath(filePath);
+
              }
          }
 
@@ -118,16 +121,27 @@ public class ServerApiController {
             String textOnlyContent = Jsoup.parse(htmlString).text();
             postList.get(i).put("textOnlyContent", textOnlyContent); //content html 부분 제외한 텍스트 부분만 추출
 
-            if(postList.get(i).get("filePath") != null){    //사진 pullPath 추출
+            /* if(postList.get(i).get("filePath") != null){    //사진 pullPath 추출
                 StringBuilder fileBuilder = new StringBuilder();
+                fileBuilder.append("/usr/local/toyproject/nas/file_manage/");
                 fileBuilder.append(String.valueOf(postList.get(i).get("filePath")));
                 fileBuilder.append(File.separator);
                 fileBuilder.append(String.valueOf(postList.get(i).get("fileName")));
                 fileBuilder.append(String.valueOf(postList.get(i).get("fileExtension")));
                 String fileFullPath = fileBuilder.toString();
                 postList.get(i).put("filePullPath",fileFullPath);
+            } */
+
+            if (postList.get(i).get("filePath") != null) {    // 사진 pullPath 추출
+                String filePullPath = "http://3.27.210.64:8081/files" + File.separator +
+                        String.valueOf(postList.get(i).get("filePath")) + File.separator +
+                        String.valueOf(postList.get(i).get("fileName")) +
+                        String.valueOf(postList.get(i).get("fileExtension"));
+                //filePullPathString filePullPath = File.separator + "images"+ File.separator + fileName;
+                postList.get(i).put("filePullPath", filePullPath);
             }
         }
+
 
         model.addAttribute("postList", postList);
         model.addAttribute("userDto",userDto);      //사용자 정보
