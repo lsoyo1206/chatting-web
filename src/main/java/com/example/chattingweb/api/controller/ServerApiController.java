@@ -89,6 +89,10 @@ public class ServerApiController {
         model.addAttribute("postDto", postDto);
         model.addAttribute("postId", postDto.getPostId());
 
+        logger.info("================================");
+        logger.info("photoDto = {}", photoDto);
+        logger.info("postId = {}", postId);
+        logger.info("================================");
         return "user/memorySave";
     }
 
@@ -296,6 +300,46 @@ public class ServerApiController {
 
         return result;
     }
+
+    @RequestMapping(value = "/editAndUploadPhoto.do", method = {RequestMethod.POST})
+    @ResponseBody
+    public Map<String,Object> editAndUploadPhoto (HttpServletRequest request, HttpServletResponse response,
+                                                    @RequestParam("postId") String postId,
+                                                    @RequestParam("files") List<MultipartFile> files) throws Exception {
+        Map<String,Object> result = new HashMap<>();
+        String msg = "";
+        String code = "";
+
+        UserDto userDto = serverApiService.userInfo();  //로그인한 사용자 정보
+        logger.info("postId : {}", postId);
+        for (MultipartFile file : files) {
+            logger.info("file : {}", file.getOriginalFilename());
+        }
+
+        //기존 사진 삭제
+        int deleteResult = serverApiService.deleteUploadPhoto(postId);
+
+        //새로 업로드 할 사진 추가
+        Map<String,Object> insertResult = serverApiService.insertAndUploadPhoto(postId, files);
+
+        boolean photoUploadResult = (boolean) insertResult.get("allUploadFile");
+        Integer photoInsertResult = (Integer) insertResult.get("photoInsert") ;
+
+        if(photoUploadResult && photoInsertResult == 1 && deleteResult == 1){
+            code = "R000";
+            msg = "SUCCESS";
+        }else{
+            code = "R001";
+            msg ="FAIL";
+        }
+
+
+        result.put("msg", msg);
+        result.put("code", code);
+
+        return result;
+    }
+
 
     @RequestMapping(value = "/deletePost.do", method = {RequestMethod.POST})
     @ResponseBody

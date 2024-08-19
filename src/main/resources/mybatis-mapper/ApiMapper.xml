@@ -252,4 +252,18 @@
         AND p.user_yn = 'Y'
         AND p.post_id  = #{postId}
     </select>
+
+    <select id="selectPhotoToDelete" resultType="PhotoDto" parameterType="int">
+        SELECT
+                photo_id as photoId,
+                post_id as postId,
+                GROUP_V_ORDER as groupVOrder,
+                FILE_PATH as filePath,
+                FILE_NAME as fileName,
+                FILE_EXTENSION as fileExtension
+        FROM TB_PHOTO
+        where 1=1
+        and   post_id = #{postId}
+        and   user_yn = 'Y'
+    </select>
 </mapper>

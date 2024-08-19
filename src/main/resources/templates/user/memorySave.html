@@ -142,6 +142,13 @@
                 </div>
                 <!-- 썸네일 컨테이너 -->
                 <div id="thumbnail-container" class="d-flex flex-wrap"></div>
+                <th:block th:if="${photoDto != null}">
+                    <th:block th:each="photo : ${photoDto}" class="editPhoto">
+                            <span class="thumbnail-item">
+                                <img th:src="${photo.filePath}" class="thumbnail" alt="Uploaded">
+                            </span>
+                    </th:block>
+                </th:block>
             </div>
             <!-- 게시물 등록 버튼을 중앙으로 정렬 -->
             <div class="form-group text-center">

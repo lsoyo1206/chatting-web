@@ -1,9 +1,17 @@
 $(document).ready(function() {
     fileSetting();
+
 });
 
+var editFilesYn = false;
 var files = [];
 document.getElementById('photos').addEventListener('change', function(event) {
+
+    if (window.location.href.includes('memoryEdit.do')) {
+        editFilesYn = true;  // 사진 변경 여부 확인
+        $('.thumbnail-item').remove();
+    }
+
     files = [];
     var input = event.target;
     var label = input.nextElementSibling;
@@ -76,6 +84,8 @@ function fn_check(){
 
 function fn_submit(){
 
+    console.log("editFileYn ===>" +editFilesYn);
+
     $("#loadingBar").show(); //로딩바 표시
 
     let postId = $("#postId").val();
@@ -123,11 +133,10 @@ function fn_submit(){
 
             if((responseData.type == 'insert' && responseData.msg == 'SUCCESS')
                 || (responseData.type == 'edit' && responseData.msg == 'SUCCESS')){
-                if(photoSize > 0){
+                if(photoSize > 0 && editFilesYn == true){
                     let type = responseData.type;
                     let postId = responseData.postId;
-                        console.log('장소 저장 수정은 성공!')
-                        console.log(type)
+                    console.log(type)
                     sendPhotoAndInsert(type, postId);
                 }else{
                     $("#loadingBar").hide();

@@ -19,5 +19,7 @@ public interface ServerApiServiceIf {
     public Map<String,Object> insertPostDto(PostDto postDto, UserDto userDto); //post테이블 insert
     public Map<String,Object> updatePostDto(PostDto postDto, UserDto userDto); //post테이블 update
 
+    public int deleteUploadPhoto(String postId) throws IOException;   //업로드 한 파일 삭제 및 db 삭제
+
     public List<Map<String,Object>> settingPostList(UserDto userDto);
 }

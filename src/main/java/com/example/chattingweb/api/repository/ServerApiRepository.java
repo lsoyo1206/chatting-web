@@ -27,11 +27,13 @@ public interface ServerApiRepository {
     public Map<String,Object> selectLocationInfo(int locationId);
     public PostDto selectPostDetailInfo(Map<String,Object> selectParam);
     public List<PhotoDto> selectPhotoDetailInfo(int postId);
+    public List<PhotoDto> selectPhotoToDelete(int postId);
 
     public int updatePostDto(PostDto postDto);
     public int updateLocationId(PostDto postDto);
     public int deletePostTable(int postId);
     public int deleteLocationTable(int postId);
     public int deletePhotoTable(int postId);
+
 
 }
