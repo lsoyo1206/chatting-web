@@ -204,13 +204,18 @@ public class ServerApiService implements ServerApiServiceIf{
     @Override
     @Transactional
     public int deleteUploadPhoto(String postId) throws IOException {
+        int result = 1;
         //삭제할 파일 path 가져오기
         List<PhotoDto> photoDto = serverApiRepository.selectPhotoToDelete(Integer.parseInt(postId));
         System.out.println("photoDto ===>"+ photoDto);
 
+        if(photoDto.size() != 0){
+            result = serverApiRepository.deletePhotoTable(Integer.parseInt(postId));
+        }
+
         //FileUtil.deletePhoto(photoDto); // 폴더 및 파일 삭제
 
-        return serverApiRepository.deletePhotoTable(Integer.parseInt(postId));
+        return result;
     }
 
     @Override
