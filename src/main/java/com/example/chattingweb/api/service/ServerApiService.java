@@ -208,7 +208,7 @@ public class ServerApiService implements ServerApiServiceIf{
         List<PhotoDto> photoDto = serverApiRepository.selectPhotoToDelete(Integer.parseInt(postId));
         System.out.println("photoDto ===>"+ photoDto);
 
-        FileUtil.deletePhoto(photoDto); // 폴더 및 파일 삭제
+        //FileUtil.deletePhoto(photoDto); // 폴더 및 파일 삭제
 
         return serverApiRepository.deletePhotoTable(Integer.parseInt(postId));
     }

@@ -78,7 +78,7 @@ public class FileUtil {
         try {
             for (PhotoDto photo : photoList) {
                 // 데이터베이스에서 파일 경로를 가져옴
-                Path filePath = Paths.get("/usr/local/toyproject/nas/file_manage/", photo.getFilePath());
+                Path filePath = Paths.get("/usr/local/toyproject/nas/file_manage/", photo.getFilePath() + File.separator + photo.getFileName() + photo.getFileExtension());
 
                 // 파일 삭제
                 if (Files.exists(filePath)) {
