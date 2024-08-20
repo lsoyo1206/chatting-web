@@ -226,4 +226,9 @@ public class ServerApiService implements ServerApiServiceIf{
         return postList;
     }
 
+    @Override
+    public List<Map<String, Object>> NewLocationSelector(Map<String, Object> params) {
+        return serverApiRepository.NewLocationSelector(params);
+    }
+
 }

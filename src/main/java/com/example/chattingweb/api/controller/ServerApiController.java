@@ -96,6 +96,14 @@ public class ServerApiController {
         return "user/memorySave";
     }
 
+    @PostMapping("/selectItemSearch.do")
+    public String selectItemSearch(@RequestParam Map<String, String> params, Model model){
+        logger.info("params = {}", params);
+        Map<String,Object> result = new HashMap<>();
+
+        return "SUCCESS";
+    }
+
     @ResponseBody
     @PostMapping("/selectLocationInfo.do")
     public Map<String,Object> selectLocationInfo(@RequestBody Map<String,Object> data){

@@ -29,6 +29,9 @@ public interface ServerApiRepository {
     public List<PhotoDto> selectPhotoDetailInfo(int postId);
     public List<PhotoDto> selectPhotoToDelete(int postId);
 
+    public List<Map<String,Object>> NewLocationSelector(Map<String,Object> params);
+
+
     public int updatePostDto(PostDto postDto);
     public int updateLocationId(PostDto postDto);
     public int deletePostTable(int postId);

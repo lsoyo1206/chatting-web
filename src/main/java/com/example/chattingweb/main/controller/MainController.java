@@ -26,10 +26,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class MainController{
@@ -80,9 +77,13 @@ public class MainController{
             UserDto userDto = mainService.findByEmail(email);
             model.addAttribute("userDto",userDto);
             session.setAttribute("userDto",userDto);
-            System.out.println(userDto);
         }
 
+        //지역 코드 list
+        Map<String,Object> params = new HashMap<>();
+        params.put("code_level", 1);
+        List<Map<String,Object>> resion_list = serverApiService.NewLocationSelector(params);
+        model.addAttribute("resionList",resion_list);
 
 
         return "main/main";

@@ -266,4 +266,21 @@
         and   post_id = #{postId}
         and   user_yn = 'Y'
     </select>
+
+    <select id="NewLocationSelector" resultType="Map" parameterType="Map">
+        select code, UP_CODE ,CODE_LEVEL , sido_name ,dong_name , lee_name , ranking
+        from TB_RESION
+        where 1=1
+        and   delete_date = ''
+        <if test='code_level == 1'>
+            AND CODE_LEVEL = #{code_level}
+        </if>
+        <if test='code_level != 1'>
+            AND UP_CODE = #{up_code}
+            AND CODE_LEVEL = #{code_level}
+        </if>
+        <if test='code_level != 1'>
+            ORDER BY ranking
+        </if>
+    </select>
 </mapper>
