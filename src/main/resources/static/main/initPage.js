@@ -51,7 +51,6 @@ function searchFunction() {  // 검색 기능
         contentType:"application/json",
         data: $.param(data),
         success:function(response){
-           console.log("response ===> ", response);
            var result;
 
            try {
@@ -67,7 +66,7 @@ function searchFunction() {  // 검색 기능
                    // 검색 결과를 반복문을 통해 화면에 출력
                    for(let i = 0; i < result.items.length; i++){
                        html += "<div class='search-result-item'>";
-                       html += "<h5>" + result.items[i].title + "</h5>";
+                       html += "<h5 onclick='searchItemClick("+ JSON.stringify(result.items[i]) +")'>" + result.items[i].title + "</h5>";
                        html += "<p>" + result.items[i].address + "</p>";
                        if (result.items[i].link != null && result.items[i].link != "") {
                                html += "<a href='" + result.items[i].link + "' target='_blank'>"+ result.items[i].title +" 바로가기</a>";
@@ -109,4 +108,51 @@ function logout(){
 }
 function goToHomePage() {
     window.location.href = "/";
+}
+
+function searchItemClick(item){
+    console.log("item ---->" + JSON.stringify(item, null, 2)); //객체 보여줄 때
+
+    var kakaoMapUrl;
+    var title;
+
+    if(!item.title)     title = "Unknown Location"
+    else                title = sanitizeTitle(item.title); //html 태그 없애줌
+    var latitude = item.mapy;
+    var longitude = item.mapx;
+
+    if (title == "Unknown Location") {
+        alert("해당 장소는 위치를 찾을 수 없습니다")
+        return;
+    }
+
+    //kakaoMapUrl = "	https://map.kakao.com/link/to/"+ title +","+ latitude +","+ longitude; 지도 검색
+    kakaoMapUrl = `https://map.kakao.com/link/search/${encodeURIComponent(title)}`;
+    window.open(kakaoMapUrl, '_blank');
+}
+
+function sanitizeTitle(title) {
+    var tempDiv = document.createElement('div');
+    tempDiv.innerHTML = title;
+    return tempDiv.textContent || tempDiv.innerText || '';
+}
+
+function postToUrl(url, params) {
+    var form = document.createElement('form');
+    form.method = 'POST';
+    form.action = url;
+
+    for (var key in params) {
+        if (params.hasOwnProperty(key)) {
+            var hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = key;
+            hiddenField.value = params[key];
+
+            form.appendChild(hiddenField);
+        }
+    }
+
+    document.body.appendChild(form);
+    form.submit();
 }
