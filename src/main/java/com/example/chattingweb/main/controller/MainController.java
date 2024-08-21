@@ -79,7 +79,7 @@ public class MainController{
             session.setAttribute("userDto",userDto);
         }
 
-        //지역 코드 list
+        //지역 코드 가져오기
         Map<String,Object> params = new HashMap<>();
         params.put("code_level", 1);
         List<Map<String,Object>> resion_list = serverApiService.NewLocationSelector(params);

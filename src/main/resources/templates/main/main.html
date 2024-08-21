@@ -15,12 +15,11 @@
 <div class="container">
     <h2>Memory Search</h2>
     <div class="form-group">
-        <label for="region">Select Region:</label>
-        <select class="form-control" id="region">
-            <option value="">Select Region</option>
-            <option value="asia">Asia</option>
-            <option value="europe">Europe</option>
-            <!-- Add more regions as needed -->
+        <label for="resion">resion choice:</label>
+        <select id="resion" class="form-control">
+            <th:block th:each="resion : ${resionList}">
+                <option th:value="${resion.code}" th:text="${resion.sido_name}"></option>
+            </th:block>
         </select>
     </div>
     <div class="form-group" id="districtGroup" style="display: none;">
@@ -29,33 +28,48 @@
             <!-- District options will be populated dynamically based on the region selection -->
         </select>
     </div>
-    <div class="form-group">
-        <label for="search">Search Memories:</label>
-        <input type="text" class="form-control" id="search" placeholder="Enter keywords...">
-    </div>
-    <button class="btn btn-primary" onclick="searchMemories()">Search</button>
 
-    <h2>Wishlist</h2>
-    <ul id="wishlist"></ul>
+    <button class="btn btn-primary" onclick="searchMemories()">Search</button>
 </div>
 <script th:inline="javascript">
-    // JavaScript function to populate district options based on region selection
-    $('#region').change(function() {
-        var region = $(this).val();
-        $('#district').empty(); // Clear previous options
-        if (region === 'asia') {
-            $('#districtGroup').show(); // Show district selection
-            $('#district').append('<option value="seoul">Seoul</option>');
-            $('#district').append('<option value="busan">Busan</option>');
-            // Add more districts for Asia region as needed
-        } else if (region === 'europe') {
-            $('#districtGroup').show(); // Show district selection
-            $('#district').append('<option value="paris">Paris</option>');
-            $('#district').append('<option value="london">London</option>');
-            // Add more districts for Europe region as needed
-        } else {
-            $('#districtGroup').hide(); // Hide district selection if no region is selected
+    $('#resion').change(function() {
+        let code = $(this).val();
+
+         let data = {
+            "code" : code,
+            "code_level" : 2
         }
+
+        $.ajax({
+            url:"/api/server/selectResionSearch.do",
+            type:"post",
+            contentType:"application/json",
+            data: JSON.stringify(data),
+            success:function(response){
+                var $districtSelect = $('#district');
+                $districtSelect.empty(); // 기존 옵션 제거
+                let data = response.resionList;
+                console.log(data)
+
+                if (data.size === 0) {
+                    $districtSelect.append('<option value="">No districts available</option>');
+                } else {
+                    // 데이터에 따라 동적으로 옵션 추가
+                    $.each(data, function(index, item) {
+                        var value = item.code;
+                        var text = item.sigungu_name;
+                        $districtSelect.append('<option value="' + value + '">' + text + '</option>');
+                    });
+                }
+
+                // 드롭다운 표시
+                $('#districtGroup').show();
+
+            },
+            error:function(request,status,error){
+    //            alert('인증 실패하였습니다. 다시 입력해주세요.')
+            }
+        })
     });
 
     function searchMemories() {
@@ -63,7 +77,6 @@
         var district = $('#district').val();
         var searchQuery = $('#search').val();
 
-        // Perform memory search based on region, district, and searchQuery
         console.log('Searching memories in ' + region + ', district: ' + district + ', for: ' + searchQuery);
     }
 

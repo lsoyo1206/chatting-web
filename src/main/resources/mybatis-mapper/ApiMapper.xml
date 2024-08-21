@@ -268,7 +268,7 @@
     </select>
 
     <select id="NewLocationSelector" resultType="Map" parameterType="Map">
-        select code, UP_CODE ,CODE_LEVEL , sido_name ,dong_name , lee_name , ranking
+        select code, UP_CODE ,CODE_LEVEL , sido_name ,sigungu_name, dong_name , lee_name , ranking
         from TB_RESION
         where 1=1
         and   delete_date = ''

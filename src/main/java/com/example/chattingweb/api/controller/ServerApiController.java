@@ -424,4 +424,22 @@ public class ServerApiController {
 
         return result;
     }
+
+    @RequestMapping(value = "/selectResionSearch.do", method = {RequestMethod.POST})
+    @ResponseBody
+    public Map<String,Object> selectResionSearch(@RequestBody Map<String,Object> data, Model model){
+        Map<String,Object> result = new HashMap<>();
+
+        //파라미터 세팅
+        Map<String,Object> params = new HashMap<>();
+        params.put("code_level",Integer.parseInt(String.valueOf(data.get("code_level"))));
+        String codeString = String.valueOf(data.get("code"));
+        String upCode = codeString.length() >= 2 ? codeString.substring(0, 2) : codeString;
+        params.put("up_code", upCode);
+
+        List<Map<String,Object>> resionList = serverApiRepository.NewLocationSelector(params);
+
+        result.put("resionList", resionList);
+        return result;
+    }
 }
