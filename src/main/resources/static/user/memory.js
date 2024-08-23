@@ -100,11 +100,13 @@ function fn_submit(){
 
     if($("#locationRegistered").prop("checked") === true){
         locationName = $("#placeName").val();
+        resionCode = $("input[name='resionCode']").val();
         address = $("input[name='address']").val();
         roadAddress = $("input[name='road_address']").val();
 
         formData.append('locationRegistered', true);
         formData.append('locationName', locationName);
+        formData.append('resionCode', resionCode);
         formData.append('address', address);
         formData.append('roadAddress', roadAddress);
         formData.append('latitude', $("input[name='latitude']").val());
@@ -417,6 +419,8 @@ function getListItem(index, places) {
 
                 $("input[name='latitude']").val(result[0].y);
                 $("input[name='longitude']").val(result[0].x);
+
+                searchLocationCode(result[0].x, result[0].y);
             }
         });
 
@@ -523,6 +527,36 @@ function findLatitudeLongitude(address){
             }
         });
     });
+}
+function searchLocationCode(x, y){
+
+    if (x && y) {
+         $.ajax({
+             url: "https://dapi.kakao.com/v2/local/geo/coord2regioncode.json",
+             type: "GET",
+             contentType: "application/json",
+             data: {
+                 x: x,
+                 y: y
+             },
+             headers: {
+                 Authorization: "KakaoAK " + "14a1b30fdf6f3f359ed4be41de3e80b1"
+             },
+             success: function(response) {
+                 // 법정동 기준으로 동단위의 값을 가져옴
+                 let regionType = response.documents[0].region_type;
+                 if(regionType === "B"){
+                     let code = response.documents[0].code;
+                     console.log("code ===>"+code);
+                     $("input[name='resionCode']").val(code);
+                 }
+             },
+             error: function(request, status, error) {
+                 alert('인증 실패하였습니다. 다시 입력해주세요.');
+                 console.error("Error:", error);
+             }
+        });
+    }
 }
 
 function fileSetting(){

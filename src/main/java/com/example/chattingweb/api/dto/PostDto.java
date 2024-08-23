@@ -18,6 +18,7 @@ public class PostDto{
 
     private String locationRegistered;    //장소 등록여부
     private String locationName;
+    private String resionCode;
     private String address;
     private String roadAddress;
     private String longitude;   //경도

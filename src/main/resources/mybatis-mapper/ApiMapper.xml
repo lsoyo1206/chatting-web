@@ -27,6 +27,9 @@
         INSERT INTO chattingWeb.TB_LOCATION (
                 post_id,
                 location_name,
+                <if test="resionCode != null and resionCode != ''">
+                    resion_code,
+                </if>
                 <if test="address != null and address != ''">
                     address,
                 </if>
@@ -39,6 +42,9 @@
         VALUES (
                 #{postId},
                 #{locationName},
+                <if test="resionCode != null and resionCode != ''">
+                    #{resionCode},
+                </if>
                 <if test="address != null and address != ''">
                     #{address},
                 </if>
@@ -54,6 +60,9 @@
         UPDATE chattingWeb.TB_LOCATION
         SET
         location_name = #{locationName},
+        <if test="resionCode != null and resionCode != ''">
+            resion_code = #{resionCode},
+        </if>
         <if test="address != null and address != ''">
             address = #{address},
         </if>

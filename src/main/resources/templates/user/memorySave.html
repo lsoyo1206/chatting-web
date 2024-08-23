@@ -85,6 +85,8 @@
 
 
 <!-- 추억 수정 -->
+<input type="hidden" name="resionCode"
+       th:if="${postDto != null and postDto.locationRegistered == 'Y'}" th:value="${postDto.address}">
 <input type="hidden" name="address"
        th:if="${postDto != null and postDto.locationRegistered == 'Y'}" th:value="${postDto.address}">
 <input type="hidden" name="road_address"
@@ -95,6 +97,8 @@
        th:if="${postDto != null and postDto.locationRegistered == 'Y'}" th:value="${postDto.longitude}">  <!-- 경도 -->
 
 <!-- 추억 등록 -->
+<input type="hidden" name="resionCode"
+       th:unless="${postDto != null and postDto.locationRegistered == 'Y'}">
 <input type="hidden" name="address"
        th:unless="${postDto != null and postDto.locationRegistered == 'Y'}">
 <input type="hidden" name="road_address"
@@ -103,6 +107,7 @@
        th:unless="${postDto != null and postDto.locationRegistered == 'Y'}">
 <input type="hidden" name="longitude"
        th:unless="${postDto != null and postDto.locationRegistered == 'Y'}">
+
 
 
 <div class="container" style="margin-top:20px;">

@@ -126,6 +126,7 @@ public class ServerApiService implements ServerApiServiceIf{
         //location 테이블에 넣어줄 파라미터 세팅
         Map<String, Object> LocationMap = new HashMap<>();
         LocationMap.put("locationName", postDto.getLocationName());
+        LocationMap.put("resionCode", postDto.getResionCode());
         LocationMap.put("address", postDto.getAddress());
         LocationMap.put("roadAddress", postDto.getRoadAddress());
         LocationMap.put("latitude", postDto.getLatitude());
@@ -133,7 +134,6 @@ public class ServerApiService implements ServerApiServiceIf{
 
         System.out.println("postDto ===>"+postDto);
         System.out.println("LocationMap ===>" + LocationMap);
-        System.out.println("LocationMap ===>" + LocationMap.get("roadAddress"));
 
         int postDtoInsertResult = serverApiRepository.insertPostDto(postDto);
         insertResult.put("postDtoInsertResult", postDtoInsertResult);
@@ -168,6 +168,7 @@ public class ServerApiService implements ServerApiServiceIf{
         //location 테이블에 넣어줄 파라미터 세팅
         Map<String, Object> LocationMap = new HashMap<>();
         LocationMap.put("locationName", postDto.getLocationName());
+        LocationMap.put("resionCode", postDto.getResionCode());
         LocationMap.put("address", postDto.getAddress());
         LocationMap.put("roadAddress", postDto.getRoadAddress());
         LocationMap.put("latitude", postDto.getLatitude());
@@ -177,8 +178,6 @@ public class ServerApiService implements ServerApiServiceIf{
         System.out.println("postDto ===>" + postDto);
         int postDtoUpdateResult = serverApiRepository.updatePostDto(postDto);
         insertResult.put("postDtoUpdateResult", postDtoUpdateResult);
-
-
 
         if(postDtoEx.getLocationId() == 0 && "N".equals(postDtoEx.getLocationRegistered())){       //기존에 없었는데 새로 insert
             serverApiRepository.insertLocation(LocationMap);
