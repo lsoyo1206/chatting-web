@@ -117,10 +117,15 @@ public class ServerApiController {
     }
 
     @GetMapping("/map.do")
-    public String map(Model model, @RequestParam(defaultValue = "0", value="page") int page) throws IOException {
+    public String map(Model model, @RequestParam(defaultValue = "0", value="page") int page,
+                                   @RequestParam(value = "resionCode", required = false) String resionCode) throws IOException {
 
         UserDto userDto = serverApiService.userInfo();
         userDto.setPageSize(5);
+
+        if (resionCode == null) {
+            userDto.setResionCode(resionCode);
+        }
 
         //페이징 처리
         int totalPages = serverApiRepository.selectPostsByUserIdTotalPage(userDto);
@@ -132,17 +137,6 @@ public class ServerApiController {
             String htmlString = String.valueOf(postList.get(i).get("content"));
             String textOnlyContent = Jsoup.parse(htmlString).text();
             postList.get(i).put("textOnlyContent", textOnlyContent); //content html 부분 제외한 텍스트 부분만 추출
-
-            /* if(postList.get(i).get("filePath") != null){    //사진 pullPath 추출
-                StringBuilder fileBuilder = new StringBuilder();
-                fileBuilder.append("/usr/local/toyproject/nas/file_manage/");
-                fileBuilder.append(String.valueOf(postList.get(i).get("filePath")));
-                fileBuilder.append(File.separator);
-                fileBuilder.append(String.valueOf(postList.get(i).get("fileName")));
-                fileBuilder.append(String.valueOf(postList.get(i).get("fileExtension")));
-                String fileFullPath = fileBuilder.toString();
-                postList.get(i).put("filePullPath",fileFullPath);
-            } */
 
             if (postList.get(i).get("filePath") != null) {    // 사진 pullPath 추출
                 String filePullPath = "http://3.27.210.64:8081/files" + File.separator +

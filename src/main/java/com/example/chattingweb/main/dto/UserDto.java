@@ -16,5 +16,6 @@ public class UserDto extends Pagination {
     private String ProfileImage;
     private String role;
 
+    private String resionCode;
 }
 

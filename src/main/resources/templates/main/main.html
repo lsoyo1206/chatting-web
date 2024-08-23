@@ -70,31 +70,12 @@
     });
 
     function searchMemories() {
-        var region = $('#region').val();
-        var district = $('#district').val();
+        var resionCode = $('#district').val();
         var address11 = $('.address11').val();
+        console.log('Searching memories in ' + resionCode);
 
-        console.log('Searching memories in ' + resion + ', district: ' + address11);
-
-        let data = {};
-        data.accessToken = "a2bc8fb697e24217af77";
-        data.address = "서울 마포구 어울마당로 75";
-        data.pagenum = 0;
-        data.resultcount = 5;
-
-        $.ajax({
-            url:"https://sgisapi.kostat.go.kr/OpenAPI3/addr/geocode.json",
-            type:"post",
-            contentType:"application/json",
-            data: JSON.stringify(data),
-            success:function(response){
-                console.log("response -->",response)
-
-            },
-            error:function(request,status,error){
-                alert('인증 실패하였습니다. 다시 입력해주세요.')
-            }
-        })
+        const newUrl = "/api/server/map.do?resionCode="+resionCode;
+        window.location.href = newUrl
     }
 
     function addToWishlist(place) {
